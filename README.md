@@ -40,6 +40,12 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 * userPinMap.h - Pin mapping file
 
 
+## Want to learn morse?
+
+Try our [Morse-Learn](https://github.com/AceCentre/morse-learn/) Project. 
+
+Or if you are on a PC and want a way of learning how to use the mouse with visual feedback back try [MorseWriter](https://github.com/AceCentre/MorseWriter).
+
 ## Credits
 
 * Tania Finlayson - and her husband for developing (and general all round awesomeness) for building [TandemMaster](http://tandemmaster.org). Please buy one if you want to support this project
