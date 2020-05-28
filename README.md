@@ -46,6 +46,10 @@ Try our [Morse-Learn](https://github.com/AceCentre/morse-learn/) Project.
 
 Or if you are on a PC and want a way of learning how to use the mouse with visual feedback back try [MorseWriter](https://github.com/AceCentre/MorseWriter).
 
+## Why? Why not a different project?
+
+We needed a BLE HID Switch->Morse system - that allowed swapping between several different devices - AND - switching between switch scanning and morse input. 
+
 ## Credits
 
 * Tania Finlayson - and her husband for developing (and general all round awesomeness) for building [TandemMaster](http://tandemmaster.org). Please buy one if you want to support this project
