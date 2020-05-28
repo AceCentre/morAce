@@ -7,7 +7,7 @@ BLEMorseToText is a Arduino project designed to work with the [Adafruit nrf52840
 ## Bill of materials
 
 * x1 [Adafruit nrf52840](https://www.adafruit.com/product/4062)
-* x1 [3.5mm Socket](https://www.hobbytronics.co.uk/stereo-audio-jack-socket) (or any [momentary buttons](https://www.hobbytronics.co.uk/push-switch-12mm))
+* x3 [3.5mm Socket](https://www.hobbytronics.co.uk/stereo-audio-jack-socket) (or any [momentary buttons](https://www.hobbytronics.co.uk/push-switch-12mm))
 * x1 [Buzzer](https://www.hobbytronics.co.uk/piezo-transducer-5v)
 * x1 [PNP](https://www.hobbytronics.co.uk/bc212l-pnp-transistor)
 * x1 [10K resistor](https://www.hobbytronics.co.uk/resistor-10k-1-8w)
