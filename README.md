@@ -13,7 +13,7 @@ BLEMorseToText is a Arduino project designed to work with the [Adafruit nrf52840
 * **USER Switch** - Switch for Connection Swapping	**State**: Active Low (On board - Feather User SW)
 * **CONN LED(Blue)** - LED indication for BLE Connection status **State**:Active High ("On board - Feather CONN LED - Blinking : Advertising, Not connected, Steady ON : Connected, Not advertising")
 
-See also this [Fritzing diagram](https://github.com/AceCentre/BLEMorseToText/blob/master/Connection%20Diagram.fzz) :
+See also this [Fritzing diagram](https://github.com/AceCentre/BLEMorseToText/blob/master/ConnectionDiagram.fzz) :
 
 <img src="https://raw.githubusercontent.com/AceCentre/BLEMorseToText/master/ConnectionDiagram.png" width="600">
 
