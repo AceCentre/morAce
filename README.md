@@ -13,7 +13,7 @@ BLEMorseToText is a Arduino project designed to work with the [Adafruit nrf52840
 
 See also this Fritzing diagram 
 
-<img src="https://raw.githubusercontent.com/AceCentre/BLEMorseToText/master/ConnectionDiagram.png" width="400">
+<img src="https://raw.githubusercontent.com/AceCentre/BLEMorseToText/master/ConnectionDiagram.png" width="600">
 
 
 ### Usage
