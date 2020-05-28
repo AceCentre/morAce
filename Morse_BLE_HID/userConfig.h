@@ -8,8 +8,8 @@
  *  
  *  note - Write string between double quotes
  */
-#define DEVICE_BLE_NAME         "MORSE_HID"
-#define DEVICE_MANUFACTURER     "ABC"
+#define DEVICE_BLE_NAME         "BLEMorseToText"
+#define DEVICE_MANUFACTURER     "AceCentre"
 #define DEVICE_MODEL_NAME       "BLE-HID-v1"
 
 /*  Device Mode Setting
