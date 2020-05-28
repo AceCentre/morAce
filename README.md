@@ -33,6 +33,8 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 ## Files
 
+All the Arduino code is in the sub-directory **Morse_BLE_HID**
+
 * Morse_BLE_HID.ino - Main source code file
 * morseCode.cpp - Library source code file for Morse Code related functions
 * morseCode.h - Library header file for Morse Code related functions
