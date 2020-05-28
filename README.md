@@ -20,7 +20,7 @@ See also this Fritzing diagram
 
 Wire it all up. Set your settings in ``userConfig.h``. Pair your device with a compatible device (PC, Mac, Linux, iOS, Android) - and away you go.
 
-There **will** be bugs. Please submit them to the issue queue. 
+There **will** be bugs. Please submit them to the [issue queue](https://github.com/AceCentre/BLEMorseToText/issues). 
 
 
 ## Contributing
