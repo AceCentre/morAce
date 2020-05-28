@@ -4,14 +4,17 @@ BLEMorseToText is a Arduino project designed to work with the [Adafruit nrf52840
 
 ## Arduino wiring
 
-* Pin 10 - Morse Key 1 	State: Active Low (External switch)
-* Pin 11 - Morse Key 2	State: Active Low (External switch)
-* Pin 12 - Morse Key 3	State: Active Low (External switch)
-* Pin 5 - Buzzer State: Active Low (External switch)
-* USER Switch - Switch for Connection Swapping	State: Active Low (On board - Feather User SW)
-* CONN LED(Blue) - LED indication for BLE Connection status State:Active High ("On board - Feather CONN LED - Blinking : Advertising, Not connected, Steady ON : Connected, Not advertising")
+* **Pin** 10 - Morse Key 1 	**State**: Active Low (External switch)
+* **Pin** 11 - Morse Key 2	**State**: Active Low (External switch)
+* **Pin** 12 - Morse Key 3	**State**: Active Low (External switch)
+* **Pin** 5 - Buzzer **State**: Active Low (External switch)
+* **USER Switch** - Switch for Connection Swapping	**State**: Active Low (On board - Feather User SW)
+* **CONN LED(Blue)** - LED indication for BLE Connection status **State**:Active High ("On board - Feather CONN LED - Blinking : Advertising, Not connected, Steady ON : Connected, Not advertising")
 
 See also this Fritzing diagram 
+
+<img src="https://raw.githubusercontent.com/AceCentre/BLEMorseToText/master/ConnectionDiagram.png" width="400">
+
 
 ### Usage
 
