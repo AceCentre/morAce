@@ -12,6 +12,8 @@
 
 // Switch for BLE connection Swapping
 #define USER_SWITCH		7
+// Itsybitsy: 4
+// nrf52840 express 7
 
 // Buzzer for Morse code
 #define BUZZER_PIN		5
