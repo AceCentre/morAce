@@ -18,4 +18,7 @@
 // Buzzer for Morse code
 #define BUZZER_PIN		5
 
+// NeoPixel LED
+#define NEOPIXEL_PIN  8     // v0.2
+
 #endif

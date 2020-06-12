@@ -1,6 +1,7 @@
 // Header Files
 #include <bluefruit.h>
 #include <BLEConnection.h>
+#include <Adafruit_NeoPixel.h>    // v0.2
 #include "userPinMap.h"
 #include "userConfig.h"
 #include "morseCode.h"
@@ -21,15 +22,20 @@
 #undef ONE_BUTTON_MODE
 #endif
 
+#define NUMPIXELS 1       // v0.2
+
 // Variable Declarations
 BLEDis bledis;
 BLEHidAdafruit blehid;
+Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);    // v0.2
 
 const int BUTTON_ONE = KEY_ONE;
 const int BUTTON_TWO = KEY_TWO;
 const int BUTTON_THREE = KEY_THREE;
 const int USER_BUTTON = USER_SWITCH;
 int BUZZER = BUZZER_PIN;
+const char DOT = '.';
+const char DASH = '-';
 
 volatile unsigned long t1,t2;
 volatile unsigned long currentMillis;
@@ -55,6 +61,7 @@ void startBleAdvertising(void);
 void checkButton(uint8_t buttonNum);
 void checkButtonThreeForEndChar(void);
 void bleConnectCallback(uint16_t conn_handle);
+void setNeopixelColor(uint8_t r, uint8_t g, uint8_t b);   // v0.2
 
 // Functions Definations
 void setup()
@@ -84,6 +91,8 @@ void setup()
   pinMode(BUZZER,OUTPUT);
   digitalWrite(BUZZER, HIGH);
 
+  pixels.begin();         // v0.2
+
   // Configure Bluefruit Parameters
   Bluefruit.begin();
   Bluefruit.setTxPower(4);
@@ -99,7 +108,10 @@ void setup()
   blehid.begin();
 
   // Start BLE Advertising
-  startBleAdvertising();  
+  startBleAdvertising();
+
+  // Set Neopixel Colour
+  setNeopixelColor(0, 150, 0);    // v0.2   - Green Colour
 }
 
 void loop()
@@ -156,7 +168,8 @@ void checkButton(uint8_t buttonNum)
       #ifdef TWO_BUTTON_MODE
         if(buttonNum == BUTTON_ONE)
         {
-          tempChar = findDot();
+          //tempChar = findDot();
+          tempChar = DOT;         // v0.2
           if(tempChar != NULL)
           {
             codeStr[codeStrIndex++] += tempChar;
@@ -164,7 +177,8 @@ void checkButton(uint8_t buttonNum)
         }
         else if(buttonNum == BUTTON_TWO)
         {
-          tempChar = findDash();
+          //tempChar = findDash();
+          tempChar = DASH;        // v0.2
           if(tempChar != NULL)
           {
             codeStr[codeStrIndex++] += tempChar;
@@ -175,7 +189,8 @@ void checkButton(uint8_t buttonNum)
       #ifdef THREE_BUTTON_MODE
         if(buttonNum == BUTTON_ONE)
         {
-          tempChar = findDot();
+          //tempChar = findDot();
+          tempChar = DOT;         // v0.2
           if(tempChar != NULL)
           {
             codeStr[codeStrIndex++] += tempChar;
@@ -183,7 +198,8 @@ void checkButton(uint8_t buttonNum)
         }
         else if(buttonNum == BUTTON_TWO)
         {
-          tempChar = findDash();
+          //tempChar = findDash();
+          tempChar = DASH;        // v0.2
           if(tempChar != NULL)
           {
             codeStr[codeStrIndex++] += tempChar;
@@ -342,4 +358,11 @@ void bleConnectCallback(uint16_t conn_handle)
     strcpy((char*)lastCentral_name, (char*)central_name);
     flag_manualDisconnection = 0;
   }
+}
+
+void setNeopixelColor(uint8_t r, uint8_t g, uint8_t b)    // v0.2
+{
+  pixels.clear();
+  pixels.setPixelColor(0, pixels.Color(r, g, b));
+  pixels.show();
 }

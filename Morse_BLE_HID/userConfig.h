@@ -25,7 +25,7 @@
  *                  
  *  note : Any one of three must be present below (ONE_BUTTON_MODE / TWO_BUTTON_MODE / THREE_BUTTON_MODE)
  */
-#define ONE_BUTTON_MODE
+#define TWO_BUTTON_MODE
 
 /*  MORSE Code Settings 
  *  DOT_LENGTH : Unit length of a dot in tearms of milliseconds
