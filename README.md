@@ -67,6 +67,7 @@ We needed a BLE HID Switch->Morse system - that allowed swapping between several
 * Jim Lubin - and his fab Morse archive [here](https://www.makoa.org/jlubin/morsecode.htm)
 * [Adaptive Design](https://www.adaptivedesign.org) - who have been great recently about pushing along the morse agenda
 * Adafruit. For being amazing.
+* [deeproadrash](https://www.freelancer.co.uk/u/deeproadrash) who helped immensely with a lot of the code on this project. TY! 
 
 ## Similar projects
 
