@@ -4,6 +4,10 @@ morAce is a Arduino project designed to work with the [Adafruit nrf52840](https:
 
 ![OpenAAC](https://img.shields.io/badge/OpenAAC-%F0%9F%92%AC-red?style=flat&link=https://www.openaac.org)
 
+## What does it do exactly?
+
+You can use switches (1, 2, or 3) to send morse code signals which are then intepreted by the morAce as Keyboard strokes or mouse movements. Its configurable by editing the arduino file. It will work on any device that listens to a Bluetooth keyboard our mouse - such as an iOS device, Mac, Windows devices. Also with a fourth switch you can change which device it is currently connected to. It cycles between already paired devices. This makes it unique currently
+
 ## Bill of materials
 
 * x1 [Adafruit nrf52840](https://www.adafruit.com/product/4062)
