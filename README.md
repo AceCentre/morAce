@@ -41,22 +41,109 @@ There **will** be bugs. Please submit them to the [issue queue](https://github.c
 
 #### Keyboard keys
 
-| A<br>`•—`                                                                                             	| B<br>`—•••`              	| C<br>`—•—•`                	| D<br>—••                  	| E<br>•                 	| F<br>••—•                  	|
-| G<br>`——•`                                                                                            	| H<br>••••              	| I<br>••                  	| J<br>•———                 	| K<br>—•—               	| L<br>•—••                  	|
-| M<br>`——`                                                                                             	| N<br>—•                	| O<br>———                 	| P<br>•——•                 	| Q<br>——•—              	| R<br>•—•                   	|
-| S<br>`•••`                                                                                            	| T<br>            —     	| U<br>••—                 	| V<br>•••—                 	| W<br>•——               	| X<br>—••—                  	|
-| Y<br>`—•——`                                                                                           	| Z<br>——••              	| 1<br>•————               	| 2<br>••———                	| 3<br>•••——             	| 4<br>••••—                 	|
-| 5<br>`•••••                                                                                          	| 6<br>—••••             	| 7<br>——•••               	| 8<br>———••                	| 9<br>————•             	| 0<br>—————                 	|
-| .<br>`•—•—•—                                                                                         	| ,<br>——••——            	| ‌<br>••——••               	| !<br>•—••——               	| :<br>—•—•—•            	| ;<br>•••—•                 	|
-| @<br>`•———•`                                                                                       	| #<br>     —•———        	| $<br>—•••—•              	| %<br>•——•—•               	| &<br>—••——             	| ∗<br>•—•••                 	|
-| +<br>`•——••`                                                                                          	| —<br>———•              	|                          	| /<br>——••—                	| \<br>—•••••            	| <br>•—•——•                 	|
-| "<br>`——•——`                                                                                          	| (<br>•••——•            	| )<br>—••——•              	| <<br>•—•••—               	| ><br>——••—•            	| ^<br>—•—••—                	|
-| Enter <br>`•—•—`                                                                                      	| Space <br>  <br>••——   	| Back<br>Space <br>————   	| Tab <br>—•——•             	| Tab<br>Left <br>——•—•• 	| Uderscore<br><br><br>••——• 	|
-| Page<br>Up <br>`———••—`                                                                               	| Page<br>Dwn <br>———•—• 	| Left<br>Arrow <br>————•— 	| Right<br>Arrow <br>—————• 	| Up<br>Arrow <br>————•• 	| Down<br>Arrow <br>——————   	|
-| Escape <br>••—••                                                                                    	| Home <br>••••—•        	| End <br>—•—••            	| Insert <br>•—••—          	| Delete <br>—••—•       	| Start<br>Menu <br>——••••   	|
-| Function Keys<br>F1 — F10<br>dot + number (F1 = ••————)<br>F11 & F12<br>dash + number (F11 =—•————) 	|                        	|                          	|                           	|                        	|                            	|
-
-
+ - `.-`,a
+ - `-...`,b
+ - `---.`,c
+ - `-..`,d
+ - `.`,e
+ - `..-.`,f
+ - `--.`,g
+ - `....`,h
+ - `..`,i
+ - `.---`,j
+ - `-.-`,k
+ - `.-..`,l
+ - `----`,m
+ - `-.`,n
+ - `---`,o
+ - `.--.`,p
+ - `--.-`,q
+ - `.-.`,r
+ - `...`,s
+ - `-"`,t
+ - `..-`,u
+ - `...-`,v
+ - `.--`,w
+ - `-..-`,x
+ - `-.--`,y
+ - `--..`,z
+ - `-----`,0
+ - `.----`,1
+ - `..---`,2
+ - `...--`,3
+ - `....-`,4
+ - `.....`,5
+ - `-....`,6
+ - `--...`,7
+ - `---..`,8
+ - `----.`,9
+ - `----..`,\\
+ - `....--`,/
+ - `.--...`,[
+ - `-..---`,]
+ - `--..--`,<
+ - `..--..`,>
+ - `---...`,(
+ - `...---`,)
+ - `--..-`,{
+ - `--..-`,}
+ - `.-----`,.
+ - `-.....`,`,
+ - `----.-`,_
+ - `....-.`,| 
+ - `-.----`,? 
+ - `.-....`,!
+ - `-....-`,;
+ - `.----.`,:
+ - `.---.`,-
+ - `..----`,$
+ - `...-.-`,%
+ - `...--.`,"
+ - `---..-`,@
+ - `..-...`,\ 
+ - `--.---`,`
+ - `-...--`,^
+ - `---.--`,~
+ - `..---.`,#
+ - `.---..`,&
+ - `-...-`,+ 
+ - `---.-`,= 
+ - `-..--`,* 
+ - `..--`,Space
+ - `.-.-`,Enter           
+ - `--"`,Backspace
+ - `--....`,ESC  
+ - `--...-`,Shift
+ - `-.-.`,Ctrl
+ - `--.--`,Alt
+ - `.-..-`,Arrow Up
+ - `.--..`,Arrow Down
+ - `.-.-..`,Arrow Left
+ - `.-.-.`,Arrow Right
+ - `.....-`,Pg Up
+ - `...-..`,Pg Dn
+ - `.......`,Home
+ - `...-...`,End
+ - `---...-`,Numlock
+ - `--.-..`,ScrollLock
+ - `-----.`,Capslock
+ - `-.-..`,Insert
+ - `-.--..`,Delete
+ - `--.--.`,PrtScn
+ - `---..-.`,Tab
+ - `--.----`,F1
+ - `--..---`,F2
+ - `--...--`,F3
+ - `--....-`,F4
+ - `--.....`,F5
+ - `---....`,F6
+ - `----...`,F7
+ - `-----..`,F8
+ - `------.`,F9
+ - `-------`,F10
+ - `.------`,F11
+ - `..-----`,F12
+ 
 #### Mouse mode
 
 Once a device is connected by default it can send characters. But if you want to control it as a mouse you can enter the mouse mode. This is done with the morse command of `  .-.--` (configurable in userConfig.h) and then the device can send mouse commands
