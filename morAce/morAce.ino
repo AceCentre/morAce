@@ -22,12 +22,18 @@
 #undef ONE_BUTTON_MODE
 #endif
 
-#define NUMPIXELS 1       // v0.2
+// No of Neo-pixel LEDs
+#define NUMPIXELS      1       // v0.2
+
+// Device Mode                 // v0.3c
+#define MORSE_MODE      0
+#define SW_CTRL_MODE    1
 
 // Variable Declarations
 BLEDis bledis;
 BLEHidAdafruit blehid;
 Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);    // v0.2
+SoftwareTimer softTimer;       // v0.3c
 
 const int BUTTON_ONE = KEY_ONE;
 const int BUTTON_TWO = KEY_TWO;
@@ -41,6 +47,7 @@ const char DASH = '-';
 volatile unsigned long t1,t2;
 volatile unsigned long currentMillis;
 const char deviceBleName[] = DEVICE_BLE_NAME;
+const char deviceBleName2[] = DEVICE_BLE_NAME2;     // v0.3c
 const char deviceManuf[] = DEVICE_MANUFACTURER;
 const char deviceModelName[] = DEVICE_MODEL_NAME;
 volatile char codeStr[MORSE_CODE_MAX_LENGTH];
@@ -48,9 +55,6 @@ volatile uint8_t codeStrIndex;
 volatile char tempChar;
 volatile uint32_t signal_len;
 volatile uint8_t keyscan;
-volatile uint16_t connectionHandle;
-BLEConnection* connection = NULL;
-volatile char central_name[32] = {0};
 volatile char lastCentral_name[32] = {0};
 volatile uint8_t flag_manualDisconnection;
 volatile unsigned long manualDisconnTicks;
@@ -61,6 +65,28 @@ volatile unsigned long lastBeepTicks;           // v0.3
 volatile unsigned long lastUserBtnCheckTicks;   // v0.3
 volatile unsigned long lastScKeyCheckTicks;     // v0.3
 volatile uint8_t flag_switchControlMode;        // v0.3
+volatile unsigned char currMode = MORSE_MODE;   // v0.3c
+const unsigned char maxSwapConn = MAXIMUM_SWAP_CONNECTIONS;     // v0.3c
+volatile unsigned char currSwapConnIndex = 0;   // v0.3c
+char swapConnDeviceNames[MAXIMUM_SWAP_CONNECTIONS][32] = {0};    // v0.3c
+volatile unsigned char flag_blinkNeopixel = 0;    // v0.3c
+volatile unsigned char flag_blinkOnOff = 0;       // v0.3c
+
+// v0.3c
+const uint8_t CUSTOM_UUID_MORSE[] =
+{
+    0xA0, 0xDB, 0xD3, 0x6A, 0x00, 0xA6, 0xF7, 0x8C,
+    0xE7, 0x11, 0x8F, 0x71, 0x1A, 0xFF, 0x67, 0xDF
+};
+const uint8_t CUSTOM_UUID_SW[] =
+{
+    0xA1, 0xDB, 0xD3, 0x6A, 0x00, 0xA6, 0xF7, 0x8C,
+    0xE7, 0x11, 0x8F, 0x71, 0x1A, 0xFF, 0x67, 0xDF
+};
+// v0.3c
+
+BLEUuid uuidMorse = BLEUuid(CUSTOM_UUID_MORSE);     // v0.3c
+BLEUuid uuidSw = BLEUuid(CUSTOM_UUID_SW);           // v0.3c
 
 #if defined(TWO_BUTTON_MODE) || defined(THREE_BUTTON_MODE)  // v0.3
 const uint8_t flag_fastTypingMode = FAST_TYPING_MODE;   
@@ -81,6 +107,7 @@ void checkButtonThreeForEndChar(void);
 void bleConnectCallback(uint16_t conn_handle);
 void setNeopixelColor(uint8_t r, uint8_t g, uint8_t b);   // v0.2
 void handleBleConnectionSwap(void);                       // v0.3
+void setNeopixelIndication(unsigned char index);          // v0.3c
 
 // Functions Definations
 void setup()
@@ -107,11 +134,19 @@ void setup()
   #endif
   
   pinMode(USER_BUTTON, INPUT_PULLUP);
-  pinMode(USER_BUTTON2, INPUT_PULLUP);      // v0.3b
+  pinMode(USER_BUTTON2, INPUT_PULLUP);           // v0.3b
   pinMode(BUZZER,OUTPUT);
   digitalWrite(BUZZER, HIGH);
 
-  pixels.begin();         // v0.2
+  // Initialize Neopixel
+  pixels.begin();                                // v0.2
+
+  // Set Neopixel Colour
+  setNeopixelColor(0, 0, 0);    // Off           // v0.3c
+
+  // Initialize Timer for 500 ms and start it
+  softTimer.begin(500, softTimer_callback);      // v0.3c
+  softTimer.start();                             // v0.3c
 
   // Configure Bluefruit Parameters
   Bluefruit.begin();
@@ -128,10 +163,7 @@ void setup()
   blehid.begin();
 
   // Start BLE Advertising
-  startBleAdvertising();
-
-  // Set Neopixel Colour
-  setNeopixelColor(0, 150, 0);    // v0.2   - Green Colour
+  startBleAdvertising(currMode);                 // v0.3c  
 }
 
 void loop()
@@ -169,11 +201,12 @@ void loop()
     if(currentMillis - manualDisconnTicks >= LAST_CONNECTION_CHECK_TIMEOUT)
     {
       memset((char*)lastCentral_name, '\0', sizeof(lastCentral_name));
-      flag_manualDisconnection = 0;     
+      flag_manualDisconnection = 0;
+      currSwapConnIndex = 0;              // v0.3c   
     }
   }
 
-  if(flag_mouseConMovement)     // v0.3
+  if(flag_mouseConMovement)               // v0.3
   {
     if(currentMillis - lastMouseMovTicks >= INTERVAL_SEND_MOUSE_MOVE_CMD)
     {
@@ -331,20 +364,39 @@ void checkForConnectionSwap(void)
     {
       if(keyscan)       
       {
+        uint16_t connectionHandle = 0;
+        BLEConnection* connection = NULL;
+        
         keyscan = 0;
+
+        // v0.3c
+        Bluefruit.Advertising.stop();
+        Bluefruit.Advertising.clearData();
+        Bluefruit.ScanResponse.clearData();
+        connectionHandle = Bluefruit.connHandle();                
+        connection = Bluefruit.Connection(connectionHandle);        
+        delay(1000);
+        connection->disconnect();
+        delay(2000);
+        // v0.3c
+        
         if(!flag_switchControlMode)
         {
           flag_switchControlMode = 1;
           #if SERIAL_DEBUG_EN
           Serial.println("Switch Control Mode Enable");
-          #endif 
+          #endif
+          Bluefruit.setName(deviceBleName2);    // v0.3c
+          startBleAdvertising(SW_CTRL_MODE);    // v0.3c
         }
         else
         {
           flag_switchControlMode = 0;
           #if SERIAL_DEBUG_EN
           Serial.println("Switch Control Mode Disable");
-          #endif 
+          #endif
+          Bluefruit.setName(deviceBleName);    // v0.3c
+          startBleAdvertising(MORSE_MODE);     // v0.3c
         }
       }
     }
@@ -355,10 +407,18 @@ void checkForConnectionSwap(void)
   }
 }
 
-void startBleAdvertising(void)
+void startBleAdvertising(unsigned char mode)
 {  
   Bluefruit.Advertising.addFlags(BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE);
   Bluefruit.Advertising.addTxPower();
+  if(mode == MORSE_MODE)                        // v0.3c
+  {
+    Bluefruit.Advertising.addUuid(uuidMorse);
+  }
+  else
+  {
+    Bluefruit.Advertising.addUuid(uuidSw);
+  } 
   Bluefruit.Advertising.addAppearance(BLE_APPEARANCE_HID_KEYBOARD);
   Bluefruit.Advertising.addAppearance(BLE_APPEARANCE_HID_MOUSE);
   Bluefruit.Advertising.addService(blehid);
@@ -366,46 +426,83 @@ void startBleAdvertising(void)
   Bluefruit.Advertising.restartOnDisconnect(true);
   Bluefruit.Advertising.setInterval(32, 244);
   Bluefruit.Advertising.setFastTimeout(30);
+  Bluefruit.ScanResponse.addName();           // v0.3c
   Bluefruit.Advertising.start(0);
 }
 
-void bleConnectCallback(uint16_t conn_handle)
+void bleConnectCallback(uint16_t conn_handle)       // v0.3c
 {
-  connection = Bluefruit.Connection(conn_handle);  
+  int i = 0;
+  uint16_t connectionHandle = 0;
+  BLEConnection* connection = NULL;
+  char central_name[32] = {0};
   
-  connection->getPeerName((char*)central_name, sizeof(central_name));  
+  connection = Bluefruit.Connection(conn_handle);  
+  connection->getPeerName(central_name, sizeof(central_name));  
 
   #if SERIAL_DEBUG_EN
-  Serial.print("Connected to ");
+  Serial.print("Connection Req from ");
   Serial.println((char*)central_name);
+  /*for(i = 0; i < maxSwapConn; i++)
+  {
+    Serial.print(i);
+    Serial.print(": ");
+    Serial.print(String((char*)swapConnDeviceNames[i]));
+    Serial.print(", ");
+  }
+  Serial.println();*/
   #endif
 
-  if(flag_manualDisconnection && !strcmp((char*)central_name, (char*)lastCentral_name))
-  {
-    #if SERIAL_DEBUG_EN
-    Serial.print("Last Connection is same, Disconnecting...");
-    #endif
-    if(connection->disconnect())
+  if(flag_manualDisconnection)
+  {    
+    for(i = 0; i < maxSwapConn; i++)
     {
-      #if SERIAL_DEBUG_EN
-      Serial.println("Done");
-      #endif
-    }
-    else
-    {
-      #if SERIAL_DEBUG_EN
-      Serial.println("ERROR");
-      #endif
-    }
+      if(!strcmp((char*)central_name, (char*)swapConnDeviceNames[i]))
+      {
+        /*#if SERIAL_DEBUG_EN        
+        Serial.print("Name matched in last list, Disconnecting...");
+        #endif*/
+        
+        setNeopixelColor(0, 0, 0);      // Off      // v0.3c
+        
+        if(connection->disconnect())
+        {
+          #if SERIAL_DEBUG_EN
+          Serial.println("Done");
+          Serial.println();
+          #endif
+        }
+        else
+        {
+          #if SERIAL_DEBUG_EN
+          Serial.println("ERROR");
+          #endif
+        }
+        break;
+      }
+    }    
   }
-  else
+  
+  if(i == maxSwapConn || !flag_manualDisconnection)
   {
     #if SERIAL_DEBUG_EN
-    Serial.println("New Connection");
+    Serial.print("New Connection: ");
+    Serial.println((char*)central_name);
+    Serial.println();
     #endif
+
+    // v0.3c
+    flag_blinkNeopixel = 0;
+    setNeopixelIndication(currSwapConnIndex);
+    memset((char*)lastCentral_name, NULL, sizeof((char*)lastCentral_name));
+    memset((char*)swapConnDeviceNames[currSwapConnIndex], NULL, sizeof((char*)swapConnDeviceNames[currSwapConnIndex]));
+    memset((char*)swapConnDeviceNames[currSwapConnIndex+1], NULL, sizeof((char*)swapConnDeviceNames[currSwapConnIndex+1]));
+    strcpy(swapConnDeviceNames[currSwapConnIndex], (char*)central_name);      
     strcpy((char*)lastCentral_name, (char*)central_name);
+    // v0.3c
+       
     flag_manualDisconnection = 0;
-  }
+  }  
 }
 
 void setNeopixelColor(uint8_t r, uint8_t g, uint8_t b)    // v0.2
@@ -415,32 +512,74 @@ void setNeopixelColor(uint8_t r, uint8_t g, uint8_t b)    // v0.2
   pixels.show();
 }
 
+void setNeopixelIndication(unsigned char index)           // v0.3c
+{
+  if(index == 0)
+  {
+    setNeopixelColor(0, 0, 255);      // Blue    
+  }
+  else if(index == 1)
+  {
+    setNeopixelColor(0, 255, 255);    // Cyan
+  }
+  else if(index == 2)
+  {
+    setNeopixelColor(0, 255, 0);      // Green
+  }
+  else if(index == 3)
+  {
+    setNeopixelColor(255, 255, 0);    // Yellow
+  }
+  else if(index == 4)
+  {
+    setNeopixelColor(255, 128, 0);    // Orange
+  }
+}
+
 void handleBleConnectionSwap(void)      // v0.3
 {
-  connectionHandle = Bluefruit.connHandle();
-        
+  uint16_t connectionHandle = 0;
+  BLEConnection* connection = NULL;
+  
+  connectionHandle = Bluefruit.connHandle();        
   connection = Bluefruit.Connection(connectionHandle);
-  if(connection->connected())
+
+  // v0.3c
+  currSwapConnIndex++;
+  if(currSwapConnIndex >= maxSwapConn)
   {
-    if(connection->disconnect())
+    currSwapConnIndex = 0;
+  }
+  memset(swapConnDeviceNames[currSwapConnIndex], NULL, maxSwapConn);
+  // v0.3c
+   
+  delay(2000); 
+  connection->disconnect();
+  #if SERIAL_DEBUG_EN 
+  Serial.println("Disconnected");
+  #endif
+  
+  setNeopixelColor(0, 0, 0);      // Off      // v0.3c
+  flag_blinkNeopixel = 1;                     // v0.3c 
+
+  flag_manualDisconnection = 1;
+  manualDisconnTicks = millis();  
+}
+
+void softTimer_callback(TimerHandle_t xTimerID)       // v0.3c
+{
+  (void) xTimerID;
+  if(flag_blinkNeopixel)
+  {
+    if(flag_blinkOnOff)
     {
-      #if SERIAL_DEBUG_EN
-      Serial.println("Disconnected");
-      #endif
-      flag_manualDisconnection = 1;
-      manualDisconnTicks = millis();
+      flag_blinkOnOff = 0;
+      setNeopixelColor(0, 0, 0);      // Off
     }
     else
     {
-      #if SERIAL_DEBUG_EN
-      Serial.println("Disconnection ERROR");
-      #endif
-    }
-  }
-  else
-  {
-    #if SERIAL_DEBUG_EN
-    Serial.println("Not Connected");
-    #endif
-  }
+      flag_blinkOnOff = 1;
+      setNeopixelIndication(currSwapConnIndex);
+    }   
+  }  
 }

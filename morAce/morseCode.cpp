@@ -167,7 +167,6 @@ const struct MORSE morseCodeMouse[] = {
 // Functions Declarations
 static void hidSpecialKeyPress(int keyType);
 static void handleMouseMorseCode(void);
-extern void setNeopixelColor(uint8_t r, uint8_t g, uint8_t b);    // v0.2
 extern void handleBleConnectionSwap(void);                        // v0.3
 
 // Functions Definations
@@ -187,16 +186,14 @@ void convertor(void)
   {
     if(hidMode == KEYBOARD_MODE)
     {
-      hidMode = MOUSE_MODE;
-      setNeopixelColor(0, 150, 255);    // v0.2     // Blue Colour
+      hidMode = MOUSE_MODE;      
       #if SERIAL_DEBUG_EN
       Serial.println("MOUSE MODE");
       #endif
     }
     else
     {
-      hidMode = KEYBOARD_MODE;
-      setNeopixelColor(0, 150, 0);      // v0.2     // Green Colour 
+      hidMode = KEYBOARD_MODE;      
       #if SERIAL_DEBUG_EN
       Serial.println("KEYBOARD MODE");
       #endif

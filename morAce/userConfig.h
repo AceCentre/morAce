@@ -2,14 +2,16 @@
 #define USERCONFIG_H_
 
 /*  Device Specific Settings
- *  DEVICE_BLE_NAME     : BLE device will advertise by this name
+ *  DEVICE_BLE_NAME     : Device will advertise by this name in Morse Mode
+ *  DEVICE_BLE_NAME2    : Device will advertise by this name in Switch Control Mode
  *  DEVICE_MANUFACTURER : Manufacturere name in BLE device properties
  *  DEVICE_MODEL_NAME   : Modem name in BLE device properties
  *  
  *  note - Write string between double quotes
  */
 #define DEVICE_BLE_NAME         "MORSE_HID"
-#define DEVICE_MANUFACTURER     "ABC"
+#define DEVICE_BLE_NAME2        "SW_HID"                // v0.3c
+#define DEVICE_MANUFACTURER     "AceCentre"
 #define DEVICE_MODEL_NAME       "BLE-HID-v1"
 
 /*  Device Mode Setting
@@ -38,13 +40,13 @@
 /*  MORSE Code Settings 
  *  DOT_LENGTH : Unit length of a dot in tearms of milliseconds
  */
-#define DOT_LENGTH        200
+#define DOT_LENGTH              200
 
 /*  MORSE Code for switching between Keyboard mode and Mouse mode
  *  
  *  note : Write morse code between double quotes
  */
-#define MORSE_CODE_FOR_KEYB_MOUSE_SWITCH    ".-.--"
+#define MORSE_CODE_FOR_KEYB_MOUSE_SWITCH      ".-.--"
 
 /*  MORSE Code for Swap Connection
  *  
@@ -58,14 +60,14 @@
  *  
  *  note : Define timeout in milliseconds
  */
-#define LAST_CONNECTION_CHECK_TIMEOUT     60000
+#define LAST_CONNECTION_CHECK_TIMEOUT          10000
 
 /*  Mouse HID - Step size for Mouse movement
  *  Mouse cursor will be moved by this step size
  *  
  *  note : Step must be integer
  */
-#define MOUSE_MOVE_STEP   5
+#define MOUSE_MOVE_STEP                5
 
 /*  Time interval to send mouse movement command in milliseconds
  *  Mouse move command to right/left/up/down will be sent at this interval
@@ -74,12 +76,18 @@
  */
 #define INTERVAL_SEND_MOUSE_MOVE_CMD   100              // v0.3
 
+/*  Maximum allowable BLE connections swaps
+ *  
+ *  note : Must be <= 5
+ */ 
+#define MAXIMUM_SWAP_CONNECTIONS       4                // v0.3c
+
 /*  Serial Debug Enable/Disable
  *  1 - Enable / 0 - Disable
  *  
  *  By enabling device will send debug messages on USB port via serial. (Baudrate - 115200)
  */
-#define SERIAL_DEBUG_EN     0
+#define SERIAL_DEBUG_EN                0
 
 
 #endif
