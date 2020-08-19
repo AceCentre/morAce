@@ -27,7 +27,7 @@
  *                  
  *  note : Any one of three must be present below (ONE_BUTTON_MODE / TWO_BUTTON_MODE / THREE_BUTTON_MODE)
  */
-#define ONE_BUTTON_MODE
+#define TWO_BUTTON_MODE
 
 /*  Fast Typing Mode Enable/Disable 
  *  Effective only in Two & Three Button Modes
@@ -80,7 +80,7 @@
  *  
  *  note : Must be <= 5
  */ 
-#define MAXIMUM_SWAP_CONNECTIONS       4                // v0.3c
+#define MAXIMUM_SWAP_CONNECTIONS       2                // v0.3c
 
 /*  Serial Debug Enable/Disable
  *  1 - Enable / 0 - Disable

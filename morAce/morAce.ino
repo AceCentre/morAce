@@ -72,6 +72,7 @@ char swapConnDeviceNames[MAXIMUM_SWAP_CONNECTIONS][32] = {0};    // v0.3c
 volatile unsigned char flag_blinkNeopixel = 0;    // v0.3c
 volatile unsigned char flag_blinkOnOff = 0;       // v0.3c
 
+/*
 // v0.3c
 const uint8_t CUSTOM_UUID_MORSE[] =
 {
@@ -85,8 +86,9 @@ const uint8_t CUSTOM_UUID_SW[] =
 };
 // v0.3c
 
-BLEUuid uuidMorse = BLEUuid(CUSTOM_UUID_MORSE);     // v0.3c
-BLEUuid uuidSw = BLEUuid(CUSTOM_UUID_SW);           // v0.3c
+//BLEUuid uuidMorse = BLEUuid(CUSTOM_UUID_MORSE);     // v0.3c
+//BLEUuid uuidSw = BLEUuid(CUSTOM_UUID_SW);           // v0.3c
+*/
 
 #if defined(TWO_BUTTON_MODE) || defined(THREE_BUTTON_MODE)  // v0.3
 const uint8_t flag_fastTypingMode = FAST_TYPING_MODE;   
@@ -411,14 +413,14 @@ void startBleAdvertising(unsigned char mode)
 {  
   Bluefruit.Advertising.addFlags(BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE);
   Bluefruit.Advertising.addTxPower();
-  if(mode == MORSE_MODE)                        // v0.3c
+  /*if(mode == MORSE_MODE)                        // v0.3c
   {
     Bluefruit.Advertising.addUuid(uuidMorse);
   }
   else
   {
     Bluefruit.Advertising.addUuid(uuidSw);
-  } 
+  } */
   Bluefruit.Advertising.addAppearance(BLE_APPEARANCE_HID_KEYBOARD);
   Bluefruit.Advertising.addAppearance(BLE_APPEARANCE_HID_MOUSE);
   Bluefruit.Advertising.addService(blehid);
