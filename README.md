@@ -41,6 +41,9 @@ There **will** be bugs. Please submit them to the [issue queue](https://github.c
 
 #### Keyboard keys
 
+These are the pre-defined keys. You can customise these by editing `morseCode.cpp` 
+
+
  - `.-` a
  - `-...` b
  - `---.` c
@@ -88,7 +91,7 @@ There **will** be bugs. Please submit them to the [issue queue](https://github.c
  - `--..-` {
  - `--..-` }
  - `.-----` .
- - `-.....` ` 
+ - `-.....` comma 
  - `----.-` _
  - `....-.` | 
  - `-.----` ? 
@@ -101,7 +104,7 @@ There **will** be bugs. Please submit them to the [issue queue](https://github.c
  - `...--.` "
  - `---..-` @
  - `..-...` \ 
- - `--.---` `
+ - `--.---` backtick
  - `-...--` ^
  - `---.--` ~
  - `..---.` #
