@@ -39,7 +39,6 @@ const char DASH = '-';
 
 volatile unsigned long t1,t2;
 volatile unsigned long currentMillis;
-const uint16_t charLength = (DOT_LENGTH * 3) + 100;
 const char deviceBleName[] = DEVICE_BLE_NAME;
 const char deviceManuf[] = DEVICE_MANUFACTURER;
 const char deviceModelName[] = DEVICE_MODEL_NAME;
@@ -55,6 +54,26 @@ volatile char lastCentral_name[32] = {0};
 volatile uint8_t flag_manualDisconnection;
 volatile unsigned long manualDisconnTicks;
 volatile uint8_t hidMode = KEYBOARD_MODE;
+volatile uint8_t flag_mouseConMovement = 0;     // v0.3
+volatile unsigned long lastMouseMovTicks;       // v0.3
+volatile unsigned long lastBeepTicks;           // v0.3
+volatile unsigned long lastUserBtnCheckTicks;   // v0.3
+volatile unsigned long lastUserBtnPressedTicks; // v0.3
+volatile unsigned long lastScKeyCheckTicks;     // v0.3
+volatile uint8_t userBtnPressCnt;               // v0.3
+volatile uint8_t flag_switchControlMode;        // v0.3
+
+#if defined(TWO_BUTTON_MODE) || defined(THREE_BUTTON_MODE)  // v0.3
+const uint8_t flag_fastTypingMode = FAST_TYPING_MODE;   
+#else
+const uint8_t flag_fastTypingMode = 0;
+#endif
+
+#ifdef FAST_TYPING_MODE                                     // v0.3
+const uint16_t charLength = (DOT_LENGTH * 3) + 250;
+#else
+const uint16_t charLength = (DOT_LENGTH * 3) + 100;       
+#endif
 
 // Functions Declarations
 void startBleAdvertising(void);
@@ -62,6 +81,7 @@ void checkButton(uint8_t buttonNum);
 void checkButtonThreeForEndChar(void);
 void bleConnectCallback(uint16_t conn_handle);
 void setNeopixelColor(uint8_t r, uint8_t g, uint8_t b);   // v0.2
+void handleBleConnectionSwap(void);                       // v0.3
 
 // Functions Definations
 void setup()
@@ -116,22 +136,33 @@ void setup()
 
 void loop()
 {
-  currentMillis = millis(); 
+  currentMillis = millis();
 
-  #ifdef ONE_BUTTON_MODE
-    checkButton(BUTTON_ONE);
-  #endif
-
-  #ifdef TWO_BUTTON_MODE
-    checkButton(BUTTON_ONE);
-    checkButton(BUTTON_TWO); 
-  #endif
-
-  #ifdef THREE_BUTTON_MODE
-    checkButton(BUTTON_ONE);
-    checkButton(BUTTON_TWO);
-    checkButtonThreeForEndChar();
-  #endif
+  if(flag_switchControlMode)              // v0.3
+  {
+    if(currentMillis - lastScKeyCheckTicks >= 100)
+    {
+      lastScKeyCheckTicks = currentMillis;
+      handleSwitchControlKeypress();
+    }      
+  }
+  else
+  {
+    #ifdef ONE_BUTTON_MODE
+      checkButton(BUTTON_ONE);
+    #endif
+  
+    #ifdef TWO_BUTTON_MODE
+      checkButton(BUTTON_ONE);
+      checkButton(BUTTON_TWO); 
+    #endif
+  
+    #ifdef THREE_BUTTON_MODE
+      checkButton(BUTTON_ONE);
+      checkButton(BUTTON_TWO);
+      checkButtonThreeForEndChar();
+    #endif
+  }  
 
   if(flag_manualDisconnection)
   {
@@ -140,7 +171,16 @@ void loop()
       memset((char*)lastCentral_name, '\0', sizeof(lastCentral_name));
       flag_manualDisconnection = 0;     
     }
-  }    
+  }
+
+  if(flag_mouseConMovement)     // v0.3
+  {
+    if(currentMillis - lastMouseMovTicks >= INTERVAL_SEND_MOUSE_MOVE_CMD)
+    {
+      lastMouseMovTicks = currentMillis;
+      handleConMouseMovement();
+    }    
+  }
 
   checkForConnectionSwap();
   
@@ -151,63 +191,58 @@ void checkButton(uint8_t buttonNum)
 {
   JUMP:
   if(digitalRead(buttonNum) == LOW)
-  {    
-    t1 = millis();                            //time at button press
-    digitalWrite(BUZZER, LOW);               //LED on while button pressed
-    while(digitalRead(buttonNum) == LOW && millis() - t1 < 2000);
-    t2 = millis();                            //time at button release
-    digitalWrite(BUZZER, HIGH);                //LED off on button release  
-    
-    signal_len = t2 - t1;                     //time for which button is pressed
-    if(signal_len > 50)                      //to account for switch debouncing
+  {
+    if(flag_fastTypingMode)           // v0.3
     {
-      #ifdef ONE_BUTTON_MODE
-        codeStr[codeStrIndex++] += findDotOrDash();               //function to read dot or dash 
-      #endif
-      
-      #ifdef TWO_BUTTON_MODE
-        if(buttonNum == BUTTON_ONE)
+      t1 = millis();
+      lastBeepTicks = t1;      
+      while(digitalRead(buttonNum) == LOW)
+      {
+        if(millis() - lastBeepTicks >= DOT_LENGTH)
         {
-          //tempChar = findDot();
-          tempChar = DOT;         // v0.2
-          if(tempChar != NULL)
+          lastBeepTicks = millis();
+          digitalWrite(BUZZER, LOW);
+          if(buttonNum == BUTTON_ONE)
           {
-            codeStr[codeStrIndex++] += tempChar;
-          }          
-        }
-        else if(buttonNum == BUTTON_TWO)
-        {
-          //tempChar = findDash();
-          tempChar = DASH;        // v0.2
-          if(tempChar != NULL)
+            codeStr[codeStrIndex++] += DOT;
+          }
+          else
           {
-            codeStr[codeStrIndex++] += tempChar;
-          } 
-        }
-      #endif
-
-      #ifdef THREE_BUTTON_MODE
-        if(buttonNum == BUTTON_ONE)
-        {
-          //tempChar = findDot();
-          tempChar = DOT;         // v0.2
-          if(tempChar != NULL)
-          {
-            codeStr[codeStrIndex++] += tempChar;
-          }          
-        }
-        else if(buttonNum == BUTTON_TWO)
-        {
-          //tempChar = findDash();
-          tempChar = DASH;        // v0.2
-          if(tempChar != NULL)
-          {
-            codeStr[codeStrIndex++] += tempChar;
-          } 
-        }
-      #endif          
+            codeStr[codeStrIndex++] += DASH;
+          }
+          delay(50);           
+          digitalWrite(BUZZER, HIGH);
+        }        
+      }     
+    }      
+    else
+    {
+      t1 = millis();
+      digitalWrite(BUZZER, LOW);
+      while(digitalRead(buttonNum) == LOW && millis() - t1 < 2000);
+      t2 = millis();
+      digitalWrite(BUZZER, HIGH);
+    
+      signal_len = t2 - t1;
+      if(signal_len > 50)
+      {
+        #ifdef ONE_BUTTON_MODE
+          codeStr[codeStrIndex++] += findDotOrDash();               //function to read dot or dash 
+        #endif
+        
+        #if defined(TWO_BUTTON_MODE) || defined(THREE_BUTTON_MODE)
+          if(buttonNum == BUTTON_ONE)
+          { 
+            codeStr[codeStrIndex++] += DOT;     // v0.2                    
+          }
+          else if(buttonNum == BUTTON_TWO)
+          { 
+            codeStr[codeStrIndex++] += DASH;    // v0.2           
+          }
+        #endif // -#if define(TWO_BUTTON_MODE) || define(THREE_BUTTON_MODE)     
+      }
     }   
-  }
+  }    
 
   #ifdef ONE_BUTTON_MODE
     while((millis() - t2) < charLength && codeStrIndex < MORSE_CODE_MAX_LENGTH)
@@ -219,14 +254,28 @@ void checkButton(uint8_t buttonNum)
     }
   #endif
 
-  #ifdef TWO_BUTTON_MODE
-    if((millis() - t2) >= charLength || codeStrIndex >= MORSE_CODE_MAX_LENGTH)
+  #if defined(TWO_BUTTON_MODE)        // v0.3
+    if(!flag_fastTypingMode)
     {
-      if(codeStrIndex >= 1)
+      if((millis() - t2) >= charLength || codeStrIndex >= MORSE_CODE_MAX_LENGTH)
       {
-        convertor();
-        codeStrIndex = 0;
-      } 
+        if(codeStrIndex >= 1)
+        {
+          convertor();
+          codeStrIndex = 0;
+        } 
+      }
+    }
+    else
+    {
+      if((millis() - lastBeepTicks) >= charLength || codeStrIndex >= MORSE_CODE_MAX_LENGTH)
+      {
+        if(codeStrIndex >= 1)
+        {
+          convertor();
+          codeStrIndex = 0;
+        } 
+      }
     }
   #endif
 
@@ -253,56 +302,62 @@ void checkButtonThreeForEndChar(void)
 {
   if(codeStrIndex >= 1 && digitalRead(BUTTON_THREE) == LOW)
   {
+    digitalWrite(BUZZER, LOW);      // v0.3
     convertor();
     codeStrIndex = 0;
+    digitalWrite(BUZZER, HIGH);     // 0.3
   }
   else{}  
 }
 
 void checkForConnectionSwap(void)
-{
-  if((currentMillis % 100) == 0)
+{ 
+  if(currentMillis - lastUserBtnCheckTicks >= 100)
   {
+    lastUserBtnCheckTicks = currentMillis;
     if(digitalRead(USER_BUTTON) == LOW)
-    {
-      if(keyscan)
-      {
-        keyscan = 0;
+    {      
+      keyscan++;
+      if(keyscan >= 30)     // 3 seconds
+      {        
         #if SERIAL_DEBUG_EN
         Serial.println("Connection Swap Switch Pressed");
-        #endif
-
-        connectionHandle = Bluefruit.connHandle();
+        #endif       
         
-        connection = Bluefruit.Connection(connectionHandle);
-        if(connection->connected())
-        {
-          if(connection->disconnect())
-          {
-            #if SERIAL_DEBUG_EN
-            Serial.println("Disconnected");
-            #endif
-            flag_manualDisconnection = 1;
-            manualDisconnTicks = millis();
-          }
-          else
-          {
-            #if SERIAL_DEBUG_EN
-            Serial.println("Disconnection ERROR");
-            #endif
-          }
-        }
-        else
-        {
-          #if SERIAL_DEBUG_EN
-          Serial.println("Not Connected");
-          #endif
-        }        
+        handleBleConnectionSwap();      // v0.3  
+        keyscan = 0;
       }      
     }
     else
     {
-      keyscan = 1;
+      if(keyscan > 0 && keyscan <= 5)
+      {
+        userBtnPressCnt++;
+        lastUserBtnPressedTicks = currentMillis;
+        if(userBtnPressCnt >= 2)
+        {
+          userBtnPressCnt = 0;
+          if(!flag_switchControlMode)
+          {
+            flag_switchControlMode = 1;
+            #if SERIAL_DEBUG_EN
+            Serial.println("Switch Control Mode Enable");
+            #endif 
+          }
+          else
+          {
+            flag_switchControlMode = 0;
+            #if SERIAL_DEBUG_EN
+            Serial.println("Switch Control Mode Disable");
+            #endif 
+          }          
+        }
+      }
+      else
+      {
+        userBtnPressCnt = 0;
+      }
+      keyscan = 0;
     }
   }
 }
@@ -365,4 +420,34 @@ void setNeopixelColor(uint8_t r, uint8_t g, uint8_t b)    // v0.2
   pixels.clear();
   pixels.setPixelColor(0, pixels.Color(r, g, b));
   pixels.show();
+}
+
+void handleBleConnectionSwap(void)      // v0.3
+{
+  connectionHandle = Bluefruit.connHandle();
+        
+  connection = Bluefruit.Connection(connectionHandle);
+  if(connection->connected())
+  {
+    if(connection->disconnect())
+    {
+      #if SERIAL_DEBUG_EN
+      Serial.println("Disconnected");
+      #endif
+      flag_manualDisconnection = 1;
+      manualDisconnTicks = millis();
+    }
+    else
+    {
+      #if SERIAL_DEBUG_EN
+      Serial.println("Disconnection ERROR");
+      #endif
+    }
+  }
+  else
+  {
+    #if SERIAL_DEBUG_EN
+    Serial.println("Not Connected");
+    #endif
+  }
 }

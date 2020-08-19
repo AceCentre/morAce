@@ -19,5 +19,7 @@ void convertor(void);
 const char findDotOrDash(void);
 const char findDot(void);
 const char findDash(void);
+void handleConMouseMovement(void);         // v0.3
+void handleSwitchControlKeypress(void);    // v0.3
 
 #endif

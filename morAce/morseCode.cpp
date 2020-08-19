@@ -3,6 +3,7 @@
 #include <bluefruit.h>
 #include "morseCode.h"
 #include "userConfig.h"
+#include "userPinMap.h"
 
 // Macros
 #ifdef ONE_BUTTON_MODE
@@ -21,16 +22,22 @@
 #endif
 
 // Variable Declarations
+const int BUTTON_ONE = KEY_ONE;
+const int BUTTON_TWO = KEY_TWO;
+const int BUTTON_THREE = KEY_THREE;
 extern BLEHidAdafruit blehid;
 extern volatile uint32_t signal_len;
 extern volatile char codeStr[MORSE_CODE_MAX_LENGTH];
 extern volatile uint8_t hidMode;
 extern int BUZZER;
+extern volatile uint8_t flag_mouseConMovement;     // v0.3
 
 const uint16_t dotLength = DOT_LENGTH;
 const char DOT = '.';
 const char DASH = '-';
 const char keyMouseSwitchMorseCode[] = MORSE_CODE_FOR_KEYB_MOUSE_SWITCH;
+const char swapBleConnectionMorseCode[] = MORSE_CODE_FOR_BLE_SWAP_CONNECTION;   // v0.3
+volatile uint8_t keycheck;
 
 struct MORSE
 {
@@ -161,6 +168,7 @@ const struct MORSE morseCodeMouse[] = {
 static void hidSpecialKeyPress(int keyType);
 static void handleMouseMorseCode(void);
 extern void setNeopixelColor(uint8_t r, uint8_t g, uint8_t b);    // v0.2
+extern void handleBleConnectionSwap(void);                        // v0.3
 
 // Functions Definations
 void convertor(void)
@@ -170,6 +178,8 @@ void convertor(void)
   i = 0;
 
   #if SERIAL_DEBUG_EN
+  Serial.println();
+  Serial.print("Buff");
   Serial.println(String((char*)codeStr));
   #endif
 
@@ -200,6 +210,10 @@ void convertor(void)
     digitalWrite(BUZZER, HIGH);  delay(100);
     digitalWrite(BUZZER, LOW); delay(200);
     digitalWrite(BUZZER, HIGH);  delay(100);
+  }
+  else if(!strcmp((const char*)codeStr, swapBleConnectionMorseCode))      // v0.3
+  {
+    handleBleConnectionSwap();
   }
   else
   {
@@ -264,58 +278,166 @@ static void hidSpecialKeyPress(int keyType)
 
 static void handleMouseMorseCode(void)
 {
-  if(!strcmp((const char*)codeStr, morseCodeMouse[MOUSE_MOVE_RIGHT].code))
+  if(flag_mouseConMovement)           // v0.3
   {
-    blehid.mouseMove(MOUSE_MOVE_STEP, 0);
-  }
-  else if(!strcmp((const char*)codeStr, morseCodeMouse[MOUSE_MOVE_LEFT].code))
-  {
-    blehid.mouseMove(-MOUSE_MOVE_STEP, 0);
-  }
-  else if(!strcmp((const char*)codeStr, morseCodeMouse[MOUSE_MOVE_UP].code))
-  {
-    blehid.mouseMove(0, -MOUSE_MOVE_STEP);
-  }
-  else if(!strcmp((const char*)codeStr, morseCodeMouse[MOUSE_MOVE_DOWN].code))
-  {
-    blehid.mouseMove(0, MOUSE_MOVE_STEP);
-  }
-  else if(!strcmp((const char*)codeStr, morseCodeMouse[MOUSE_CLICK_RIGHT].code))
-  {
-    blehid.mouseButtonPress(MOUSE_BUTTON_RIGHT);
-    delay(50);
-    blehid.mouseButtonRelease();
-  }
-  else if(!strcmp((const char*)codeStr, morseCodeMouse[MOUSE_CLICK_LEFT].code))
-  {
-    blehid.mouseButtonPress(MOUSE_BUTTON_LEFT);
-    delay(50);
-    blehid.mouseButtonRelease();
-  }
-  else if(!strcmp((const char*)codeStr, morseCodeMouse[MOUSE_DB_CLICK_RIGHT].code))
-  {
-    blehid.mouseButtonPress(MOUSE_BUTTON_RIGHT);
-    delay(50);
-    blehid.mouseButtonRelease();
-    blehid.mouseButtonPress(MOUSE_BUTTON_RIGHT);
-    delay(50);
-    blehid.mouseButtonRelease();
-  }
-  else if(!strcmp((const char*)codeStr, morseCodeMouse[MOUSE_DB_CLICK_LEFT].code))
-  {
-    blehid.mouseButtonPress(MOUSE_BUTTON_LEFT);
-    delay(50);
-    blehid.mouseButtonRelease();
-    blehid.mouseButtonPress(MOUSE_BUTTON_LEFT);
-    delay(50);
-    blehid.mouseButtonRelease();
+    flag_mouseConMovement = 0;
   }
   else
   {
-    #if SERIAL_DEBUG_EN
-    Serial.println("<Wrong Input>");
-    #endif
+    if(!strcmp((const char*)codeStr, morseCodeMouse[MOUSE_MOVE_RIGHT].code))
+    {
+      flag_mouseConMovement = 1;            // v0.3
+      //blehid.mouseMove(MOUSE_MOVE_STEP, 0);
+    }
+    else if(!strcmp((const char*)codeStr, morseCodeMouse[MOUSE_MOVE_LEFT].code))
+    {
+      flag_mouseConMovement = 2;            // v0.3
+      //blehid.mouseMove(-MOUSE_MOVE_STEP, 0);
+    }
+    else if(!strcmp((const char*)codeStr, morseCodeMouse[MOUSE_MOVE_UP].code))
+    {
+      flag_mouseConMovement = 3;            // v0.3
+      //blehid.mouseMove(0, -MOUSE_MOVE_STEP);
+    }
+    else if(!strcmp((const char*)codeStr, morseCodeMouse[MOUSE_MOVE_DOWN].code))
+    {
+      flag_mouseConMovement = 4;            // v0.3
+      //blehid.mouseMove(0, MOUSE_MOVE_STEP);
+    }
+    else if(!strcmp((const char*)codeStr, morseCodeMouse[MOUSE_CLICK_RIGHT].code))
+    {
+      blehid.mouseButtonPress(MOUSE_BUTTON_RIGHT);
+      delay(50);
+      blehid.mouseButtonRelease();
+    }
+    else if(!strcmp((const char*)codeStr, morseCodeMouse[MOUSE_CLICK_LEFT].code))
+    {
+      blehid.mouseButtonPress(MOUSE_BUTTON_LEFT);
+      delay(50);
+      blehid.mouseButtonRelease();
+    }
+    else if(!strcmp((const char*)codeStr, morseCodeMouse[MOUSE_DB_CLICK_RIGHT].code))
+    {
+      blehid.mouseButtonPress(MOUSE_BUTTON_RIGHT);
+      delay(50);
+      blehid.mouseButtonRelease();
+      blehid.mouseButtonPress(MOUSE_BUTTON_RIGHT);
+      delay(50);
+      blehid.mouseButtonRelease();
+    }
+    else if(!strcmp((const char*)codeStr, morseCodeMouse[MOUSE_DB_CLICK_LEFT].code))
+    {
+      blehid.mouseButtonPress(MOUSE_BUTTON_LEFT);
+      delay(50);
+      blehid.mouseButtonRelease();
+      blehid.mouseButtonPress(MOUSE_BUTTON_LEFT);
+      delay(50);
+      blehid.mouseButtonRelease();
+    }
+    else
+    {
+      #if SERIAL_DEBUG_EN
+      Serial.println("<Wrong Input>");
+      #endif
+    }
   }
+  
+}
+
+void handleSwitchControlKeypress(void)                          // v0.3
+{
+  #ifdef ONE_BUTTON_MODE
+    if(digitalRead(BUTTON_ONE) == LOW)
+    {
+      if(keycheck)
+      {
+        digitalWrite(BUZZER, LOW);
+        keycheck = 0;
+        blehid.keyPress((char)32);                       
+        delay(50);
+        blehid.keyRelease();
+        digitalWrite(BUZZER, HIGH);
+      }
+    }
+    else 
+    {
+      keycheck = 1;
+    }
+  #endif
+
+  #ifdef TWO_BUTTON_MODE
+    if(digitalRead(BUTTON_ONE) == LOW)
+    {
+      if(keycheck)
+      {
+        digitalWrite(BUZZER, LOW);
+        keycheck = 0;
+        blehid.keyPress((char)32);                       
+        delay(50);
+        blehid.keyRelease();
+        digitalWrite(BUZZER, HIGH);
+      }
+    }
+    else if(digitalRead(BUTTON_TWO) == LOW)
+    {
+      if(keycheck)
+      {
+        digitalWrite(BUZZER, LOW);
+        keycheck = 0;
+        blehid.keyPress((char)10);                       
+        delay(50);
+        blehid.keyRelease();
+        digitalWrite(BUZZER, HIGH);
+      }
+    }
+    else 
+    {
+      keycheck = 1;
+    }
+  #endif
+
+  #ifdef THREE_BUTTON_MODE
+    if(digitalRead(BUTTON_ONE) == LOW)
+    {
+      if(keycheck)
+      {
+        digitalWrite(BUZZER, LOW);
+        keycheck = 0;
+        blehid.keyPress((char)32);                       
+        delay(50);
+        blehid.keyRelease();
+        digitalWrite(BUZZER, HIGH);
+      }
+    }
+    else if(digitalRead(BUTTON_TWO) == LOW)
+    {
+      if(keycheck)
+      {
+        digitalWrite(BUZZER, LOW);
+        keycheck = 0;
+        blehid.keyPress((char)10);                       
+        delay(50);
+        blehid.keyRelease();
+        digitalWrite(BUZZER, HIGH);
+      }
+    }
+    else if(digitalRead(BUTTON_THREE) == LOW)
+    {
+      if(keycheck)
+      {
+        digitalWrite(BUZZER, LOW);
+        keycheck = 0;
+        blehid.keyPress((char)8);                       
+        delay(50);
+        blehid.keyRelease();
+        digitalWrite(BUZZER, HIGH);
+      }
+    }
+    else 
+    {
+      keycheck = 1;
+    }
+  #endif
 }
 
 const char findDotOrDash(void)
@@ -351,5 +473,25 @@ const char findDash(void)
   else
   {
     return DASH;
+  }
+}
+
+void handleConMouseMovement(void)    // v0.3
+{
+  if(flag_mouseConMovement == 1)
+  {    
+    blehid.mouseMove(MOUSE_MOVE_STEP, 0);
+  }
+  else if(flag_mouseConMovement == 2)
+  {
+    blehid.mouseMove(-MOUSE_MOVE_STEP, 0);
+  }
+  else if(flag_mouseConMovement == 3)
+  {
+    blehid.mouseMove(0, -MOUSE_MOVE_STEP);
+  }
+  else if(flag_mouseConMovement == 4)
+  {
+    blehid.mouseMove(0, MOUSE_MOVE_STEP);
   }
 }

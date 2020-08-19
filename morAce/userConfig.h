@@ -8,8 +8,8 @@
  *  
  *  note - Write string between double quotes
  */
-#define DEVICE_BLE_NAME         "morAce"
-#define DEVICE_MANUFACTURER     "AceCentre"
+#define DEVICE_BLE_NAME         "MORSE_HID"
+#define DEVICE_MANUFACTURER     "ABC"
 #define DEVICE_MODEL_NAME       "BLE-HID-v1"
 
 /*  Device Mode Setting
@@ -25,7 +25,16 @@
  *                  
  *  note : Any one of three must be present below (ONE_BUTTON_MODE / TWO_BUTTON_MODE / THREE_BUTTON_MODE)
  */
-#define TWO_BUTTON_MODE
+#define ONE_BUTTON_MODE
+
+/*  Fast Typing Mode Enable/Disable 
+ *  Effective only in Two & Three Button Modes
+ *  When Enable, by pressing down a button, device will accept multiple Dots/Dashes depending on press time
+ *  
+ *  1 - Enable / 0 - Disable
+ *  <<<<< MAKE SURE TWO_BUTTON_MODE or THREE_BUTTON_MODE IS ENABLE ABOVE >>>>>
+ */
+#define FAST_TYPING_MODE        1         // v0.3
 
 /*  MORSE Code Settings 
  *  DOT_LENGTH : Unit length of a dot in tearms of milliseconds
@@ -37,6 +46,12 @@
  *  note : Write morse code between double quotes
  */
 #define MORSE_CODE_FOR_KEYB_MOUSE_SWITCH    ".-.--"
+
+/*  MORSE Code for Swap Connection
+ *  
+ *  note : Write morse code between double quotes
+ */
+#define MORSE_CODE_FOR_BLE_SWAP_CONNECTION     "-.-.--"         // v0.3
 
 /*  Define timeout for BLE connection swapping
  *  By pressing a switch to swap BLE connection, if device is not connected to another PC till this timeout,
@@ -51,7 +66,14 @@
  *  
  *  note : Step must be integer
  */
-#define MOUSE_MOVE_STEP   10
+#define MOUSE_MOVE_STEP   5
+
+/*  Time interval to send mouse movement command in milliseconds
+ *  Mouse move command to right/left/up/down will be sent at this interval
+ *  
+ *  note : Define timeout in milliseconds
+ */
+#define INTERVAL_SEND_MOUSE_MOVE_CMD   100              // v0.3
 
 /*  Serial Debug Enable/Disable
  *  1 - Enable / 0 - Disable

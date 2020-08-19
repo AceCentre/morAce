@@ -2,21 +2,19 @@
 #define USERPINMAP_H_
 
 // Morse Button - 1
-#define KEY_ONE			A5
+#define KEY_ONE			10
 
 // Morse Button - 2
-#define KEY_TWO			A4
+#define KEY_TWO			11
 
 // Morse Button - 3
-#define KEY_THREE		A3
+#define KEY_THREE		12
 
 // Switch for BLE connection Swapping
-#define USER_SWITCH		A2
-// Itsybitsy: 4
-// nrf52840 express 7
+#define USER_SWITCH		7
 
 // Buzzer for Morse code
-#define BUZZER_PIN		A0
+#define BUZZER_PIN		5
 
 // NeoPixel LED
 #define NEOPIXEL_PIN  8     // v0.2
