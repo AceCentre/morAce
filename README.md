@@ -6,7 +6,7 @@ morAce is a Arduino project designed to work with the [Adafruit nrf52840](https:
 
 ## What does it do exactly?
 
-You can use switches (1, 2, or 3) to send morse code signals which are then intepreted by the morAce as Keyboard strokes or mouse movements. Its configurable by editing the arduino file. It will work on any device that listens to a Bluetooth keyboard our mouse - such as an iOS device, Mac, Windows devices. Also with a fourth switch you can change which device it is currently connected to. It cycles between already paired devices. This makes it unique currently
+You can use switches (1, 2, or 3) to send morse code signals which are then intepreted by the morAce as Keyboard strokes or mouse movements. Its configurable by editing the arduino file. It will work on any device that listens to a Bluetooth keyboard our mouse - such as an iOS device, Mac, Windows devices. Also with a fourth switch you can change which device it is currently connected to. It cycles between already paired devices. 
 
 ## Bill of materials
 
@@ -38,6 +38,40 @@ Wire it all up. Set your settings in ``userConfig.h``. Pair your device with a c
 **More to follow here**
 
 There **will** be bugs. Please submit them to the [issue queue](https://github.com/AceCentre/BLEMorseToText/issues). 
+
+#### Mouse mode
+
+Once a device is connected by default it can send characters. But if you want to control it as a mouse you can enter the mouse mode. This is done with the morse command of `  .-.--` (configurable in userConfig.h) and then the device can send mouse commands
+
+*NB: in iOS you need to make sure Settings -> Accessibility -> AssistiveTouch -> On.*
+
+Then to move the mouse it works in a way of automatic movement until you stop. 
+
+```
+		Up
+		-  
+
+.. Left		Right ...
+    
+		--
+		Down
+```
+
+Mouse buttons are:
+
+- `.--`  Right Click
+- `.-` Left Click 
+- `..--` Double Right click
+- `..-` Double Left click
+
+
+#### Change number of allowed connected devices
+
+By default the system is set for two devices. If morace is told to switch connected devices and the device isn't available after 5 seconds it reverts to the previously connected device. 
+
+If you want more devices simply change "MAXIMUM_SWAP_CONNECTIONS" in userConfig.h
+
+
 
 
 ## Contributing
