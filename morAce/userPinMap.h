@@ -13,6 +13,9 @@
 // Switch for BLE connection Swapping
 #define USER_SWITCH		7
 
+// Switch for Morse Mode & Switch Control Mode Swapping
+#define USER_SWITCH2  6     // v0.3b
+
 // Buzzer for Morse code
 #define BUZZER_PIN		5
 

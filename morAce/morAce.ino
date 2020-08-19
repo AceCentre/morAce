@@ -33,6 +33,7 @@ const int BUTTON_ONE = KEY_ONE;
 const int BUTTON_TWO = KEY_TWO;
 const int BUTTON_THREE = KEY_THREE;
 const int USER_BUTTON = USER_SWITCH;
+const int USER_BUTTON2 = USER_SWITCH2;
 int BUZZER = BUZZER_PIN;
 const char DOT = '.';
 const char DASH = '-';
@@ -58,9 +59,7 @@ volatile uint8_t flag_mouseConMovement = 0;     // v0.3
 volatile unsigned long lastMouseMovTicks;       // v0.3
 volatile unsigned long lastBeepTicks;           // v0.3
 volatile unsigned long lastUserBtnCheckTicks;   // v0.3
-volatile unsigned long lastUserBtnPressedTicks; // v0.3
 volatile unsigned long lastScKeyCheckTicks;     // v0.3
-volatile uint8_t userBtnPressCnt;               // v0.3
 volatile uint8_t flag_switchControlMode;        // v0.3
 
 #if defined(TWO_BUTTON_MODE) || defined(THREE_BUTTON_MODE)  // v0.3
@@ -108,6 +107,7 @@ void setup()
   #endif
   
   pinMode(USER_BUTTON, INPUT_PULLUP);
+  pinMode(USER_BUTTON2, INPUT_PULLUP);      // v0.3b
   pinMode(BUZZER,OUTPUT);
   digitalWrite(BUZZER, HIGH);
 
@@ -316,48 +316,41 @@ void checkForConnectionSwap(void)
   {
     lastUserBtnCheckTicks = currentMillis;
     if(digitalRead(USER_BUTTON) == LOW)
-    {      
-      keyscan++;
-      if(keyscan >= 30)     // 3 seconds
-      {        
+    {
+      if(keyscan)       // v0.3b
+      {
+        keyscan = 0;
         #if SERIAL_DEBUG_EN
         Serial.println("Connection Swap Switch Pressed");
         #endif       
         
-        handleBleConnectionSwap();      // v0.3  
-        keyscan = 0;
-      }      
+        handleBleConnectionSwap();      // v0.3        
+      }           
     }
-    else
+    else if(digitalRead(USER_BUTTON2) == LOW)       // v0.3b
     {
-      if(keyscan > 0 && keyscan <= 5)
+      if(keyscan)       
       {
-        userBtnPressCnt++;
-        lastUserBtnPressedTicks = currentMillis;
-        if(userBtnPressCnt >= 2)
+        keyscan = 0;
+        if(!flag_switchControlMode)
         {
-          userBtnPressCnt = 0;
-          if(!flag_switchControlMode)
-          {
-            flag_switchControlMode = 1;
-            #if SERIAL_DEBUG_EN
-            Serial.println("Switch Control Mode Enable");
-            #endif 
-          }
-          else
-          {
-            flag_switchControlMode = 0;
-            #if SERIAL_DEBUG_EN
-            Serial.println("Switch Control Mode Disable");
-            #endif 
-          }          
+          flag_switchControlMode = 1;
+          #if SERIAL_DEBUG_EN
+          Serial.println("Switch Control Mode Enable");
+          #endif 
+        }
+        else
+        {
+          flag_switchControlMode = 0;
+          #if SERIAL_DEBUG_EN
+          Serial.println("Switch Control Mode Disable");
+          #endif 
         }
       }
-      else
-      {
-        userBtnPressCnt = 0;
-      }
-      keyscan = 0;
+    }
+    else      // v0.3b
+    {      
+      keyscan = 1;
     }
   }
 }

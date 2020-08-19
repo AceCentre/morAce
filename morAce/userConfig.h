@@ -32,9 +32,8 @@
  *  When Enable, by pressing down a button, device will accept multiple Dots/Dashes depending on press time
  *  
  *  1 - Enable / 0 - Disable
- *  <<<<< MAKE SURE TWO_BUTTON_MODE or THREE_BUTTON_MODE IS ENABLE ABOVE >>>>>
  */
-#define FAST_TYPING_MODE        1         // v0.3
+#define FAST_TYPING_MODE        0
 
 /*  MORSE Code Settings 
  *  DOT_LENGTH : Unit length of a dot in tearms of milliseconds
