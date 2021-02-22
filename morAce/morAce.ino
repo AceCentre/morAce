@@ -2,9 +2,13 @@
 #include <bluefruit.h>
 #include <BLEConnection.h>
 #include <Adafruit_NeoPixel.h>    // v0.2
+#include <Adafruit_LittleFS.h>    // v0.3e
+#include <InternalFileSystem.h>   // v0.3e
 #include "userPinMap.h"
 #include "userConfig.h"
 #include "morseCode.h"
+
+using namespace Adafruit_LittleFS_Namespace;        // v0.3e
 
 // Macros
 #ifdef ONE_BUTTON_MODE
@@ -34,6 +38,7 @@ BLEDis bledis;
 BLEHidAdafruit blehid;
 Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);    // v0.2
 SoftwareTimer softTimer;       // v0.3c
+File dbFile(InternalFS);       // v0.3e
 
 const int BUTTON_ONE = KEY_ONE;
 const int BUTTON_TWO = KEY_TWO;
@@ -58,7 +63,7 @@ volatile uint8_t keyscan;
 volatile char lastCentral_name[32] = {0};
 volatile uint8_t flag_manualDisconnection;
 volatile unsigned long manualDisconnTicks;
-volatile uint8_t hidMode = KEYBOARD_MODE;
+volatile uint8_t hidMode = DEFAULT_MODE_OF_DEVICE;    // v0.3e
 volatile uint8_t flag_mouseConMovement = 0;     // v0.3
 volatile unsigned long lastMouseMovTicks;       // v0.3
 volatile unsigned long lastBeepTicks;           // v0.3
@@ -71,6 +76,10 @@ volatile unsigned char currSwapConnIndex = 0;   // v0.3c
 char swapConnDeviceNames[MAXIMUM_SWAP_CONNECTIONS][32] = {0};    // v0.3c
 volatile unsigned char flag_blinkNeopixel = 0;    // v0.3c
 volatile unsigned char flag_blinkOnOff = 0;       // v0.3c
+volatile uint8_t flag_repeatCmdEnable = 0;        // v0.3e
+volatile unsigned long lastRepeatCmdSentTicks;    // v0.3e
+volatile uint8_t mouseMoveStep = DEFAULT_MOUSE_MOVE_STEP; // v0.3e
+const char dbFileName[] = "/database.txt";        // v0.3e
 
 /*
 // v0.3c
@@ -110,6 +119,8 @@ void bleConnectCallback(uint16_t conn_handle);
 void setNeopixelColor(uint8_t r, uint8_t g, uint8_t b);   // v0.2
 void handleBleConnectionSwap(void);                       // v0.3
 void setNeopixelIndication(unsigned char index);          // v0.3c
+void readDataFromFS(void);                                // v0.3e
+void writeDataToFS(void);                                 // v0.3e
 
 // Functions Definations
 void setup()
@@ -117,6 +128,7 @@ void setup()
   // Begin Serial
   #if SERIAL_DEBUG_EN
   Serial.begin(115200);
+  //while ( !Serial ) delay(10);                            // v0.3e // temp
   #endif
 
   // Configure GPIOs
@@ -150,8 +162,14 @@ void setup()
   softTimer.begin(500, softTimer_callback);      // v0.3c
   softTimer.start();                             // v0.3c
 
-  // Configure Bluefruit Parameters
-  Bluefruit.begin();
+  // Initialize Internal File System
+  InternalFS.begin();                            // v0.3e
+
+  // Read Data from Internal File
+  readDataFromFS();                              // v0.3e
+
+  // Configure Bluefruit Parameters  
+  Bluefruit.begin();  
   Bluefruit.setTxPower(4);
   Bluefruit.setName(deviceBleName);
   Bluefruit.Periph.setConnectCallback(bleConnectCallback);
@@ -162,10 +180,10 @@ void setup()
   bledis.begin();
   
   // Begin BLE-HID Service
-  blehid.begin();
+  blehid.begin(); 
 
   // Start BLE Advertising
-  startBleAdvertising(currMode);                 // v0.3c  
+  startBleAdvertising(currMode);                 // v0.3c
 }
 
 void loop()
@@ -204,17 +222,29 @@ void loop()
     {
       memset((char*)lastCentral_name, '\0', sizeof(lastCentral_name));
       flag_manualDisconnection = 0;
-      currSwapConnIndex = 0;              // v0.3c   
+      currSwapConnIndex = 0;              // v0.3c
+
+      // Write updated data into FS
+      writeDataToFS();                              // v0.3e
     }
   }
 
-  if(flag_mouseConMovement)               // v0.3
+  /*if(flag_mouseConMovement)               // v0.3
   {
     if(currentMillis - lastMouseMovTicks >= INTERVAL_SEND_MOUSE_MOVE_CMD)
     {
       lastMouseMovTicks = currentMillis;
       handleConMouseMovement();
     }    
+  }*/   // Commented in v0.3e
+
+  if(flag_repeatCmdEnable)                // v0.3e
+  {
+    if(currentMillis - lastRepeatCmdSentTicks >= INTERVAL_SEND_REPEAT_CMD)
+    {
+      lastRepeatCmdSentTicks = currentMillis;
+      handleRepeatCmdAction();     
+    }
   }
 
   checkForConnectionSwap();
@@ -388,8 +418,52 @@ void checkForConnectionSwap(void)
           #if SERIAL_DEBUG_EN
           Serial.println("Switch Control Mode Enable");
           #endif
+          
+          // v0.3e
+          uint8_t mac[6] = {0};
+          uint8_t addr_type = Bluefruit.getAddr(mac);
+          Serial.print("Address Type: ");
+          Serial.println(addr_type);
+          for(int i = 0; i < 6; i++)
+          {
+            Serial.print(mac[i], HEX);
+            Serial.print(' ');
+          }
+          Serial.println();
+
+          /*ble_gap_addr_t* gap_addr;
+          gap_addr->addr_type = BLE_GAP_ADDR_TYPE_RANDOM_STATIC;
+          gap_addr->addr[0] = mac[0];
+          gap_addr->addr[1] = mac[1];
+          gap_addr->addr[2] = mac[2];
+          gap_addr->addr[3] = mac[3];
+          gap_addr->addr[4] = mac[4];
+          gap_addr->addr[5] = mac[5];
+          
+          if(Bluefruit.setAddr(gap_addr))
+          {
+            Serial.println("Addr change Done");
+          }
+          else
+          {
+            Serial.println("Addr change Error");
+          }*/
+
+          memset(mac, '\0', sizeof(mac));
+          addr_type = Bluefruit.getAddr(mac);
+          Serial.print("Address Type: ");
+          Serial.println(addr_type);
+          for(int i = 0; i < 6; i++)
+          {
+            Serial.print(mac[i], HEX);
+            Serial.print(' ');
+          }
+          Serial.println();
+          // v0.3e
+          
           Bluefruit.setName(deviceBleName2);    // v0.3c
           startBleAdvertising(SW_CTRL_MODE);    // v0.3c
+          currMode = SW_CTRL_MODE;              // v0.3e
         }
         else
         {
@@ -399,7 +473,11 @@ void checkForConnectionSwap(void)
           #endif
           Bluefruit.setName(deviceBleName);    // v0.3c
           startBleAdvertising(MORSE_MODE);     // v0.3c
+          currMode = MORSE_MODE;               // v0.3e
         }
+
+        // Write updated data into FS
+        writeDataToFS();                        // v0.3e
       }
     }
     else      // v0.3b
@@ -502,6 +580,9 @@ void bleConnectCallback(uint16_t conn_handle)       // v0.3c
     strcpy(swapConnDeviceNames[currSwapConnIndex], (char*)central_name);      
     strcpy((char*)lastCentral_name, (char*)central_name);
     // v0.3c
+
+    // Write updated data into FS
+    writeDataToFS();                              // v0.3e
        
     flag_manualDisconnection = 0;
   }  
@@ -538,6 +619,205 @@ void setNeopixelIndication(unsigned char index)           // v0.3c
   }
 }
 
+void readDataFromFS(void)                                // v0.3e
+{
+  /*// temp
+  currMode = 0;
+  hidMode = 1;
+  mouseMoveStep = 5;
+  strcpy(swapConnDeviceNames[0], "");
+  strcpy(swapConnDeviceNames[1], "");
+  strcpy(swapConnDeviceNames[2], "");
+  strcpy(swapConnDeviceNames[3], "");
+  strcpy(swapConnDeviceNames[4], "");
+  currSwapConnIndex = 0;
+  writeDataToFS();
+  // temp*/
+  
+  dbFile.open(dbFileName, FILE_O_READ);
+  if(dbFile)
+  {
+    //#if SERIAL_DEBUG_EN
+    //Serial.println("DB file open");
+    //#endif
+
+    uint32_t readlen;
+    char buff[182] = { 0 };
+    uint8_t str_valid = 0;
+    
+    readlen = dbFile.read(buff, sizeof(buff));
+
+    buff[readlen] = 0;
+    /*#if SERIAL_DEBUG_EN
+    Serial.println(buff);
+    #endif*/
+
+    if(buff[0] == '@')
+    {
+      uint8_t comma_cnt = 0;
+      for(uint8_t i = 0; i < sizeof(buff); i++)
+      {
+        if(buff[i] == ',')
+        {
+          comma_cnt++;
+        }
+        else if(buff[i] == '#')
+        {
+          if(comma_cnt == 8)
+          {
+            str_valid = 1;
+          }
+          break;
+        }
+      }
+    }
+
+    if(str_valid)
+    {
+      //#if SERIAL_DEBUG_EN
+      //Serial.println("String is valid");
+      //#endif
+
+      uint16_t tmp_char = 0;
+      uint8_t comma_cnt = 0;
+      char str[32] = {0};
+      uint8_t cnt = 0;
+      
+      tmp_char = atoi(&buff[1]);
+      if(tmp_char == 0 || tmp_char == 1)
+      {
+        currMode = tmp_char;
+      }
+      else
+      {
+        currMode = MORSE_MODE;
+      }
+
+      for(uint8_t i = 0; i < sizeof(buff); i++)
+      {
+        if(buff[i] == ',')
+        {
+          comma_cnt++;
+          if(comma_cnt == 2)
+          {
+            tmp_char = atoi(str);
+            if(tmp_char == 0 || tmp_char == 1)
+            {
+              hidMode = (uint8_t)tmp_char;
+            }
+            else
+            {
+              hidMode = DEFAULT_MODE_OF_DEVICE;
+            }
+          }
+          else if(comma_cnt == 3)
+          {
+            tmp_char = atoi(str);
+            if(tmp_char > MOUSE_SPEED_LOWER_LIMIT && tmp_char <= MOUSE_SPEED_UPPER_LIMIT)
+            {
+               mouseMoveStep = tmp_char;
+            }
+            else
+            {
+              mouseMoveStep = DEFAULT_MOUSE_MOVE_STEP;
+            }
+          }
+          else if(comma_cnt == 4)
+          {
+            strcpy(swapConnDeviceNames[0], str);
+          }
+          else if(comma_cnt == 5)
+          {
+            strcpy(swapConnDeviceNames[1], str);
+          }
+          else if(comma_cnt == 6)
+          {
+            strcpy(swapConnDeviceNames[2], str);
+          }
+          else if(comma_cnt == 7)
+          {
+            strcpy(swapConnDeviceNames[3], str);
+          } 
+          else if(comma_cnt == 8)
+          {
+            strcpy(swapConnDeviceNames[4], str);
+          }          
+
+          memset(str, '\0', sizeof(str));
+          cnt = 0;
+        }
+        else if(buff[i] == '#')
+        { 
+          tmp_char = atoi(str);
+          if(tmp_char < MAXIMUM_SWAP_CONNECTIONS)
+          {
+             currSwapConnIndex = tmp_char;
+          }
+          else
+          {
+            currSwapConnIndex = 0;
+          }
+          
+          #if SERIAL_DEBUG_EN
+          Serial.println("Dev Mode:" + String(currMode));
+          Serial.println("Morse Mode:" + String(hidMode));
+          Serial.println("Mouse Step:" + String(mouseMoveStep));
+          Serial.println("Name1:" + String(swapConnDeviceNames[0]));
+          Serial.println("Name2:" + String(swapConnDeviceNames[1]));
+          Serial.println("Name3:" + String(swapConnDeviceNames[2]));
+          Serial.println("Name4:" + String(swapConnDeviceNames[3]));
+          Serial.println("Name5:" + String(swapConnDeviceNames[4]));
+          Serial.println("Swap Index:" + String(currSwapConnIndex));
+          #endif
+          break;
+        }
+        else
+        {
+          str[cnt++] = buff[i];
+        }
+      }
+    }
+    else
+    {
+      #if SERIAL_DEBUG_EN
+      Serial.println("String is not valid");
+      #endif
+      writeDataToFS();
+    }
+    dbFile.close();
+  }
+  else
+  {
+    #if SERIAL_DEBUG_EN
+    Serial.println("DB file not present");
+    #endif
+    writeDataToFS();    
+  }
+}
+void writeDataToFS(void)                                 // v0.3e
+{
+  char buff[182] = { 0 };
+  memset(buff, '\0', sizeof(buff));
+  sprintf(buff, "@%u,%u,%u,%s,%s,%s,%s,%s,%u#",
+  currMode, hidMode, mouseMoveStep, swapConnDeviceNames[0], swapConnDeviceNames[1], swapConnDeviceNames[2], swapConnDeviceNames[3], swapConnDeviceNames[4], currSwapConnIndex);
+
+  if(dbFile.open(dbFileName, FILE_O_WRITE))
+  {
+    dbFile.seek(0);
+    dbFile.write(buff, strlen(buff));
+    dbFile.close();
+    #if SERIAL_DEBUG_EN
+    Serial.println("Data written in DB file");
+    #endif
+  }
+  else
+  {
+    #if SERIAL_DEBUG_EN
+    Serial.println("DB file Write error");
+    #endif
+  }
+}
+
 void handleBleConnectionSwap(void)      // v0.3
 {
   uint16_t connectionHandle = 0;
@@ -554,6 +834,9 @@ void handleBleConnectionSwap(void)      // v0.3
   }
   memset(swapConnDeviceNames[currSwapConnIndex], NULL, maxSwapConn);
   // v0.3c
+
+  // Write updated data into FS
+  writeDataToFS();                              // v0.3e
    
   delay(2000); 
   connection->disconnect();
