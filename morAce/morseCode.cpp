@@ -249,14 +249,14 @@ void convertor(void)
     // Write updated data into FS
     writeDataToFS();                              // v0.3e
     
-    digitalWrite(BUZZER, LOW); delay(400);
-    digitalWrite(BUZZER, HIGH);  delay(300);
-    digitalWrite(BUZZER, LOW); delay(400);
-    digitalWrite(BUZZER, HIGH);  delay(300);
-    digitalWrite(BUZZER, LOW); delay(200);
-    digitalWrite(BUZZER, HIGH);  delay(100);
-    digitalWrite(BUZZER, LOW); delay(200);
-    digitalWrite(BUZZER, HIGH);  delay(100);
+    digitalWrite(BUZZER, HIGH); delay(400);       // v0.3f
+    digitalWrite(BUZZER, LOW);  delay(300);
+    digitalWrite(BUZZER, HIGH); delay(400);
+    digitalWrite(BUZZER, LOW);  delay(300);
+    digitalWrite(BUZZER, HIGH); delay(200);
+    digitalWrite(BUZZER, LOW);  delay(100);
+    digitalWrite(BUZZER, HIGH); delay(200);
+    digitalWrite(BUZZER, LOW);  delay(100);
   }
   else if(!strcmp((const char*)codeStr, swapBleConnectionMorseCode))      // v0.3
   {
@@ -660,12 +660,12 @@ void handleSwitchControlKeypress(void)                          // v0.3
     {
       if(keycheck)
       {
-        digitalWrite(BUZZER, LOW);
+        digitalWrite(BUZZER, HIGH);     // v0.3f
         keycheck = 0;
         blehid.keyPress((char)32);                       
         delay(50);
         blehid.keyRelease();
-        digitalWrite(BUZZER, HIGH);
+        digitalWrite(BUZZER, LOW);      // v0.3f
       }
     }
     else 
@@ -679,24 +679,24 @@ void handleSwitchControlKeypress(void)                          // v0.3
     {
       if(keycheck)
       {
-        digitalWrite(BUZZER, LOW);
+        digitalWrite(BUZZER, HIGH);     // v0.3f
         keycheck = 0;
         blehid.keyPress((char)32);                       
         delay(50);
         blehid.keyRelease();
-        digitalWrite(BUZZER, HIGH);
+        digitalWrite(BUZZER, LOW);      // v0.3f
       }
     }
     else if(digitalRead(BUTTON_TWO) == LOW)
     {
       if(keycheck)
       {
-        digitalWrite(BUZZER, LOW);
+        digitalWrite(BUZZER, HIGH);     // v0.3f
         keycheck = 0;
         blehid.keyPress((char)10);                       
         delay(50);
         blehid.keyRelease();
-        digitalWrite(BUZZER, HIGH);
+        digitalWrite(BUZZER, LOW);      // v0.3f
       }
     }
     else 
@@ -710,36 +710,36 @@ void handleSwitchControlKeypress(void)                          // v0.3
     {
       if(keycheck)
       {
-        digitalWrite(BUZZER, LOW);
+        digitalWrite(BUZZER, HIGH);     // v0.3f
         keycheck = 0;
         blehid.keyPress((char)32);                       
         delay(50);
         blehid.keyRelease();
-        digitalWrite(BUZZER, HIGH);
+        digitalWrite(BUZZER, LOW);      // v0.3f
       }
     }
     else if(digitalRead(BUTTON_TWO) == LOW)
     {
       if(keycheck)
       {
-        digitalWrite(BUZZER, LOW);
+        digitalWrite(BUZZER, HIGH);     // v0.3f
         keycheck = 0;
         blehid.keyPress((char)10);                       
         delay(50);
         blehid.keyRelease();
-        digitalWrite(BUZZER, HIGH);
+        digitalWrite(BUZZER, LOW);      // v0.3f
       }
     }
     else if(digitalRead(BUTTON_THREE) == LOW)
     {
       if(keycheck)
       {
-        digitalWrite(BUZZER, LOW);
+        digitalWrite(BUZZER, HIGH);     // v0.3f
         keycheck = 0;
         blehid.keyPress((char)8);                       
         delay(50);
         blehid.keyRelease();
-        digitalWrite(BUZZER, HIGH);
+        digitalWrite(BUZZER, LOW);      // v0.3f
       }
     }
     else 

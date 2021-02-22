@@ -132,25 +132,25 @@ void setup()
   #endif
 
   // Configure GPIOs
-  #ifdef ONE_BUTTON_MODE
-    pinMode(BUTTON_ONE, INPUT_PULLUP);
+  #ifdef ONE_BUTTON_MODE        
+    pinMode(BUTTON_ONE, INPUT);            // v0.3f
   #endif
 
   #ifdef TWO_BUTTON_MODE
-    pinMode(BUTTON_ONE, INPUT_PULLUP);
-    pinMode(BUTTON_TWO, INPUT_PULLUP);  
+    pinMode(BUTTON_ONE, INPUT);            // v0.3f
+    pinMode(BUTTON_TWO, INPUT);            // v0.3f  
   #endif
 
   #ifdef THREE_BUTTON_MODE
-    pinMode(BUTTON_ONE, INPUT_PULLUP);
-    pinMode(BUTTON_TWO, INPUT_PULLUP);
-    pinMode(BUTTON_THREE, INPUT_PULLUP);
+    pinMode(BUTTON_ONE, INPUT);            // v0.3f
+    pinMode(BUTTON_TWO, INPUT);            // v0.3f
+    pinMode(BUTTON_THREE, INPUT);          // v0.3f
   #endif
   
   pinMode(USER_BUTTON, INPUT_PULLUP);
   pinMode(USER_BUTTON2, INPUT_PULLUP);           // v0.3b
   pinMode(BUZZER,OUTPUT);
-  digitalWrite(BUZZER, HIGH);
+  digitalWrite(BUZZER, LOW);       // v0.3f
 
   // Initialize Neopixel
   pixels.begin();                                // v0.2
@@ -266,7 +266,7 @@ void checkButton(uint8_t buttonNum)
         if(millis() - lastBeepTicks >= DOT_LENGTH)
         {
           lastBeepTicks = millis();
-          digitalWrite(BUZZER, LOW);
+          digitalWrite(BUZZER, HIGH);           // v0.3f
           if(buttonNum == BUTTON_ONE)
           {
             codeStr[codeStrIndex++] += DOT;
@@ -276,17 +276,17 @@ void checkButton(uint8_t buttonNum)
             codeStr[codeStrIndex++] += DASH;
           }
           delay(50);           
-          digitalWrite(BUZZER, HIGH);
+          digitalWrite(BUZZER, LOW);            // v0.3f
         }        
       }     
     }      
     else
     {
       t1 = millis();
-      digitalWrite(BUZZER, LOW);
+      digitalWrite(BUZZER, HIGH);         // v0.3f
       while(digitalRead(buttonNum) == LOW && millis() - t1 < 2000);
       t2 = millis();
-      digitalWrite(BUZZER, HIGH);
+      digitalWrite(BUZZER, LOW);          // v0.3f
     
       signal_len = t2 - t1;
       if(signal_len > 50)
@@ -367,10 +367,10 @@ void checkButtonThreeForEndChar(void)
 {
   if(codeStrIndex >= 1 && digitalRead(BUTTON_THREE) == LOW)
   {
-    digitalWrite(BUZZER, LOW);      // v0.3
+    digitalWrite(BUZZER, HIGH);      // v0.3f
     convertor();
     codeStrIndex = 0;
-    digitalWrite(BUZZER, HIGH);     // 0.3
+    digitalWrite(BUZZER, LOW);       // 0.3f
   }
   else{}  
 }
