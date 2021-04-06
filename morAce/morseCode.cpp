@@ -21,6 +21,15 @@
 #undef ONE_BUTTON_MODE
 #endif
 
+// Buzzer Pin                  // v0.3f
+#if BUZZER_TYPE == ACTIVE_HIGH
+  #define BUZZER_ON       digitalWrite(BUZZER, HIGH);
+  #define BUZZER_OFF      digitalWrite(BUZZER, LOW);
+#else
+  #define BUZZER_ON       digitalWrite(BUZZER, LOW);
+  #define BUZZER_OFF      digitalWrite(BUZZER, HIGH);
+#endif
+
 // Variable Declarations
 const int BUTTON_ONE = KEY_ONE;
 const int BUTTON_TWO = KEY_TWO;
@@ -249,14 +258,14 @@ void convertor(void)
     // Write updated data into FS
     writeDataToFS();                              // v0.3e
     
-    digitalWrite(BUZZER, HIGH); delay(400);       // v0.3f
-    digitalWrite(BUZZER, LOW);  delay(300);
-    digitalWrite(BUZZER, HIGH); delay(400);
-    digitalWrite(BUZZER, LOW);  delay(300);
-    digitalWrite(BUZZER, HIGH); delay(200);
-    digitalWrite(BUZZER, LOW);  delay(100);
-    digitalWrite(BUZZER, HIGH); delay(200);
-    digitalWrite(BUZZER, LOW);  delay(100);
+    BUZZER_ON;                  delay(400);       // v0.3f
+    BUZZER_OFF;                 delay(300);
+    BUZZER_ON;                  delay(400);
+    BUZZER_OFF;                 delay(300);
+    BUZZER_ON;                  delay(200);
+    BUZZER_OFF;                 delay(100);
+    BUZZER_ON;                  delay(200);
+    BUZZER_OFF;                 delay(100);
   }
   else if(!strcmp((const char*)codeStr, swapBleConnectionMorseCode))      // v0.3
   {
@@ -660,12 +669,12 @@ void handleSwitchControlKeypress(void)                          // v0.3
     {
       if(keycheck)
       {
-        digitalWrite(BUZZER, HIGH);     // v0.3f
+        BUZZER_ON;                    // v0.3f
         keycheck = 0;
         blehid.keyPress((char)32);                       
         delay(50);
         blehid.keyRelease();
-        digitalWrite(BUZZER, LOW);      // v0.3f
+        BUZZER_OFF;                   // v0.3f
       }
     }
     else 
@@ -679,24 +688,24 @@ void handleSwitchControlKeypress(void)                          // v0.3
     {
       if(keycheck)
       {
-        digitalWrite(BUZZER, HIGH);     // v0.3f
+        BUZZER_ON;                    // v0.3f
         keycheck = 0;
         blehid.keyPress((char)32);                       
         delay(50);
         blehid.keyRelease();
-        digitalWrite(BUZZER, LOW);      // v0.3f
+        BUZZER_OFF;                   // v0.3f
       }
     }
     else if(digitalRead(BUTTON_TWO) == LOW)
     {
       if(keycheck)
       {
-        digitalWrite(BUZZER, HIGH);     // v0.3f
+        BUZZER_ON;                    // v0.3f
         keycheck = 0;
         blehid.keyPress((char)10);                       
         delay(50);
         blehid.keyRelease();
-        digitalWrite(BUZZER, LOW);      // v0.3f
+        BUZZER_OFF;                   // v0.3f
       }
     }
     else 
@@ -710,36 +719,36 @@ void handleSwitchControlKeypress(void)                          // v0.3
     {
       if(keycheck)
       {
-        digitalWrite(BUZZER, HIGH);     // v0.3f
+        BUZZER_ON;                    // v0.3f
         keycheck = 0;
         blehid.keyPress((char)32);                       
         delay(50);
         blehid.keyRelease();
-        digitalWrite(BUZZER, LOW);      // v0.3f
+        BUZZER_OFF;                   // v0.3f
       }
     }
     else if(digitalRead(BUTTON_TWO) == LOW)
     {
       if(keycheck)
       {
-        digitalWrite(BUZZER, HIGH);     // v0.3f
+        BUZZER_ON;                    // v0.3f
         keycheck = 0;
         blehid.keyPress((char)10);                       
         delay(50);
         blehid.keyRelease();
-        digitalWrite(BUZZER, LOW);      // v0.3f
+        BUZZER_OFF;                   // v0.3f
       }
     }
     else if(digitalRead(BUTTON_THREE) == LOW)
     {
       if(keycheck)
       {
-        digitalWrite(BUZZER, HIGH);     // v0.3f
+        BUZZER_ON;                    // v0.3f
         keycheck = 0;
         blehid.keyPress((char)8);                       
         delay(50);
         blehid.keyRelease();
-        digitalWrite(BUZZER, LOW);      // v0.3f
+        BUZZER_OFF;                   // v0.3f
       }
     }
     else 

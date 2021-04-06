@@ -26,12 +26,28 @@ using namespace Adafruit_LittleFS_Namespace;        // v0.3e
 #undef ONE_BUTTON_MODE
 #endif
 
+// Type of Input                            // v0.3f
+#define IP_NO_PULL      0
+#define IP_PULLUP       1
+
+// Type of Input pins for Morse keys        // v0.3f
+#define MORSE_KEY_IP_TYPE       IP_NO_PULL  
+
 // No of Neo-pixel LEDs
 #define NUMPIXELS      1       // v0.2
 
 // Device Mode                 // v0.3c
 #define MORSE_MODE      0
 #define SW_CTRL_MODE    1
+
+// Buzzer Pin                  // v0.3f
+#if BUZZER_TYPE == ACTIVE_HIGH
+  #define BUZZER_ON       digitalWrite(BUZZER, HIGH);
+  #define BUZZER_OFF      digitalWrite(BUZZER, LOW);
+#else
+  #define BUZZER_ON       digitalWrite(BUZZER, LOW);
+  #define BUZZER_OFF      digitalWrite(BUZZER, HIGH);
+#endif
 
 // Variable Declarations
 BLEDis bledis;
@@ -45,6 +61,7 @@ const int BUTTON_TWO = KEY_TWO;
 const int BUTTON_THREE = KEY_THREE;
 const int USER_BUTTON = USER_SWITCH;
 const int USER_BUTTON2 = USER_SWITCH2;
+const int HARD_RESET_PIN = RESET_PIN;       // v0.3g
 int BUZZER = BUZZER_PIN;
 const char DOT = '.';
 const char DASH = '-';
@@ -121,6 +138,7 @@ void handleBleConnectionSwap(void);                       // v0.3
 void setNeopixelIndication(unsigned char index);          // v0.3c
 void readDataFromFS(void);                                // v0.3e
 void writeDataToFS(void);                                 // v0.3e
+void changeMacAddress(void);                              // v0.3g
 
 // Functions Definations
 void setup()
@@ -132,26 +150,44 @@ void setup()
   #endif
 
   // Configure GPIOs
-  #ifdef ONE_BUTTON_MODE        
-    pinMode(BUTTON_ONE, INPUT);            // v0.3f
+  #ifdef ONE_BUTTON_MODE
+    #if MORSE_KEY_IP_TYPE == IP_NO_PULL     // v0.3f     
+      pinMode(BUTTON_ONE, INPUT);
+    #else
+      pinMode(BUTTON_ONE, INPUT_PULLUP);
+    #endif
   #endif
 
   #ifdef TWO_BUTTON_MODE
-    pinMode(BUTTON_ONE, INPUT);            // v0.3f
-    pinMode(BUTTON_TWO, INPUT);            // v0.3f  
+    #if MORSE_KEY_IP_TYPE == IP_NO_PULL     // v0.3f    
+      pinMode(BUTTON_ONE, INPUT);
+      pinMode(BUTTON_TWO, INPUT);
+    #else
+      pinMode(BUTTON_ONE, INPUT_PULLUP);
+      pinMode(BUTTON_TWO, INPUT_PULLUP);
+    #endif
   #endif
 
   #ifdef THREE_BUTTON_MODE
-    pinMode(BUTTON_ONE, INPUT);            // v0.3f
-    pinMode(BUTTON_TWO, INPUT);            // v0.3f
-    pinMode(BUTTON_THREE, INPUT);          // v0.3f
+    #if MORSE_KEY_IP_TYPE == IP_NO_PULL     // v0.3f    
+      pinMode(BUTTON_ONE, INPUT);
+      pinMode(BUTTON_TWO, INPUT);
+      pinMode(BUTTON_THREE, INPUT);
+    #else
+      pinMode(BUTTON_ONE, INPUT_PULLUP);
+      pinMode(BUTTON_TWO, INPUT_PULLUP);
+      pinMode(BUTTON_THREE, INPUT_PULLUP);
+    #endif
   #endif
   
   pinMode(USER_BUTTON, INPUT_PULLUP);
   pinMode(USER_BUTTON2, INPUT_PULLUP);           // v0.3b
   pinMode(BUZZER,OUTPUT);
-  digitalWrite(BUZZER, LOW);       // v0.3f
+  BUZZER_OFF;                                    // v0.3f
 
+  pinMode(HARD_RESET_PIN, OUTPUT);               // v0.3g
+  digitalWrite(HARD_RESET_PIN, HIGH);
+  
   // Initialize Neopixel
   pixels.begin();                                // v0.2
 
@@ -171,10 +207,22 @@ void setup()
   // Configure Bluefruit Parameters  
   Bluefruit.begin();  
   Bluefruit.setTxPower(4);
-  Bluefruit.setName(deviceBleName);
+
+  if(currMode == MORSE_MODE)                     // v0.3g
+  {
+    Bluefruit.setName(deviceBleName);
+  }
+  else
+  {
+    Bluefruit.setName(deviceBleName2);
+  }
+  
   Bluefruit.Periph.setConnectCallback(bleConnectCallback);
   bledis.setManufacturer(deviceManuf);
   bledis.setModel(deviceModelName);
+
+  // Set Device MAC Address
+  changeMacAddress();                           // v0.3g
 
   // Begin BLE Services
   bledis.begin();
@@ -183,7 +231,7 @@ void setup()
   blehid.begin(); 
 
   // Start BLE Advertising
-  startBleAdvertising(currMode);                 // v0.3c
+  startBleAdvertising();                 // v0.3c
 }
 
 void loop()
@@ -266,7 +314,7 @@ void checkButton(uint8_t buttonNum)
         if(millis() - lastBeepTicks >= DOT_LENGTH)
         {
           lastBeepTicks = millis();
-          digitalWrite(BUZZER, HIGH);           // v0.3f
+          BUZZER_ON;                            // v0.3f
           if(buttonNum == BUTTON_ONE)
           {
             codeStr[codeStrIndex++] += DOT;
@@ -276,17 +324,17 @@ void checkButton(uint8_t buttonNum)
             codeStr[codeStrIndex++] += DASH;
           }
           delay(50);           
-          digitalWrite(BUZZER, LOW);            // v0.3f
+          BUZZER_OFF;                            // v0.3f
         }        
       }     
     }      
     else
     {
       t1 = millis();
-      digitalWrite(BUZZER, HIGH);         // v0.3f
+      BUZZER_ON;                                 // v0.3f
       while(digitalRead(buttonNum) == LOW && millis() - t1 < 2000);
       t2 = millis();
-      digitalWrite(BUZZER, LOW);          // v0.3f
+      BUZZER_OFF;                                // v0.3f
     
       signal_len = t2 - t1;
       if(signal_len > 50)
@@ -367,10 +415,10 @@ void checkButtonThreeForEndChar(void)
 {
   if(codeStrIndex >= 1 && digitalRead(BUTTON_THREE) == LOW)
   {
-    digitalWrite(BUZZER, HIGH);      // v0.3f
+    BUZZER_ON;                            // v0.3f
     convertor();
     codeStrIndex = 0;
-    digitalWrite(BUZZER, LOW);       // 0.3f
+    BUZZER_OFF;                           // v0.3f
   }
   else{}  
 }
@@ -396,11 +444,11 @@ void checkForConnectionSwap(void)
     {
       if(keyscan)       
       {
-        uint16_t connectionHandle = 0;
-        BLEConnection* connection = NULL;
+        //uint16_t connectionHandle = 0;
+        //BLEConnection* connection = NULL;
         
         keyscan = 0;
-
+/*
         // v0.3c
         Bluefruit.Advertising.stop();
         Bluefruit.Advertising.clearData();
@@ -411,73 +459,51 @@ void checkForConnectionSwap(void)
         connection->disconnect();
         delay(2000);
         // v0.3c
+*/
+        // v0.3g
+        // Hard Reset
+        
+        // Before reseting MCU, Do not disconnect BLE
+        // Change Switch control/Morse mode variables
+        // Write into FS
+
+        // Then Reset MCU
+        
+        // After Reset
+        // Read FS - Update variables
+        // Take MAC & BLE advt. name accordingly
+        // Start Advt.
+        
+        
+        // v0.3g
         
         if(!flag_switchControlMode)
         {
           flag_switchControlMode = 1;
+          currMode = SW_CTRL_MODE;              // v0.3e  
           #if SERIAL_DEBUG_EN
           Serial.println("Switch Control Mode Enable");
           #endif
-          
-          // v0.3e
-          uint8_t mac[6] = {0};
-          uint8_t addr_type = Bluefruit.getAddr(mac);
-          Serial.print("Address Type: ");
-          Serial.println(addr_type);
-          for(int i = 0; i < 6; i++)
-          {
-            Serial.print(mac[i], HEX);
-            Serial.print(' ');
-          }
-          Serial.println();
-
-          /*ble_gap_addr_t* gap_addr;
-          gap_addr->addr_type = BLE_GAP_ADDR_TYPE_RANDOM_STATIC;
-          gap_addr->addr[0] = mac[0];
-          gap_addr->addr[1] = mac[1];
-          gap_addr->addr[2] = mac[2];
-          gap_addr->addr[3] = mac[3];
-          gap_addr->addr[4] = mac[4];
-          gap_addr->addr[5] = mac[5];
-          
-          if(Bluefruit.setAddr(gap_addr))
-          {
-            Serial.println("Addr change Done");
-          }
-          else
-          {
-            Serial.println("Addr change Error");
-          }*/
-
-          memset(mac, '\0', sizeof(mac));
-          addr_type = Bluefruit.getAddr(mac);
-          Serial.print("Address Type: ");
-          Serial.println(addr_type);
-          for(int i = 0; i < 6; i++)
-          {
-            Serial.print(mac[i], HEX);
-            Serial.print(' ');
-          }
-          Serial.println();
-          // v0.3e
-          
-          Bluefruit.setName(deviceBleName2);    // v0.3c
-          startBleAdvertising(SW_CTRL_MODE);    // v0.3c
-          currMode = SW_CTRL_MODE;              // v0.3e
         }
         else
         {
           flag_switchControlMode = 0;
+          currMode = MORSE_MODE;               // v0.3e
           #if SERIAL_DEBUG_EN
           Serial.println("Switch Control Mode Disable");
           #endif
-          Bluefruit.setName(deviceBleName);    // v0.3c
-          startBleAdvertising(MORSE_MODE);     // v0.3c
-          currMode = MORSE_MODE;               // v0.3e
         }
 
         // Write updated data into FS
         writeDataToFS();                        // v0.3e
+
+        // v0.3g
+        #if SERIAL_DEBUG_EN
+        Serial.println("Reseting MCU");
+        delay(2000);
+        #endif
+        digitalWrite(HARD_RESET_PIN, LOW);
+        // v0.3g
       }
     }
     else      // v0.3b
@@ -487,27 +513,19 @@ void checkForConnectionSwap(void)
   }
 }
 
-void startBleAdvertising(unsigned char mode)
+void startBleAdvertising(void)
 {  
   Bluefruit.Advertising.addFlags(BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE);
   Bluefruit.Advertising.addTxPower();
-  /*if(mode == MORSE_MODE)                        // v0.3c
-  {
-    Bluefruit.Advertising.addUuid(uuidMorse);
-  }
-  else
-  {
-    Bluefruit.Advertising.addUuid(uuidSw);
-  } */
   Bluefruit.Advertising.addAppearance(BLE_APPEARANCE_HID_KEYBOARD);
   Bluefruit.Advertising.addAppearance(BLE_APPEARANCE_HID_MOUSE);
   Bluefruit.Advertising.addService(blehid);
-  Bluefruit.Advertising.addName();  
+  Bluefruit.Advertising.addName();           
   Bluefruit.Advertising.restartOnDisconnect(true);
   Bluefruit.Advertising.setInterval(32, 244);
   Bluefruit.Advertising.setFastTimeout(30);
-  Bluefruit.ScanResponse.addName();           // v0.3c
-  Bluefruit.Advertising.start(0);
+  Bluefruit.ScanResponse.addName();                 // v0.3c
+  Bluefruit.Advertising.start();
 }
 
 void bleConnectCallback(uint16_t conn_handle)       // v0.3c
@@ -693,6 +711,17 @@ void readDataFromFS(void)                                // v0.3e
         currMode = MORSE_MODE;
       }
 
+      // v0.3g
+      if(currMode == MORSE_MODE)
+      {
+        flag_switchControlMode = 0;
+      }
+      else
+      {
+        flag_switchControlMode = 1;
+      }
+      // v0.3g
+
       for(uint8_t i = 0; i < sizeof(buff); i++)
       {
         if(buff[i] == ',')
@@ -759,6 +788,7 @@ void readDataFromFS(void)                                // v0.3e
           }
           
           #if SERIAL_DEBUG_EN
+          Serial.println("-------------------------------------------");
           Serial.println("Dev Mode:" + String(currMode));
           Serial.println("Morse Mode:" + String(hidMode));
           Serial.println("Mouse Step:" + String(mouseMoveStep));
@@ -768,6 +798,7 @@ void readDataFromFS(void)                                // v0.3e
           Serial.println("Name4:" + String(swapConnDeviceNames[3]));
           Serial.println("Name5:" + String(swapConnDeviceNames[4]));
           Serial.println("Swap Index:" + String(currSwapConnIndex));
+          Serial.println("-------------------------------------------");
           #endif
           break;
         }
@@ -816,6 +847,58 @@ void writeDataToFS(void)                                 // v0.3e
     Serial.println("DB file Write error");
     #endif
   }
+}
+
+void changeMacAddress(void)                           // v0.3g
+{
+  uint8_t mac[6] = {0};
+  ble_gap_addr_t gap_addr;
+
+  Bluefruit.getAddr(mac);
+  /*Serial.print("Address Type: ");
+  Serial.println(addr_type);
+  for(int i = 0; i < 6; i++)
+  {
+    Serial.print(mac[i], HEX);
+    Serial.print(' ');
+  }
+  Serial.println();*/
+  
+  gap_addr.addr_type = BLE_GAP_ADDR_TYPE_RANDOM_STATIC;
+  gap_addr.addr[0] = mac[0];
+  gap_addr.addr[1] = mac[1];
+  gap_addr.addr[2] = mac[2];
+  gap_addr.addr[3] = mac[3];
+  gap_addr.addr[4] = mac[4];
+  if(currMode == SW_CTRL_MODE)
+  {
+    gap_addr.addr[5] = 0xDD;
+  }  
+
+  if(Bluefruit.setAddr(&gap_addr))
+  {
+    #if SERIAL_DEBUG_EN
+    Serial.println("MAC change Done");
+    #endif
+  }
+  else
+  {
+    #if SERIAL_DEBUG_EN
+    Serial.println("MAC change Error");
+    #endif
+  }
+
+  memset(mac, '\0', sizeof(mac));
+  Bluefruit.getAddr(mac);
+  #if SERIAL_DEBUG_EN
+  Serial.println("New MAC: ");
+  for(int i = 0; i < 6; i++)
+  {
+    Serial.print(mac[i], HEX);
+    Serial.print(' ');
+  }
+  Serial.println();
+  #endif
 }
 
 void handleBleConnectionSwap(void)      // v0.3

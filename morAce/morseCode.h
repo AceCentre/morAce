@@ -32,6 +32,13 @@
 #define SPL_KEYBOARD_CHAR     1
 #define MOUSE_CMD             2
 
+// Type of Output                         // v0.3f
+#define ACTIVE_HIGH           0
+#define ACTIVE_LOW            1
+
+// Type of Buzzer                         // v0.3f
+#define BUZZER_TYPE           ACTIVE_HIGH
+
 void convertor(void);
 const char findDotOrDash(void);
 const char findDot(void);
