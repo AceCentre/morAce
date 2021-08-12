@@ -2,7 +2,7 @@
 #define USERPINMAP_H_
 
 // Morse Button - 1
-#define KEY_ONE			A0
+#define KEY_ONE			A1
 
 // Morse Button - 2
 #define KEY_TWO			A1

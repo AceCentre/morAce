@@ -33,11 +33,11 @@
 #define MOUSE_CMD             2
 
 // Type of Output                         // v0.3f
-#define ACTIVE_HIGH           0
-#define ACTIVE_LOW            1
+#define ACTIVE_HIGH           1
+#define ACTIVE_LOW            0
 
 // Type of Buzzer                         // v0.3f
-#define BUZZER_TYPE           ACTIVE_HIGH
+#define BUZZER_TYPE           ACTIVE_LOW
 
 void convertor(void);
 const char findDotOrDash(void);

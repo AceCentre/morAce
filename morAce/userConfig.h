@@ -166,7 +166,7 @@
  *  
  *  By enabling device will send debug messages on USB port via serial. (Baudrate - 115200)
  */
-#define SERIAL_DEBUG_EN                0
+#define SERIAL_DEBUG_EN                1
 
 
 #endif
