@@ -1,12 +1,21 @@
 // Header Files
 #include <bluefruit.h>
 #include <BLEConnection.h>
-#include <Adafruit_NeoPixel.h>    // v0.2
 #include <Adafruit_LittleFS.h>    // v0.3e
 #include <InternalFileSystem.h>   // v0.3e
 #include "userPinMap.h"
 #include "userConfig.h"
 #include "morseCode.h"
+
+#if usesNeoPixel
+	// Neopixel
+	#include <Adafruit_NeoPixel.h>    // v0.2
+#else
+	// Dotstar
+	#include <Adafruit_DotStar.h>
+	#include <SPI.h>         // COMMENT OUT THIS LINE FOR GEMMA OR TRINKET
+	//#include <avr/power.h> // ENABLE THIS LINE FOR GEMMA OR TRINKET
+#endif
 
 using namespace Adafruit_LittleFS_Namespace;        // v0.3e
 
@@ -33,7 +42,7 @@ using namespace Adafruit_LittleFS_Namespace;        // v0.3e
 // Type of Input pins for Morse keys        // v0.3f
 #define MORSE_KEY_IP_TYPE       IP_NO_PULL  
 
-// No of Neo-pixel LEDs
+// No of Neo-pixel LEDs or Dostar RGBs
 #define NUMPIXELS      1       // v0.2
 
 // Device Mode                 // v0.3c
@@ -52,7 +61,12 @@ using namespace Adafruit_LittleFS_Namespace;        // v0.3e
 // Variable Declarations
 BLEDis bledis;
 BLEHidAdafruit blehid;
-Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);    // v0.2
+#if usesNeoPixel
+	//Neopixel
+	Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);    // v0.2
+#else 
+	Adafruit_DotStar strip(NUMPIXELS, DOTSTAR_DATA, DOTSTAR_CLOCK, DOTSTAR_BRG);
+#endif 
 SoftwareTimer softTimer;       // v0.3c
 File dbFile(InternalFS);       // v0.3e
 
@@ -72,6 +86,8 @@ const char deviceBleName[] = DEVICE_BLE_NAME;
 const char deviceBleName2[] = DEVICE_BLE_NAME2;     // v0.3c
 const char deviceManuf[] = DEVICE_MANUFACTURER;
 const char deviceModelName[] = DEVICE_MODEL_NAME;
+const char boardTypeName[] = DEVICE_MODEL_NAME;
+bool usesNeoPixel = USESNEOPIXEL;
 volatile char codeStr[MORSE_CODE_MAX_LENGTH];
 volatile uint8_t codeStrIndex;
 volatile char tempChar;
@@ -188,12 +204,17 @@ void setup()
   pinMode(HARD_RESET_PIN, OUTPUT);               // v0.3g
   digitalWrite(HARD_RESET_PIN, HIGH);
   
-  // Initialize Neopixel
-  pixels.begin();                                // v0.2
-
-  // Set Neopixel Colour
-  setNeopixelColor(0, 0, 0);    // Off           // v0.3c
-
+  // Initialize Neopixel or dotstar
+  #if usesNeoPixel
+  		pixels.begin();                                // v0.2
+	  	// Set Neopixel Colour
+		setNeopixelColor(0, 0, 0);    // Off           // v0.3c
+  #else
+	  // Dotstar
+	  strip.begin();
+	  strip.show(); // Initialize all pixels to 'off'
+  #endif 
+  
   // Initialize Timer for 500 ms and start it
   softTimer.begin(500, softTimer_callback);      // v0.3c
   softTimer.start();                             // v0.3c
@@ -561,7 +582,7 @@ void bleConnectCallback(uint16_t conn_handle)       // v0.3c
         Serial.print("Name matched in last list, Disconnecting...");
         #endif*/
         
-        setNeopixelColor(0, 0, 0);      // Off      // v0.3c
+        strip.setPixelColor(0, 0, 0, 0); //Off
         
         if(connection->disconnect())
         {
@@ -608,9 +629,17 @@ void bleConnectCallback(uint16_t conn_handle)       // v0.3c
 
 void setNeopixelColor(uint8_t r, uint8_t g, uint8_t b)    // v0.2
 {
-  pixels.clear();
-  pixels.setPixelColor(0, pixels.Color(r, g, b));
-  pixels.show();
+  #if usesNeoPixel
+  //Neopoxel
+	pixels.clear();
+  	pixels.setPixelColor(0, pixels.Color(r, g, b));
+  	pixels.show();
+  #else
+  //Dotstar
+  	strip.clear();
+  	strip.setPixelColor(0, r, g, b);
+  	strip.show();
+  #endif
 }
 
 void setNeopixelIndication(unsigned char index)           // v0.3c

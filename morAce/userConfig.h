@@ -16,6 +16,10 @@
 #define DEVICE_MANUFACTURER     "ABC"
 #define DEVICE_MODEL_NAME       "BLE-HID-v1"
 
+// Define board type. If Feather & Uses neopixel - Mark with 1. If dotstar mark with 0
+
+#define USESNEOPIXEL      false
+
 /*  Device Mode Setting
  *  ONE_BUTTON_MODE   : Only 1st button will be used. Button 2 and button 3 are unused
  *                      1st button itself accept both dots and dashes. 
@@ -55,7 +59,7 @@
  *  For Keyboard Mode : KEYBOARD_MODE
  *  For Mouse Mode    : MOUSE_MODE
  */
-#define DEFAULT_MODE_OF_DEVICE                MOUSE_MODE     // v0.3e
+#define DEFAULT_MODE_OF_DEVICE                KEYBOARD_MODE     // v0.3e
 
 /*  MORSE Code for Swap Connection
  *  
