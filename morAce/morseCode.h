@@ -37,7 +37,7 @@
 #define ACTIVE_LOW            0
 
 // Type of Buzzer                         // v0.3f
-#define BUZZER_TYPE           ACTIVE_LOW
+#define BUZZER_TYPE           ACTIVE_HIGH
 
 void convertor(void);
 const char findDotOrDash(void);

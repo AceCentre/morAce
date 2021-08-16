@@ -28,4 +28,7 @@
 #define DOTSTAR_CLOCK 6
 #define DOTSTAR_DATA 8
 
+//Pot  if - USING
+#define POT_PIN A6
+
 #endif

@@ -77,6 +77,10 @@ const int USER_BUTTON = USER_SWITCH;
 const int USER_BUTTON2 = USER_SWITCH2;
 const int HARD_RESET_PIN = RESET_PIN;       // v0.3g
 int BUZZER = BUZZER_PIN;
+int POTVAL = 0;
+int oldPOTVAL = 0;
+#define POT_TOLERANCE 10
+
 const char DOT = '.';
 const char DASH = '-';
 
@@ -259,6 +263,29 @@ void loop()
 {
   currentMillis = millis();
 
+  #if USES_POT
+    POTVAL = analogRead(POT_PIN);  
+    POTVAL = map(val, 0, 1023, 0, 179);
+  	  #if SERIAL_DEBUG_EN
+  	  Serial.println(POTVAL);
+  	  #endif
+    int diff = abs(POTVAL - oldPOTVAL);
+  
+    if(diff > POT_TOLERANCE)
+      {
+          oldPOTVAL = POTVAL; // only save if the val has changed enough to avoid slowly drifting
+      }     
+
+  
+      if (POTVAL >= 90)
+      {  
+        #if usesNeoPixel
+          strip.setBrightness(POTVAL);
+          strip.show();
+        #endif
+      }
+  #endif
+  
   if(flag_switchControlMode)              // v0.3
   {
     if(currentMillis - lastScKeyCheckTicks >= 100)

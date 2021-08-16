@@ -20,6 +20,10 @@
 
 #define USESNEOPIXEL      false
 
+// Are you using a Pot to adjust brightness of Light? If so say so here
+
+#define USES_POT 		  false
+
 /*  Device Mode Setting
  *  ONE_BUTTON_MODE   : Only 1st button will be used. Button 2 and button 3 are unused
  *                      1st button itself accept both dots and dashes. 
