@@ -210,12 +210,15 @@ void setup()
   
   // Initialize Neopixel or dotstar
   #if usesNeoPixel
-  		pixels.begin();                                // v0.2
-	  	// Set Neopixel Colour
+    pixels.begin();                                // v0.2
+	  // Set Neopixel Colour
+    pixels.setBrightness(50);
 		setNeopixelColor(0, 0, 0);    // Off           // v0.3c
   #else
 	  // Dotstar
 	  strip.begin();
+    strip.setBrightness(50);
+    setNeopixelColor(0, 0, 0);    // Off           // v0.3c
 	  strip.show(); // Initialize all pixels to 'off'
   #endif 
   
