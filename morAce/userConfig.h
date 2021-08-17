@@ -22,7 +22,7 @@
 
 // Are you using a Pot to adjust brightness of Light? If so say so here
 
-#define USES_POT 		  false
+#define USES_POT 		  true
 
 /*  Device Mode Setting
  *  ONE_BUTTON_MODE   : Only 1st button will be used. Button 2 and button 3 are unused

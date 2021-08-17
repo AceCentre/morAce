@@ -268,25 +268,20 @@ void loop()
 
   #if USES_POT
     POTVAL = analogRead(POT_PIN);  
-    POTVAL = map(val, 0, 1023, 0, 179);
-  	  #if SERIAL_DEBUG_EN
-  	  Serial.println(POTVAL);
-  	  #endif
+    POTVAL = map(POTVAL, 0, 1023, 0, 179);
     int diff = abs(POTVAL - oldPOTVAL);
   
     if(diff > POT_TOLERANCE)
       {
-          oldPOTVAL = POTVAL; // only save if the val has changed enough to avoid slowly drifting
-      }     
-
-  
-      if (POTVAL >= 90)
-      {  
+        oldPOTVAL = POTVAL; // only save if the val has changed enough to avoid slowly drifting
         #if usesNeoPixel
+          pixels.setBrightness(POTVAL);
+          pixels.show();
+        #else
           strip.setBrightness(POTVAL);
-          strip.show();
+          strip.show();        
         #endif
-      }
+      }     
   #endif
   
   if(flag_switchControlMode)              // v0.3
