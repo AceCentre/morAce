@@ -20,7 +20,7 @@
 #define BUZZER_PIN		13
 
 // Hard Reset Pin
-#define RESET_PIN     D4     // v0.3g // This should be D4 on itsybitsy but doesnt like it 
+#define RESET_PIN     4    // v0.3g // This should be D4 on itsybitsy but doesnt like it 
 
 // NeoPixel LED
 #define NEOPIXEL_PIN  PIN_NEOPIXEL     // v0.2
