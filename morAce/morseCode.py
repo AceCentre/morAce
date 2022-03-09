@@ -2,8 +2,12 @@ import time
 
 from userConfig import *
 from morseCode_h import *
-from userPinMap import *
 import extern
+print("morseCode.py, X80 flag:", x80_pinout)
+if x80_pinout:
+    from x80PinMap import *
+else:
+    from userPinMap import *
 
 from adafruit_hid.keyboard import Keyboard
 from adafruit_hid.keycode import Keycode

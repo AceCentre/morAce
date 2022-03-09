@@ -16,9 +16,13 @@ from adafruit_ble.services.standard.device_info import DeviceInfoService
 
 from userConfig import *
 from morseCode_h import *
-from userPinMap import *
 from morseCode import *
 import extern
+
+if x80_pinout:
+    from x80PinMap import *    
+else:
+    from userPinMap import *
 
 _TICKS_PERIOD = const(1<<29)
 _TICKS_MAX = const(_TICKS_PERIOD-1)
@@ -60,7 +64,7 @@ pixels = adafruit_dotstar.DotStar(board.APA102_SCK, board.APA102_MOSI, NUMPIXELS
 
 # neopixel initialization
 #import neopixel
-#pixels = neopixel.NeoPixel(board.NEOPIXEL, NUMPIXELS, brightness=0.3, auto_write=False)
+#pixels = neopixel.NeoPixel(NEOPIXEL_PIN, NUMPIXELS, brightness=0.3, auto_write=False)
 
 BUTTON_ONE = KEY_ONE
 BUTTON_TWO = KEY_TWO
@@ -466,26 +470,30 @@ def softTimer_callback():       #// v0.3c
 if ONE_BUTTON_MODE: 
     extern.button_one_pin = DigitalInOut(BUTTON_ONE)
     extern.button_one_pin.direction = Direction.INPUT
-
-if TWO_BUTTON_MODE:        
+    if not x80_pinout:
+        extern.button_one_pin.pull = Pull.UP  # when x80 board not used
+elif TWO_BUTTON_MODE:        
     extern.button_one_pin = DigitalInOut(BUTTON_ONE)
     extern.button_one_pin.direction = Direction.INPUT
+    if not x80_pinout:
+        extern.button_one_pin.pull = Pull.UP  # when x80 board not used
+    
+    extern.button_two_pin = DigitalInOut(BUTTON_TWO)
+    extern.button_two_pin.direction = Direction.INPUT
+    extern.button_two_pin.pull = Pull.UP
+elif THREE_BUTTON_MODE:
+    extern.button_one_pin = DigitalInOut(BUTTON_ONE)
+    extern.button_one_pin.direction = Direction.INPUT
+    if not x80_pinout:
+        extern.button_one_pin.pull = Pull.UP  # when x80 board not used
     
     extern.button_two_pin = DigitalInOut(BUTTON_TWO)
     extern.button_two_pin.direction = Direction.INPUT
     extern.button_two_pin.pull = Pull.UP
 
-if THREE_BUTTON_MODE:
-        extern.button_one_pin = DigitalInOut(BUTTON_ONE)
-        extern.button_one_pin.direction = Direction.INPUT
-        
-        extern.button_two_pin = DigitalInOut(BUTTON_TWO)
-        extern.button_two_pin.direction = Direction.INPUT
-        extern.button_two_pin.pull = Pull.UP
-
-        extern.button_three_pin = DigitalInOut(BUTTON_THREE)
-        extern.button_three_pin.direction = Direction.INPUT
-        extern.button_three_pin.pull = Pull.UP
+    extern.button_three_pin = DigitalInOut(BUTTON_THREE)
+    extern.button_three_pin.direction = Direction.INPUT
+    extern.button_three_pin.pull = Pull.UP
 
 user_button_pin = DigitalInOut(USER_BUTTON)
 user_button_pin.direction = Direction.INPUT

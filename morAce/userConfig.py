@@ -1,6 +1,8 @@
 
 from morseCode_h import *
 
+x80_pinout = False # True if x80 board is used
+
 """
 /*  Device Specific Settings
  *  DEVICE_BLE_NAME     : Device will advertise by this name in Morse Mode
@@ -31,9 +33,9 @@ DEVICE_MODEL_NAME = "BLE-HID-v1"
  *  note : Any one of three must be present below (ONE_BUTTON_MODE / TWO_BUTTON_MODE / THREE_BUTTON_MODE)
  */
 """
-ONE_BUTTON_MODE = 0
-TWO_BUTTON_MODE = 1
-THREE_BUTTON_MODE = 1
+ONE_BUTTON_MODE = 1
+TWO_BUTTON_MODE = 0
+THREE_BUTTON_MODE = 0
 
 
 MORSE_MODE = 0
@@ -215,15 +217,3 @@ MOUSE_SPEED_CHANGE_UNIT = 1
  */
 """
 SERIAL_DEBUG_EN = 1
-
-if ONE_BUTTON_MODE:    
-    TWO_BUTTON_MODE = 0
-    THREE_BUTTON_MODE = 0
-
-if TWO_BUTTON_MODE:    
-    ONE_BUTTON_MODE = 0
-    THREE_BUTTON_MODE = 0
-
-if THREE_BUTTON_MODE:    
-    TWO_BUTTON_MODE = 0
-    ONE_BUTTON_MODE = 0
