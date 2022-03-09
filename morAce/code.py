@@ -396,43 +396,23 @@ def setNeopixelIndication(index):           #// v0.3c
 
 def changeMacAddress():                           #// v0.3g
     return # temp
-    mac = [] #local
-    gap_addr = None #local
+    global currMode
+    mac = bytearray(_bleio.adapter.address.address_bytes)
+    print("Current mac address: ")
+    for byte in mac:    
+        print(hex(byte))
 
-    Bluefruit.getAddr(mac)
-    """
-    /*Serial.print("Address Type: ");
-    Serial.println(addr_type);
-    for(int i = 0; i < 6; i++)
-    {
-    Serial.print(mac[i], HEX);
-    Serial.print(' ');
-    }
-    Serial.println();*/
-    """
+    new_mac = mac
+    if currMode == SW_CTRL_MODE:
+        new_mac[5] = 0xDD
 
-    gap_addr.addr_type = BLE_GAP_ADDR_TYPE_RANDOM_STATIC
-    gap_addr.addr[0] = mac[0]
-    gap_addr.addr[1] = mac[1]
-    gap_addr.addr[2] = mac[2]
-    gap_addr.addr[3] = mac[3]
-    gap_addr.addr[4] = mac[4]
-    if currMode == SW_CTRL_MODE:    
-        gap_addr.addr[5] = 0xDD
-    
-    if Bluefruit.setAddr(gap_addr):
-        if SERIAL_DEBUG_EN:
-            Serial.println("MAC change Done")    
-    else:
-        if SERIAL_DEBUG_EN:
-            Serial.println("MAC change Error")
+    _bleio.adapter.address = _bleio.Address(new_mac, _bleio.Address.RANDOM_STATIC)
 
+    mac =_bleio.adapter.address.address_bytes
 
-    mac = []
-    Bluefruit.getAddr(mac)
-    if SERIAL_DEBUG_EN:
-        print("New MAC: ")
-        print(mac)
+    print("New mac address: ")
+    for byte in mac:    
+        print(hex(byte))
 
 def handleBleConnectionSwap():      #// v0.3
     return #temp
@@ -537,9 +517,6 @@ device_info = DeviceInfoService(software_revision=adafruit_ble.__version__,
 advertisement = ProvideServicesAdvertisement(hid)
 advertisement.appearance = 961
 scan_response = Advertisement()
-
-#// Set Device MAC Address
-#changeMacAddress()                           
                 
 # setup for mouse
 extern.mouse = Mouse(hid.devices)
@@ -549,6 +526,9 @@ extern.k = Keyboard(hid.devices)
 extern.kl = KeyboardLayoutUS(extern.k)
 
 ble = adafruit_ble.BLERadio()
+
+#// Set Device MAC Address
+#changeMacAddress()
 
 if(extern.currMode == MORSE_MODE):                     #// v0.3g    
     ble.name  = deviceBleName
