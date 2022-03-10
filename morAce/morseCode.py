@@ -282,28 +282,29 @@ def convertor():
         else:        
             if serial_debug_en:
                 print("Release Cmd Error")    
-    else:    
-        if checkPredefinedStrings():             #// v0.3e
-            pass
-        elif checkShortcutCommands():         #// v0.3e
-            pass
-        elif checkSpecialKey():               #// v0.3e
-            pass
-        elif extern.hidMode == keyboard_mode:        
-            for i in range(len(morseCodeKeyboard)):               #// v0.3e            
-                if extern.codeStr == morseCodeKeyboard[i][0]:
-                    if serial_debug_en:
-                        print("Char: ", morseCodeKeyboard[i][1])                    
-                    key_seq_press(extern.k, morseCodeKeyboard[i][1])                    
-                    time.sleep(0.02)
-                    lastSentCmdType = reg_keyboard_char                                #// v0.3e
-                    lastKeyboardChar = morseCodeKeyboard[i][1]                   #// v0.3e
-                    
-                    break                            
+    else:
+        if extern.hidMode == keyboard_mode:
+            if checkPredefinedStrings():             #// v0.3e
+                pass
+            elif checkShortcutCommands():         #// v0.3e
+                pass
+            elif checkSpecialKey():               #// v0.3e
+                pass
+            else:
+                for i in range(len(morseCodeKeyboard)):               #// v0.3e            
+                    if extern.codeStr == morseCodeKeyboard[i][0]:
+                        if serial_debug_en:
+                            print("Char: ", morseCodeKeyboard[i][1])                    
+                        key_seq_press(extern.k, morseCodeKeyboard[i][1])                    
+                        time.sleep(0.02)
+                        lastSentCmdType = reg_keyboard_char                                #// v0.3e
+                        lastKeyboardChar = morseCodeKeyboard[i][1]                   #// v0.3e
+                        
+                        break                            
 
-            if i >= len(morseCodeKeyboard):            
-                if serial_debug_en:
-                    print("<Wrong input>")
+                if i >= len(morseCodeKeyboard):            
+                    if serial_debug_en:
+                        print("<Wrong input>")
         else:        
             handleMouseMorseCode()     
 
