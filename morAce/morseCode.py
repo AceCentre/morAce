@@ -1,15 +1,13 @@
 import time
 
 from userConfig import *
-from morseCode_h import *
 import extern
-print("morseCode.py, X80 flag:", x80_pinout)
+
 if x80_pinout:
     from x80PinMap import *
 else:
     from userPinMap import *
 
-from adafruit_hid.keyboard import Keyboard
 from adafruit_hid.keycode import Keycode
 from adafruit_hid.mouse import Mouse
 
@@ -19,23 +17,6 @@ def key_seq_press(kb_obj, key_seq):
         kb_obj._keyboard_device.send_report(kb_obj.report)
     kb_obj.release_all() 
 
-BUTTON_ONE = KEY_ONE
-BUTTON_TWO = KEY_TWO
-BUTTON_THREE = KEY_THREE
-BUZZER = BUZZER_PIN
-
-dotLength = DOT_LENGTH
-DOT = '.'
-DASH = '-'
-keyMouseSwitchMorseCode = MORSE_CODE_FOR_KEYB_MOUSE_SWITCH
-swapBleConnectionMorseCode = MORSE_CODE_FOR_BLE_SWAP_CONNECTION   #// v0.3
-repeatCmdMorseCode = MORSE_CODE_FOR_REPEAT_CMD                    #// v0.3e
-mouseSpeedIncMorseCode = MORSE_CODE_FOR_MOUSE_SPEED_INC           #// v0.3e
-mouseSpeedDecMorseCode = MORSE_CODE_FOR_MOUSE_SPEED_DEC           #// v0.3e
-mouseSpeedSet1MorseCode = MORSE_CODE_FOR_MOUSE_SPEED_1            #// v0.3e
-mouseSpeedSet5MorseCode = MORSE_CODE_FOR_MOUSE_SPEED_5            #// v0.3e
-holdCmdMorseCode = MORSE_CODE_FOR_HOLD_CMD                        #// v0.3e
-releaseCmdMorseCode = MORSE_CODE_FOR_RELEASE_CMD                  #// v0.3e
 keycheck = 0
 keycodeComboBuff = []     #// v0.3e
 lastKeyboardChar = 0      #// v0.3e
@@ -114,11 +95,11 @@ morseCodeKeyboard = [
 ]
 
 morseCodeKeyboard_special = [
-  ("..--",    [Keycode.SPACEBAR]),            #// Space
-  (".-.-",    [Keycode.ENTER]),           #// Enter           
-  (".-.--.",  [Keycode.BACKSPACE]),        #// Backspace         #// v0.3e - changed morse code (older same with mouse down)
+  ("..--",    [Keycode.SPACEBAR]),         #// Space
+  (".-.-",    [Keycode.ENTER]),            #// Enter           
+  (".-.--.",  [Keycode.BACKSPACE]),        #// Backspace
   ("--....",  [Keycode.ESCAPE]),           #// ESC  
-  ("--...-",  [Keycode.SHIFT]),       #// Shift
+  ("--...-",  [Keycode.SHIFT]),            #// Shift
   ("-.-.",    [Keycode.LEFT_CONTROL]),     #// Ctrl
   ("--.--",   [Keycode.LEFT_ALT]),         #// Alt
   (".-..-",   [Keycode.UP_ARROW]),         #// Arrow Up
@@ -129,44 +110,57 @@ morseCodeKeyboard_special = [
   ("...-..",  [Keycode.PAGE_DOWN]),        #// Pg Dn
   (".......", [Keycode.HOME]),             #// Home
   ("...-...", [Keycode.END]),              #// End
-  ("---...-", [Keycode.KEYPAD_NUMLOCK]),         #// Numlock
+  ("---...-", [Keycode.KEYPAD_NUMLOCK]),   #// Numlock
   ("--.-..",  [Keycode.SCROLL_LOCK]),      #// ScrollLock
   ("-----.",  [Keycode.CAPS_LOCK]),        #// Capslock
   ("-.-..",   [Keycode.INSERT]),           #// Insert
   ("-.--..",  [Keycode.DELETE]),           #// Delete
   ("--.--.",  [Keycode.PRINT_SCREEN]),     #// PrtScn
   ("---..-.", [Keycode.TAB]),              #// Tab
-  ("--.----", [Keycode.F1 ]),               #// F1
-  ("--..---", [Keycode.F2 ]),               #// F2
-  ("--...--", [Keycode.F3 ]),               #// F3
-  ("--....-", [Keycode.F4 ]),               #// F4
-  ("--.....", [Keycode.F5 ]),               #// F5
-  ("---....", [Keycode.F6 ]),               #// F6
-  ("----...", [Keycode.F7 ]),               #// F7
-  ("-----..", [Keycode.F8 ]),               #// F8
-  ("------.", [Keycode.F9 ]),               #// F9
+  ("--.----", [Keycode.F1 ]),              #// F1
+  ("--..---", [Keycode.F2 ]),              #// F2
+  ("--...--", [Keycode.F3 ]),              #// F3
+  ("--....-", [Keycode.F4 ]),              #// F4
+  ("--.....", [Keycode.F5 ]),              #// F5
+  ("---....", [Keycode.F6 ]),              #// F6
+  ("----...", [Keycode.F7 ]),              #// F7
+  ("-----..", [Keycode.F8 ]),              #// F8
+  ("------.", [Keycode.F9 ]),              #// F9
   ("-------", [Keycode.F10]),              #// F10
   (".------", [Keycode.F11]),              #// F11
   ("..-----", [Keycode.F12]),              #// F12
 ]
 
+mouse_move_right      = 1
+mouse_move_left       = 2
+mouse_move_up         = 3
+mouse_move_down       = 4
+mouse_move_left_up    = 5
+mouse_move_right_up   = 6
+mouse_move_left_down  = 7
+mouse_move_right_down = 8
+mouse_click_right     = 9
+mouse_click_left      = 10
+mouse_db_click_right  = 11
+mouse_db_click_left   = 12
+
 morseCodeMouse = [
     (None,    0),                           #// v0.3e - Just for logic adjustment
-    ("...",   MOUSE_MOVE_RIGHT),
-    ("..",    MOUSE_MOVE_LEFT),
-    ("-",     MOUSE_MOVE_UP),
-    ("--",    MOUSE_MOVE_DOWN),
-    (".--.",  MOUSE_MOVE_LEFT_UP),          #// v0.3e
-    ("...-",  MOUSE_MOVE_RIGHT_UP),         #// v0.3e
-    ("...--", MOUSE_MOVE_LEFT_DOWN),        #// v0.3e
-    ("...---", MOUSE_MOVE_RIGHT_DOWN),      #// v0.3e
-    (".--",   MOUSE_CLICK_RIGHT),
-    (".-",    MOUSE_CLICK_LEFT),
-    ("..--",  MOUSE_DB_CLICK_RIGHT),
-    ("..-",   MOUSE_DB_CLICK_LEFT)
+    ("...",    mouse_move_right),
+    ("..",     mouse_move_left),
+    ("-",      mouse_move_up),
+    ("--",     mouse_move_down),
+    (".--.",   mouse_move_left_up),          #// v0.3e
+    ("...-",   mouse_move_right_up),         #// v0.3e
+    ("...--",  mouse_move_left_down),        #// v0.3e
+    ("...---", mouse_move_right_down),      #// v0.3e
+    (".--",    mouse_click_right),
+    (".-",     mouse_click_left),
+    ("..--",   mouse_db_click_right),
+    ("..-",    mouse_db_click_left)
 ]
 
-morseCodePredefinedStr = [               #// v0.3e
+morseCodePredefinedStr = [                  #// v0.3e
     ("---...-.",      "My name is Morace"),
     ("-..--.",        "No problem"),
     ("-..---.",       "Thank you"),
@@ -174,21 +168,29 @@ morseCodePredefinedStr = [               #// v0.3e
     ("..--..---..",   "How are you?")
 ]
 
-morseCodeShortcutCmd = [                     #// v0.3e
-    ("....----", SHORTCUT_CTRL_C),
-    ("...-----", SHORTCUT_CTRL_V),
-    ("..--.",    SHORTCUT_WIN_TAB),
-    ("..-....",  SHORTCUT_WIN_H)
+shortcut_ctrl_c  = 0
+shortcut_ctrl_v  = 1
+shortcut_win_tab = 2
+shortcut_win_h   = 3
+
+morseCodeShortcutCmd = [                    #// v0.3e
+    ("....----", shortcut_ctrl_c),
+    ("...-----", shortcut_ctrl_v),
+    ("..--.",    shortcut_win_tab),
+    ("..-....",  shortcut_win_h)
 ]
+
+reg_keyboard_char = 0
+spl_keyboard_char = 1
+mouse_cmd         = 2
 
 def convertor():
     global keyMouseSwitchMorseCode, swapBleConnectionMorseCode, repeatCmdMorseCode, mouseSpeedIncMorseCode, mouseSpeedDecMorseCode, mouseSpeedSet1MorseCode, mouseSpeedSet5MorseCode, holdCmdMorseCode, releaseCmdMorseCode, lastKeyboardChar, lastSentCmdType, flag_hold
-    global morseCodeKeyboard, codeStr, hidMode, flag_repeatCmdEnable
-    global k, mouse
-    #static uint16_t i;
+    global morseCodeKeyboard
+    
     i = 0 # local
 
-    if SERIAL_DEBUG_EN:
+    if serial_debug_en:
         print()
         print("Morse Buffer: ", extern.codeStr)        
 
@@ -196,60 +198,60 @@ def convertor():
         extern.flag_repeatCmdEnable = 0    
     elif(extern.codeStr == keyMouseSwitchMorseCode):
     
-        if(extern.hidMode == KEYBOARD_MODE):        
-            extern.hidMode = MOUSE_MODE;      
-            if SERIAL_DEBUG_EN:
+        if(extern.hidMode == keyboard_mode):        
+            extern.hidMode = mouse_mode      
+            if serial_debug_en:
                 print("MOUSE MODE")
         else:
-            extern.hidMode = KEYBOARD_MODE;      
-            if SERIAL_DEBUG_EN:
+            extern.hidMode = keyboard_mode      
+            if serial_debug_en:
                 print("KEYBOARD MODE")
         
         #// Write updated data into FS
         extern.writeDataToFS()                               #// v0.3e
 
-        extern.buzzer_set_state(True)#BUZZER_ON;
+        extern.buzzer_set_state(True)
         time.sleep(0.4)       #// v0.3f
-        extern.buzzer_set_state(False)#BUZZER_OFF;
+        extern.buzzer_set_state(False)
         time.sleep(0.3)
-        extern.buzzer_set_state(True)#BUZZER_ON;
+        extern.buzzer_set_state(True)
         time.sleep(0.4)
-        extern.buzzer_set_state(False)#BUZZER_OFF;
+        extern.buzzer_set_state(False)
         time.sleep(0.3)
-        extern.buzzer_set_state(True)#BUZZER_ON;
+        extern.buzzer_set_state(True)
         time.sleep(0.2)
-        extern.buzzer_set_state(False)#BUZZER_OFF;
+        extern.buzzer_set_state(False)
         time.sleep(0.1)
-        extern.buzzer_set_state(True)#BUZZER_ON;
+        extern.buzzer_set_state(True)
         time.sleep(0.2)
-        extern.buzzer_set_state(False)#BUZZER_OFF;
+        extern.buzzer_set_state(False)
         time.sleep(0.1)    
     elif(extern.codeStr == swapBleConnectionMorseCode):      #// v0.3    
-        pass #handleBleConnectionSwap()    
+        pass #handleBleConnectionSwap()   # temp   
     elif(extern.codeStr == repeatCmdMorseCode):              #// v0.3e    
         extern.flag_repeatCmdEnable = 1
-        if SERIAL_DEBUG_EN:
+        if serial_debug_en:
             print("REPEAT CMD")    
     elif(extern.codeStr == mouseSpeedIncMorseCode):          #// v0.3e    
-        extern.mouseMoveStep += MOUSE_SPEED_CHANGE_UNIT
-        if(extern.mouseMoveStep > MOUSE_SPEED_UPPER_LIMIT):        
-            extern.mouseMoveStep = MOUSE_SPEED_UPPER_LIMIT
+        extern.mouseMoveStep += mouse_speed_change_unit
+        if(extern.mouseMoveStep > mouse_speed_upper_limit):        
+            extern.mouseMoveStep = mouse_speed_upper_limit
         
         #// Write updated data into FS
         extern.writeDataToFS()
 
-        if SERIAL_DEBUG_EN:
+        if serial_debug_en:
             print("Mouse Speed Inc, New: ", extern.mouseMoveStep)        
     
     elif extern.codeStr == mouseSpeedDecMorseCode:          #// v0.3e    
-        extern.mouseMoveStep -= MOUSE_SPEED_CHANGE_UNIT
-        if extern.mouseMoveStep < MOUSE_SPEED_LOWER_LIMIT:        
-            extern.mouseMoveStep = MOUSE_SPEED_LOWER_LIMIT
+        extern.mouseMoveStep -= mouse_speed_change_unit
+        if extern.mouseMoveStep < mouse_speed_lower_limit:        
+            extern.mouseMoveStep = mouse_speed_lower_limit
         
         #// Write updated data into FS
         extern.writeDataToFS()
         
-        if SERIAL_DEBUG_EN:
+        if serial_debug_en:
             print("Mouse Speed Dec, New: ", extern.mouseMoveStep)    
     elif extern.codeStr == mouseSpeedSet1MorseCode:          #// v0.3e    
         extern.mouseMoveStep = 1
@@ -257,7 +259,7 @@ def convertor():
         #// Write updated data into FS
         extern.writeDataToFS()
             
-        if SERIAL_DEBUG_EN:
+        if serial_debug_en:
             print("Mouse Speed Set to 1, New: ", extern.mouseMoveStep)    
     elif extern.codeStr == mouseSpeedSet5MorseCode:          #// v0.3e    
         extern.mouseMoveStep = 5
@@ -265,21 +267,20 @@ def convertor():
         #// Write updated data into FS
         extern.writeDataToFS()
 
-        if SERIAL_DEBUG_EN:
+        if serial_debug_en:
             print("Mouse Speed Set to 5, New: ", extern.mouseMoveStep)
     elif extern.codeStr == holdCmdMorseCode:                 #// v0.3e    
         flag_hold = 1        
-        if SERIAL_DEBUG_EN:
+        if serial_debug_en:
             print("Cmd: Hold")    
     elif extern.codeStr == releaseCmdMorseCode:              #// v0.3e    
         if flag_hold:
-            extern.mouse.release_all()        
-            #blehid.mouseButtonRelease()
+            extern.mouse.release_all()                    
             flag_hold = 0
-            if SERIAL_DEBUG_EN:
+            if serial_debug_en:
                 print("Cmd: Release")
         else:        
-            if SERIAL_DEBUG_EN:
+            if serial_debug_en:
                 print("Release Cmd Error")    
     else:    
         if checkPredefinedStrings():             #// v0.3e
@@ -288,22 +289,20 @@ def convertor():
             pass
         elif checkSpecialKey():               #// v0.3e
             pass
-        elif extern.hidMode == KEYBOARD_MODE:        
+        elif extern.hidMode == keyboard_mode:        
             for i in range(len(morseCodeKeyboard)):               #// v0.3e            
                 if extern.codeStr == morseCodeKeyboard[i][0]:
-                    if SERIAL_DEBUG_EN:
+                    if serial_debug_en:
                         print("Char: ", morseCodeKeyboard[i][1])                    
-                    key_seq_press(extern.k, morseCodeKeyboard[i][1])
-                    #blehid.keyPress(morseCodeKeyboard[i][1])
+                    key_seq_press(extern.k, morseCodeKeyboard[i][1])                    
                     time.sleep(0.02)
-                    lastSentCmdType = REG_KEYBOARD_CHAR                                #// v0.3e
+                    lastSentCmdType = reg_keyboard_char                                #// v0.3e
                     lastKeyboardChar = morseCodeKeyboard[i][1]                   #// v0.3e
-                    #blehid.keyRelease()
                     
                     break                            
 
             if i >= len(morseCodeKeyboard):            
-                if SERIAL_DEBUG_EN:
+                if serial_debug_en:
                     print("<Wrong input>")
         else:        
             handleMouseMorseCode()     
@@ -318,155 +317,135 @@ def hidSpecialKeyPress(buff):           #// v0.3e
     keycodeComboBuff = []
 
 def handleMouseMorseCode():
-    global lastSentCmdType, flag_hold, morseCodeMouse, codeStr, flag_mouseConMovement, mouse
+    global lastSentCmdType, flag_hold, morseCodeMouse
  
-    if extern.codeStr == morseCodeMouse[MOUSE_MOVE_RIGHT][0]:    
-        lastSentCmdType = MOUSE_CMD              #// v0.3e
-        extern.flag_mouseConMovement = MOUSE_MOVE_RIGHT; #// v0.3
+    if extern.codeStr == morseCodeMouse[mouse_move_right][0]:    
+        lastSentCmdType = mouse_cmd              #// v0.3e
+        extern.flag_mouseConMovement = mouse_move_right; #// v0.3
         extern.mouse.move(extern.mouseMoveStep, 0)
-        #blehid.mouseMove(mouseMoveStep, 0)
-        if SERIAL_DEBUG_EN:
+        if serial_debug_en:
             print("Mouse: Right")    
-    elif extern.codeStr == morseCodeMouse[MOUSE_MOVE_LEFT][0]:
-        lastSentCmdType = MOUSE_CMD              #// v0.3e
-        extern.flag_mouseConMovement = MOUSE_MOVE_LEFT  #// v0.3
+    elif extern.codeStr == morseCodeMouse[mouse_move_left][0]:
+        lastSentCmdType = mouse_cmd              #// v0.3e
+        extern.flag_mouseConMovement = mouse_move_left  #// v0.3
         extern.mouse.move(-extern.mouseMoveStep, 0)
-        #blehid.mouseMove(-mouseMoveStep, 0)        
-        if SERIAL_DEBUG_EN:
+        if serial_debug_en:
             print("Mouse: Left")            
-    elif extern.codeStr == morseCodeMouse[MOUSE_MOVE_UP][0]:    
-        lastSentCmdType = MOUSE_CMD              #// v0.3e
-        extern.flag_mouseConMovement = MOUSE_MOVE_UP    #// v0.3
+    elif extern.codeStr == morseCodeMouse[mouse_move_up][0]:    
+        lastSentCmdType = mouse_cmd              #// v0.3e
+        extern.flag_mouseConMovement = mouse_move_up    #// v0.3
         extern.mouse.move(0, -extern.mouseMoveStep)
-        #blehid.mouseMove(0, -mouseMoveStep)
-        if SERIAL_DEBUG_EN:
+        if serial_debug_en:
             print("Mouse: Up")            
-    elif extern.codeStr == morseCodeMouse[MOUSE_MOVE_DOWN][0]:    
-        lastSentCmdType = MOUSE_CMD              #// v0.3e
-        extern.flag_mouseConMovement = MOUSE_MOVE_DOWN  #// v0.3      
+    elif extern.codeStr == morseCodeMouse[mouse_move_down][0]:    
+        lastSentCmdType = mouse_cmd              #// v0.3e
+        extern.flag_mouseConMovement = mouse_move_down  #// v0.3      
         extern.mouse.move(0, extern.mouseMoveStep)
-        #blehid.mouseMove(0, mouseMoveStep)
-        if SERIAL_DEBUG_EN:
+        if serial_debug_en:
             print("Mouse: Down")    
-    elif extern.codeStr == morseCodeMouse[MOUSE_MOVE_LEFT_UP][0]:     #// v0.3e    
-        lastSentCmdType = MOUSE_CMD
-        extern.flag_mouseConMovement = MOUSE_MOVE_LEFT_UP
+    elif extern.codeStr == morseCodeMouse[mouse_move_left_up][0]:     #// v0.3e    
+        lastSentCmdType = mouse_cmd
+        extern.flag_mouseConMovement = mouse_move_left_up
         extern.mouse.move(-extern.mouseMoveStep, -extern.mouseMoveStep)
-        #blehid.mouseMove(-mouseMoveStep, -mouseMoveStep)
-        if SERIAL_DEBUG_EN:
+        if serial_debug_en:
             print("Mouse: Left-Up")            
-    elif extern.codeStr == morseCodeMouse[MOUSE_MOVE_RIGHT_UP][0]:     #// v0.3e    
-        lastSentCmdType = MOUSE_CMD
-        extern.flag_mouseConMovement = MOUSE_MOVE_RIGHT_UP
+    elif extern.codeStr == morseCodeMouse[mouse_move_right_up][0]:     #// v0.3e    
+        lastSentCmdType = mouse_cmd
+        extern.flag_mouseConMovement = mouse_move_right_up
         extern.mouse.move(extern.mouseMoveStep, -extern.mouseMoveStep)
-        #blehid.mouseMove(mouseMoveStep, -mouseMoveStep)
-        if SERIAL_DEBUG_EN:
+        if serial_debug_en:
             print("Mouse: Right-Up")            
-    elif extern.codeStr == morseCodeMouse[MOUSE_MOVE_LEFT_DOWN][0]:     #// v0.3e    
-        lastSentCmdType = MOUSE_CMD
-        extern.flag_mouseConMovement = MOUSE_MOVE_LEFT_DOWN
+    elif extern.codeStr == morseCodeMouse[mouse_move_left_down][0]:     #// v0.3e    
+        lastSentCmdType = mouse_cmd
+        extern.flag_mouseConMovement = mouse_move_left_down
         extern.mouse.move(-extern.mouseMoveStep, extern.mouseMoveStep)
-        #blehid.mouseMove(-mouseMoveStep, mouseMoveStep)
-        if SERIAL_DEBUG_EN:
+        if serial_debug_en:
             print("Mouse: Left-Down")            
-    elif extern.codeStr == morseCodeMouse[MOUSE_MOVE_RIGHT_DOWN][0]:     #// v0.3e    
-        lastSentCmdType = MOUSE_CMD
-        extern.flag_mouseConMovement = MOUSE_MOVE_RIGHT_DOWN
+    elif extern.codeStr == morseCodeMouse[mouse_move_right_down][0]:     #// v0.3e    
+        lastSentCmdType = mouse_cmd
+        extern.flag_mouseConMovement = mouse_move_right_down
         extern.mouse.move(extern.mouseMoveStep, extern.mouseMoveStep)
-        #blehid.mouseMove(mouseMoveStep, mouseMoveStep)
-        if SERIAL_DEBUG_EN:
+        if serial_debug_en:
             print("Mouse: Right-Down")    
-    elif extern.codeStr == morseCodeMouse[MOUSE_CLICK_RIGHT][0]:
+    elif extern.codeStr == morseCodeMouse[mouse_click_right][0]:
         extern.mouse.press(Mouse.RIGHT_BUTTON)
-        #blehid.mouseButtonPress(MOUSE_BUTTON_RIGHT)
         if(not flag_hold):                                    #// v0.3e        
             time.sleep(0.02)
             extern.mouse.release_all()
-            #blehid.mouseButtonRelease()        
-        if SERIAL_DEBUG_EN:
+        if serial_debug_en:
             print("Mouse: Right Click")    
-    elif extern.codeStr == morseCodeMouse[MOUSE_CLICK_LEFT][0]:
+    elif extern.codeStr == morseCodeMouse[mouse_click_left][0]:
         extern.mouse.press(Mouse.LEFT_BUTTON)
-        #blehid.mouseButtonPress(MOUSE_BUTTON_LEFT)
         if(not flag_hold):                                    #// v0.3e        
             time.sleep(0.02)
             extern.mouse.release_all()
-            #blehid.mouseButtonRelease()        
-        if SERIAL_DEBUG_EN:
+        if serial_debug_en:
             print("Mouse: Left Click")            
-    elif extern.codeStr == morseCodeMouse[MOUSE_DB_CLICK_RIGHT][0]:
+    elif extern.codeStr == morseCodeMouse[mouse_db_click_right][0]:
         extern.mouse.press(Mouse.RIGHT_BUTTON)
-        #blehid.mouseButtonPress(MOUSE_BUTTON_RIGHT)
         time.sleep(0.05)
         extern.mouse.release_all()
-        #blehid.mouseButtonRelease()
 
         extern.mouse.press(Mouse.RIGHT_BUTTON)
-        #blehid.mouseButtonPress(MOUSE_BUTTON_RIGHT)
         time.sleep(0.05)
-        extern.mouse.release_all()
-        #blehid.mouseButtonRelease()
-        print("Mouse: Right Double Click")
-        if SERIAL_DEBUG_EN:
+        extern.mouse.release_all()        
+        
+        if serial_debug_en:
             print("Mouse: Right Double Click")
-    elif extern.codeStr == morseCodeMouse[MOUSE_DB_CLICK_LEFT][0]:  
-        extern.mouse.press(Mouse.RIGHT_BUTTON)  
-        #blehid.mouseButtonPress(MOUSE_BUTTON_LEFT)
+    elif extern.codeStr == morseCodeMouse[mouse_db_click_left][0]:  
+        extern.mouse.press(Mouse.LEFT_BUTTON)
         time.sleep(0.05)
         extern.mouse.release_all()
-        #blehid.mouseButtonRelease()
 
-        extern.mouse.press(Mouse.RIGHT_BUTTON)
-        #blehid.mouseButtonPress(MOUSE_BUTTON_LEFT)
+        extern.mouse.press(Mouse.LEFT_BUTTON)
         time.sleep(0.05)
         extern.mouse.release_all()
-        #blehid.mouseButtonRelease()
-        if SERIAL_DEBUG_EN:
+        if serial_debug_en:
             print("Mouse: Left Double Click")    
     else:    
-        if SERIAL_DEBUG_EN:
+        if serial_debug_en:
             print("<Wrong Input>")    
 
 def checkPredefinedStrings():                    #// v0.3e
-    global morseCodePredefinedStr, codeStr, kl
+    global morseCodePredefinedStr
     j = 0 #local
     for j in range(len(morseCodePredefinedStr)):      
         if extern.codeStr == morseCodePredefinedStr[j][0]:        
-            if SERIAL_DEBUG_EN:
+            if serial_debug_en:
                 print("Predfined Str: ", morseCodePredefinedStr[j][1])
             extern.kl.write(morseCodePredefinedStr[j][1])
             return 1    
     return 0
 
 def checkShortcutCommands():                       #// v0.3e
-    global keycodeComboBuff, morseCodeShortcutCmd, codeStr
-    if extern.codeStr == morseCodeShortcutCmd[SHORTCUT_CTRL_C][0]:    
-        if SERIAL_DEBUG_EN:
+    global keycodeComboBuff, morseCodeShortcutCmd
+    if extern.codeStr == morseCodeShortcutCmd[shortcut_ctrl_c][0]:    
+        if serial_debug_en:
             print("Shortcut Cmd: CTRL+C")
 
-        keycodeComboBuff.append(Keycode.LEFT_CONTROL) #HID_KEY_CONTROL_LEFT
-        keycodeComboBuff.append(Keycode.C) #HID_KEY_C
+        keycodeComboBuff.append(Keycode.LEFT_CONTROL)
+        keycodeComboBuff.append(Keycode.C)
         hidSpecialKeyPress(keycodeComboBuff)    
-    elif extern.codeStr == morseCodeShortcutCmd[SHORTCUT_CTRL_V][0]:    
-        if SERIAL_DEBUG_EN:
+    elif extern.codeStr == morseCodeShortcutCmd[shortcut_ctrl_v][0]:    
+        if serial_debug_en:
             print("Shortcut Cmd: CTRL+V")        
 
-        keycodeComboBuff.append(Keycode.LEFT_CONTROL) #HID_KEY_CONTROL_LEFT
-        keycodeComboBuff.append(Keycode.V) #HID_KEY_V
+        keycodeComboBuff.append(Keycode.LEFT_CONTROL)
+        keycodeComboBuff.append(Keycode.V)
         hidSpecialKeyPress(keycodeComboBuff)    
-    elif extern.codeStr == morseCodeShortcutCmd[SHORTCUT_WIN_TAB][0]:    
-        if SERIAL_DEBUG_EN:
+    elif extern.codeStr == morseCodeShortcutCmd[shortcut_win_tab][0]:    
+        if serial_debug_en:
             print("Shortcut Cmd: WIN+TAB")        
 
-        keycodeComboBuff.append(Keycode.LEFT_GUI) #HID_KEY_GUI_LEFT
-        keycodeComboBuff.append(Keycode.TAB) #HID_KEY_TAB
+        keycodeComboBuff.append(Keycode.LEFT_GUI)
+        keycodeComboBuff.append(Keycode.TAB)
         hidSpecialKeyPress(keycodeComboBuff)    
-    elif extern.codeStr == morseCodeShortcutCmd[SHORTCUT_WIN_H][0]:    
-        if SERIAL_DEBUG_EN:      
+    elif extern.codeStr == morseCodeShortcutCmd[shortcut_win_h][0]:    
+        if serial_debug_en:      
             print("Shortcut Cmd: WIN+H")
 
-        keycodeComboBuff.append(Keycode.LEFT_GUI) #HID_KEY_GUI_LEFT
-        keycodeComboBuff.append(Keycode.H) #HID_KEY_H
+        keycodeComboBuff.append(Keycode.LEFT_GUI)
+        keycodeComboBuff.append(Keycode.H)
         hidSpecialKeyPress(keycodeComboBuff)    
     else:    
         return 0    
@@ -474,12 +453,12 @@ def checkShortcutCommands():                       #// v0.3e
     return 1
 
 def checkSpecialKey():                             #// v0.3e
-    global keycodeComboBuff, lastSentCmdType, morseCodeKeyboard_special, lastKeyboardChar, codeStr
+    global keycodeComboBuff, lastSentCmdType, morseCodeKeyboard_special, lastKeyboardChar
     i = 0 #local    
     for i in range(len(morseCodeKeyboard_special)):              
         if extern.codeStr == morseCodeKeyboard_special[i][0]:                    
             keycodeComboBuff = morseCodeKeyboard_special[i][1]
-            lastSentCmdType = SPL_KEYBOARD_CHAR
+            lastSentCmdType = spl_keyboard_char
             lastKeyboardChar = keycodeComboBuff
             hidSpecialKeyPress(keycodeComboBuff)     
             
@@ -490,16 +469,16 @@ def checkSpecialKey():                             #// v0.3e
 
 def handleSwitchControlKeypress(void):                          #// v0.3
     return # temp
-    global keycheck, ONE_BUTTON_MODE, TWO_BUTTON_MODE, THREE_BUTTON_MODE, button_one_pin, button_two_pin, button_three_pin, k
+    global keycheck, ONE_BUTTON_MODE, TWO_BUTTON_MODE, THREE_BUTTON_MODE
     if ONE_BUTTON_MODE:
         if extern.button_one_pin.value == False:        
             if keycheck:            
-                extern.buzzer_set_state(True) #BUZZER_ON                    #// v0.3f
+                extern.buzzer_set_state(True)                    #// v0.3f
                 keycheck = 0
                 extern.k.send(Keycode.SPACE)
                 time.sleep(0.05)                
                 extern.k.release_all()
-                extern.buzzer_set_state(False)#BUZZER_OFF                  #// v0.3f                    
+                extern.buzzer_set_state(False)                  #// v0.3f                    
         else:        
             keycheck = 1
 
@@ -507,107 +486,106 @@ def handleSwitchControlKeypress(void):                          #// v0.3
         if extern.button_one_pin.value == False:
         
             if keycheck:            
-                extern.buzzer_set_state(True)#BUZZER_ON                    #// v0.3f
+                extern.buzzer_set_state(True)                    #// v0.3f
                 keycheck = 0
                 extern.k.send(Keycode.SPACE)
                 time.sleep(0.05)
                 extern.k.release_all()
-                extern.buzzer_set_state(False)#BUZZER_OFF                   #// v0.3f            
+                extern.buzzer_set_state(False)                   #// v0.3f            
         
         elif extern.button_two_pin.value == False:        
             if keycheck:            
-                extern.buzzer_set_state(True)#BUZZER_ON                    #// v0.3f
+                extern.buzzer_set_state(True)                    #// v0.3f
                 keycheck = 0
                 extern.k.send(Keycode.ENTER)
                 time.sleep(0.05)
                 extern.k.release_all()
-                extern.buzzer_set_state(False)#BUZZER_OFF                   #// v0.3f                    
+                extern.buzzer_set_state(False)                   #// v0.3f                    
         else:         
             keycheck = 1
 
     if THREE_BUTTON_MODE:
         if extern.button_one_pin.value == False:
             if keycheck:            
-                extern.buzzer_set_state(True)#BUZZER_ON                    #// v0.3f
+                extern.buzzer_set_state(True)                    #// v0.3f
                 keycheck = 0
                 extern.k.send(Keycode.SPACE)
                 time.sleep(0.05)
                 extern.k.release_all()
-                extern.buzzer_set_state(False)#BUZZER_OFF                   #// v0.3f                    
+                extern.buzzer_set_state(False)                   #// v0.3f                    
         elif extern.button_two_pin.value == False:        
             if keycheck:
-                extern.buzzer_set_state(True)#BUZZER_ON                    #// v0.3f
+                extern.buzzer_set_state(True)                    #// v0.3f
                 keycheck = 0
                 extern.k.send(Keycode.ENTER)
                 time.sleep(0.05)
                 extern.k.release_all()
-                extern.buzzer_set_state(False)#BUZZER_OFF                   #// v0.3f
+                extern.buzzer_set_state(False)                   #// v0.3f
         elif extern.button_three_pin.value == False:
             if keycheck:
-                extern.buzzer_set_state(True)#BUZZER_ON                    #// v0.3f
+                extern.buzzer_set_state(True)                    #// v0.3f
                 keycheck = 0
                 extern.k.send(Keycode.BACKSPACE)                       
                 time.sleep(0.05)
                 extern.k.release_all()
-                extern.buzzer_set_state(False)#BUZZER_OFF                   #// v0.3f
+                extern.buzzer_set_state(False)                   #// v0.3f
         else:
             keycheck = 1
 
 def findDotOrDash():
-    global dotLength, DOT, DASH, signal_len
-    if extern.signal_len <= dotLength:
-        return DOT
+    global dot_length, dot, dash
+    if extern.signal_len <= dot_length:
+        return dot
     else:
-        return DASH
+        return dash
 
 def findDot():
-    global dotLength, DOT, signal_len
-    if extern.signal_len <= dotLength:
-        return DOT    
+    global dot_length, dot
+    if extern.signal_len <= dot_length:
+        return dot    
     else:    
         return None
 
 def findDash():
-    global dotLength, DASH, signal_len
-    if extern.signal_len <= dotLength:
+    global dot_length, dash
+    if extern.signal_len <= dot_length:
         return None
     else:
-        return DASH
+        return dash
 
 def handleConMouseMovement():    #// v0.3
-    global flag_mouseConMovement, mouse
-    if extern.flag_mouseConMovement == MOUSE_MOVE_RIGHT:
+    if extern.flag_mouseConMovement == mouse_move_right:
         extern.mouse.move(extern.mouseMoveStep, 0)
         
-    elif extern.flag_mouseConMovement == MOUSE_MOVE_LEFT:
+    elif extern.flag_mouseConMovement == mouse_move_left:
         extern.mouse.move(-extern.mouseMoveStep, 0)
         
-    elif extern.flag_mouseConMovement == MOUSE_MOVE_UP:
+    elif extern.flag_mouseConMovement == mouse_move_up:
         extern.mouse.move(0, -extern.mouseMoveStep)
         
-    elif extern.flag_mouseConMovement == MOUSE_MOVE_DOWN:
+    elif extern.flag_mouseConMovement == mouse_move_down:
         extern.mouse.move(0, extern.mouseMoveStep)
         
-    elif extern.flag_mouseConMovement == MOUSE_MOVE_LEFT_UP:        #// v0.3e
+    elif extern.flag_mouseConMovement == mouse_move_left_up:        #// v0.3e
         extern.mouse.move(-extern.mouseMoveStep, -extern.mouseMoveStep)
         
-    elif extern.flag_mouseConMovement == MOUSE_MOVE_RIGHT_UP:       #// v0.3e
+    elif extern.flag_mouseConMovement == mouse_move_right_up:       #// v0.3e
         extern.mouse.move(extern.mouseMoveStep, -extern.mouseMoveStep)
         
-    elif extern.flag_mouseConMovement == MOUSE_MOVE_LEFT_DOWN:      #// v0.3e
+    elif extern.flag_mouseConMovement == mouse_move_left_down:      #// v0.3e
         extern.mouse.move(-extern.mouseMoveStep, extern.mouseMoveStep)
         
-    elif extern.flag_mouseConMovement == MOUSE_MOVE_RIGHT_DOWN:     #// v0.3e
+    elif extern.flag_mouseConMovement == mouse_move_right_down:     #// v0.3e
         extern.mouse.move(extern.mouseMoveStep, extern.mouseMoveStep)
         
 def handleRepeatCmdAction():     #// v0.3e
     global keycodeComboBuff, lastSentCmdType, lastKeyboardChar
-    if lastSentCmdType == REG_KEYBOARD_CHAR:
+    if lastSentCmdType == reg_keyboard_char:
         key_seq_press(extern.k, lastKeyboardChar)
         time.sleep(0.02)
         extern.k.release_all()
-    elif lastSentCmdType == SPL_KEYBOARD_CHAR:
-        keycodeComboBuff[0] = lastKeyboardChar        
+    elif lastSentCmdType == spl_keyboard_char:
+        keycodeComboBuff = lastKeyboardChar        
         hidSpecialKeyPress(keycodeComboBuff)
-    elif lastSentCmdType == MOUSE_CMD:
+    elif lastSentCmdType == mouse_cmd:
         handleConMouseMovement()

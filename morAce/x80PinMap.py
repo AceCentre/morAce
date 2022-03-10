@@ -5,34 +5,34 @@ import board
 """
 // Morse Button - 1
 """
-KEY_ONE = board.A4
+button_one_pin = board.A4
 
 """
 // Morse Button - 2
 """
-KEY_TWO = board.A3
+button_two_pin = board.A3
 
 """
 // Morse Button - 3
 """
-KEY_THREE = board.A2
+button_three_pin = board.A2
 
 """
 // Switch for BLE connection Swapping
 """
-USER_SWITCH = board.A1
+user_switch = board.A1
 
 """
 // Switch for Morse Mode & Switch Control Mode Swapping
 """
-USER_SWITCH2 = board.A0
+user_switch2 = board.A0
 
 """
 // Buzzer for Morse code
 """
-BUZZER_PIN = board.D13
+buzzer_pin = board.D13
 
 """
 // Hard Reset Pin
 """
-#RESET_PIN = board.D7
+#hard_reset_pin = board.D7

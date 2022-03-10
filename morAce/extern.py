@@ -8,27 +8,26 @@ codeStr = ""
 
 flag_mouseConMovement = 0
 flag_repeatCmdEnable = 0
-# new externs
-currMode = userConfig.MORSE_MODE
-hidMode = userConfig.DEFAULT_MODE_OF_DEVICE
-mouseMoveStep = userConfig.DEFAULT_MOUSE_MOVE_STEP
-swapConnDeviceNames = [""]*userConfig.MAXIMUM_SWAP_CONNECTIONS
+currMode = userConfig.morse_mode
+hidMode = userConfig.default_mode_of_device
+mouseMoveStep = userConfig.default_mouse_move_step
+swapConnDeviceNames = [""]*userConfig.maxSwapConn
 currSwapConnIndex = 0
 dbFileName = "/database.txt"
 
 flag_switchControlMode = 0 
-#
-button_one_pin = None
-button_two_pin = None
-button_three_pin = None
-buzzer_pin = None
+
+button_one = None
+button_two = None
+button_three = None
+buzzer = None
 
 def buzzer_set_state(state):
-    global buzzer_pin
-    if userConfig.BUZZER_TYPE != userConfig.ACTIVE_HIGH:
+    global buzzer
+    if userConfig.buzzer_type == userConfig.active_low:
         state = not state
     
-    buzzer_pin.value = state
+    buzzer.value = state
 
 def writeDataToFS():                                 #// v0.3e
     global currMode, hidMode, mouseMoveStep, swapConnDeviceNames, currSwapConnIndex, dbFileName
@@ -46,7 +45,7 @@ def writeDataToFS():                                 #// v0.3e
         print("Error during write. Probably filesystem is readonly.")
         return
     
-    if userConfig.SERIAL_DEBUG_EN:
+    if userConfig.serial_debug_en:
         print("Data written in DB file")
 
 def readDataFromFS():                                #// v0.3e    
@@ -54,23 +53,23 @@ def readDataFromFS():                                #// v0.3e
 
     try:
         with open(dbFileName, "r") as dbFile:    
-            if userConfig.SERIAL_DEBUG_EN:
+            if userConfig.serial_debug_en:
                 print("DB file open");        
             
             data_list = dbFile.read().split(",") #local
             
-            if userConfig.SERIAL_DEBUG_EN:
+            if userConfig.serial_debug_en:
                 print(data_list)
 
-            if len(data_list) == userConfig.MAXIMUM_SWAP_CONNECTIONS+4:        
+            if len(data_list) == userConfig.maxSwapConn+4:        
                 
                 if(int(data_list[0]) == 0 or int(data_list[0]) == 1):            
                     currMode = int(data_list[0])            
                 else:            
-                    currMode = userConfig.MORSE_MODE          
+                    currMode = userConfig.morse_mode          
 
                 #// v0.3g
-                if currMode == userConfig.MORSE_MODE: 
+                if currMode == userConfig.morse_mode: 
                     flag_switchControlMode = 0            
                 else:            
                     flag_switchControlMode = 1;            
@@ -79,21 +78,21 @@ def readDataFromFS():                                #// v0.3e
                 if int(data_list[1]) == 0 or int(data_list[1]) == 1:
                     hidMode = int(data_list[1])
                 else:
-                    hidMode = userConfig.DEFAULT_MODE_OF_DEVICE
+                    hidMode = userConfig.default_mode_of_device
                 
-                if int(data_list[2]) >= userConfig.MOUSE_SPEED_LOWER_LIMIT and int(data_list[2]) <= userConfig.MOUSE_SPEED_UPPER_LIMIT:                
+                if int(data_list[2]) >= userConfig.mouse_speed_lower_limit and int(data_list[2]) <= userConfig.mouse_speed_upper_limit:                
                     mouseMoveStep = int(data_list[2])
                 else:
-                    mouseMoveStep = userConfig.DEFAULT_MOUSE_MOVE_STEP
-                for i in range(userConfig.MAXIMUM_SWAP_CONNECTIONS):
+                    mouseMoveStep = userConfig.default_mouse_move_step
+                for i in range(userConfig.maxSwapConn):
                     swapConnDeviceNames[i] = data_list[i+3]                    
                 
-                if int(data_list[userConfig.MAXIMUM_SWAP_CONNECTIONS+3]) < userConfig.MAXIMUM_SWAP_CONNECTIONS:
-                    currSwapConnIndex = int(data_list[userConfig.MAXIMUM_SWAP_CONNECTIONS+3])
+                if int(data_list[userConfig.maxSwapConn+3]) < userConfig.maxSwapConn:
+                    currSwapConnIndex = int(data_list[userConfig.maxSwapConn+3])
                 else:                
                     currSwapConnIndex = 0                
 
-                if userConfig.SERIAL_DEBUG_EN:
+                if userConfig.serial_debug_en:
                     print("-------------------------------------------")
                     print("Dev Mode:", currMode)
                     print("Morse Mode:", hidMode)
@@ -102,7 +101,7 @@ def readDataFromFS():                                #// v0.3e
                     print("Swap Index:", currSwapConnIndex)
                     print("-------------------------------------------")
             else:
-                if userConfig.SERIAL_DEBUG_EN:
+                if userConfig.serial_debug_en:
                     print("String is not valid")
                 writeDataToFS()
     except OSError as e:
