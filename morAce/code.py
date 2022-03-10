@@ -15,10 +15,13 @@ from adafruit_ble.services.standard.hid import HIDService
 from adafruit_ble.services.standard.device_info import DeviceInfoService
 
 from userConfig import *
-from morseCode_h import *
-from userPinMap import *
 from morseCode import *
 import extern
+
+if x80_pinout:
+    from x80PinMap import *    
+else:
+    from userPinMap import *
 
 _TICKS_PERIOD = const(1<<29)
 _TICKS_MAX = const(_TICKS_PERIOD-1)
@@ -52,49 +55,33 @@ def millis():
 
 #MORSE_KEY_IP_TYPE = IP_NO_PULL #original
 
-NUMPIXELS = 1       #// v0.2
-
 # dotstart initialization
 import adafruit_dotstar
-pixels = adafruit_dotstar.DotStar(board.APA102_SCK, board.APA102_MOSI, NUMPIXELS, brightness=0.3, auto_write=False)
+pixels = adafruit_dotstar.DotStar(board.APA102_SCK, board.APA102_MOSI, 1, brightness=0.3, auto_write=False)
 
 # neopixel initialization
 #import neopixel
-#pixels = neopixel.NeoPixel(board.NEOPIXEL, NUMPIXELS, brightness=0.3, auto_write=False)
-
-BUTTON_ONE = KEY_ONE
-BUTTON_TWO = KEY_TWO
-BUTTON_THREE = KEY_THREE
-USER_BUTTON = USER_SWITCH
-USER_BUTTON2 = USER_SWITCH2
-#HARD_RESET_PIN = RESET_PIN       #// v0.3g
-BUZZER = BUZZER_PIN
-DOT = '.'
-DASH = '-'
+#pixels = neopixel.NeoPixel(neopixel_pin, 1, brightness=0.3, auto_write=False)
 
 t1 = 0 
 t2 = 0
 currentMillis = 0
-deviceBleName = DEVICE_BLE_NAME
-deviceBleName2 = DEVICE_BLE_NAME2     #// v0.3c
-deviceManuf = DEVICE_MANUFACTURER
-deviceModelName = DEVICE_MODEL_NAME
+deviceBleName = device_ble_name
+deviceBleName2 = device_ble_name2     #// v0.3c
+deviceManuf = device_manufacturer
+deviceModelName = device_model_name
 
 codeStrIndex = 0
-
 
 keyscan = 0
 lastCentral_name = ""
 flag_manualDisconnection = 0
 manualDisconnTicks = 0
 
-
 lastMouseMovTicks = 0                      #// v0.3
 lastBeepTicks = 0                          #// v0.3
 lastUserBtnCheckTicks = 0                  #// v0.3
 lastScKeyCheckTicks = 0                    #// v0.3
-
-maxSwapConn = MAXIMUM_SWAP_CONNECTIONS     #// v0.3c
 
 flag_blinkNeopixel = 0                     #// v0.3c
 flag_blinkOnOff = 0                        #// v0.3c
@@ -103,18 +90,18 @@ lastRepeatCmdSentTicks = 0                 #// v0.3e
 
 last_callback_time = 0
 
-if TWO_BUTTON_MODE or THREE_BUTTON_MODE:  #// v0.3
-    flag_fastTypingMode = FAST_TYPING_MODE
+if two_button_mode or three_button_mode:  #// v0.3
+    flag_fastTypingMode = fast_typing_mode
 else:
     flag_fastTypingMode = 0
 
-if FAST_TYPING_MODE:                                     #// v0.3
-    charLength = (DOT_LENGTH * 3) + 250
+if fast_typing_mode:                                     #// v0.3
+    charLength = (dot_length * 3) + 250
 else:
-    charLength = (DOT_LENGTH * 3) + 100
+    charLength = (dot_length * 3) + 100
 
 def loop():
-    global flag_manualDisconnection, currentMillis, flag_switchControlMode, lastScKeyCheckTicks, manualDisconnTicks, lastCentral_name, currSwapConnIndex, flag_repeatCmdEnable, lastRepeatCmdSentTicks
+    global flag_manualDisconnection, currentMillis, lastScKeyCheckTicks, manualDisconnTicks, lastCentral_name, lastRepeatCmdSentTicks
     global ble, advertisement, scan_response    
     while True:        
         if not ble.connected:
@@ -131,18 +118,18 @@ def loop():
                 lastScKeyCheckTicks = currentMillis
                 handleSwitchControlKeypress()
         else:
-            if ONE_BUTTON_MODE:
-                checkButton(extern.button_one_pin)  
-            if TWO_BUTTON_MODE:
-                checkButton(extern.button_one_pin)
-                checkButton(extern.button_two_pin) 
-            if THREE_BUTTON_MODE:
-                checkButton(extern.button_one_pin)
-                checkButton(extern.button_two_pin)
+            if one_button_mode:
+                checkButton(extern.button_one)  
+            if two_button_mode:
+                checkButton(extern.button_one)
+                checkButton(extern.button_two) 
+            if three_button_mode:
+                checkButton(extern.button_one)
+                checkButton(extern.button_two)
                 checkButtonThreeForEndChar()
 
         if flag_manualDisconnection:  
-            if currentMillis - manualDisconnTicks >= LAST_CONNECTION_CHECK_TIMEOUT:    
+            if currentMillis - manualDisconnTicks >= last_connection_check_timeout:    
                 lastCentral_name = ""
                 flag_manualDisconnection = 0
                 extern.currSwapConnIndex = 0              #// v0.3c
@@ -150,64 +137,60 @@ def loop():
                 extern.writeDataToFS()                              #// v0.3e
         
         if extern.flag_repeatCmdEnable:                #// v0.3e  
-            if currentMillis - lastRepeatCmdSentTicks >= INTERVAL_SEND_REPEAT_CMD:
+            if currentMillis - lastRepeatCmdSentTicks >= interval_send_repeat_cmd:
                 lastRepeatCmdSentTicks = currentMillis
                 handleRepeatCmdAction()
 
         checkForConnectionSwap()
 
 def checkButton(button_pin):
-    global button_one_pin, button_two_pin, button_three_pin, DOT, DASH, t1, t2, codeStr, codeStrIndex, signal_len, flag_fastTypingMode, charLength, lastBeepTicks    
+    global dot, dash, t1, t2, codeStrIndex, flag_fastTypingMode, charLength, lastBeepTicks    
     #JUMP:
     while True:
-        check_timer_callback()
-        #print(button_pin.value)
+        check_timer_callback()        
         if button_pin.value == False:    
             if flag_fastTypingMode:           #// v0.3    
                 t1 = millis()
                 lastBeepTicks = t1      
                 while button_pin.value == False:
                     check_timer_callback()
-                    if millis() - lastBeepTicks >= DOT_LENGTH:                    
+                    if millis() - lastBeepTicks >= dot_length:                    
                         lastBeepTicks = millis()
-                        extern.buzzer_set_state(True)#BUZZER_ON;                            #// v0.3f
-                        if button_pin == extern.button_one_pin:                            
-                            extern.codeStr += DOT
+                        extern.buzzer_set_state(True)                            #// v0.3f
+                        if button_pin == extern.button_one:                            
+                            extern.codeStr += dot
                             codeStrIndex+=1
                         else:                                                    
-                            extern.codeStr += DASH
+                            extern.codeStr += dash
                             codeStrIndex+=1
                         time.sleep(0.05)          
-                        extern.buzzer_set_state(False)#BUZZER_OFF;                            #// v0.3f          
+                        extern.buzzer_set_state(False)                            #// v0.3f          
             else:    
                 t1 = millis()
-                extern.buzzer_set_state(True)#BUZZER_ON;                                 #// v0.3f                
+                extern.buzzer_set_state(True)                                 #// v0.3f                
                 while (button_pin.value == False and (millis() - t1) < 2000):
                     pass
                 t2 = millis()
-                extern.buzzer_set_state(False)#BUZZER_OFF;                                #// v0.3f
+                extern.buzzer_set_state(False)                                #// v0.3f
 
                 extern.signal_len = t2 - t1
                 if(extern.signal_len > 50):            
-                    if ONE_BUTTON_MODE:                        
-                        extern.codeStr += findDotOrDash();               #//function to read dot or dash             
-                        print(extern.codeStr)
+                    if one_button_mode:                        
+                        extern.codeStr += findDotOrDash();               #//function to read dot or dash                        
                         codeStrIndex+=1
                     
-                    if TWO_BUTTON_MODE or THREE_BUTTON_MODE:
-                        if button_pin == extern.button_one_pin:                                             
-                            extern.codeStr += DOT     #// v0.2
+                    if two_button_mode or three_button_mode:
+                        if button_pin == extern.button_one:                                             
+                            extern.codeStr += dot     #// v0.2
                             codeStrIndex+=1                
-                        elif button_pin == extern.button_two_pin:
+                        elif button_pin == extern.button_two:
                             
-                            extern.codeStr += DASH    #// v0.2           
+                            extern.codeStr += dash    #// v0.2           
                             codeStrIndex+=1
 
-        if ONE_BUTTON_MODE:
-            #print("continue: ",(millis() - t2) < charLength, codeStrIndex < MORSE_CODE_MAX_LENGTH)
-            #print("char length: ", charLength)                    
+        if one_button_mode:            
             continue_flag = False
-            while (millis() - t2) < charLength and codeStrIndex < MORSE_CODE_MAX_LENGTH:                
+            while (millis() - t2) < charLength and codeStrIndex < morse_code_max_length:                
                 if button_pin.value == False:                        
                     continue_flag = True
                     break                    
@@ -215,14 +198,14 @@ def checkButton(button_pin):
                 continue
         break
         
-    if TWO_BUTTON_MODE:        #// v0.3
+    if two_button_mode:        #// v0.3
         if not flag_fastTypingMode:
-            if (millis() - t2) >= charLength or codeStrIndex >= MORSE_CODE_MAX_LENGTH:
+            if (millis() - t2) >= charLength or codeStrIndex >= morse_code_max_length:
                 if codeStrIndex >= 1:
                     convertor()
                     codeStrIndex = 0        
         else:
-            if (millis() - lastBeepTicks) >= charLength or codeStrIndex >= MORSE_CODE_MAX_LENGTH:
+            if (millis() - lastBeepTicks) >= charLength or codeStrIndex >= morse_code_max_length:
                 if codeStrIndex >= 1:
                     convertor()
                     codeStrIndex = 0
@@ -230,7 +213,7 @@ def checkButton(button_pin):
     #ifdef THREE_BUTTON_MODE
     #endif
 
-    if ONE_BUTTON_MODE:
+    if one_button_mode:
         if codeStrIndex >= 1:                    
             convertor()
             codeStrIndex = 0        
@@ -241,79 +224,50 @@ def checkButton(button_pin):
     #endif
 
 def checkButtonThreeForEndChar():
-    global button_three_pin, codeStrIndex
+    global codeStrIndex
 
-    if codeStrIndex >= 1 and extern.button_three_pin.value == False:
-        extern.buzzer_set_state(True)#BUZZER_ON;                            #// v0.3f
+    if codeStrIndex >= 1 and extern.button_three.value == False:
+        extern.buzzer_set_state(True)                            #// v0.3f
         convertor()
         codeStrIndex = 0
-        extern.buzzer_set_state(False)#BUZZER_OFF;                           #// v0.3f
+        extern.buzzer_set_state(False)                           #// v0.3f
     else:
         pass
 
 def checkForConnectionSwap():
     return # temp
-    global user_button_pin, user_button2_pin, reset_pin, currentMillis, keyscan, lastUserBtnCheckTicks, flag_switchControlMode, currMode
+    global user_button, user_button2, reset_pin, currentMillis, keyscan, lastUserBtnCheckTicks, currMode
     
     if currentMillis - lastUserBtnCheckTicks >= 100:
         lastUserBtnCheckTicks = currentMillis
-        if user_button_pin.value == False:
+        if user_button.value == False:
             if keyscan:       #// v0.3b      
                 keyscan = 0
-                if SERIAL_DEBUG_EN:
+                if serial_debug_en:
                     print("Connection Swap Switch Pressed");                
                 handleBleConnectionSwap()     #// v0.3        
-        elif user_button2_pin.value == False:       #// v0.3b    
+        elif user_button2.value == False:       #// v0.3b    
             if(keyscan):        
                 #//uint16_t connectionHandle = 0;
                 #//BLEConnection* connection = NULL;
                 
                 keyscan = 0
-                """
-                /*
-                // v0.3c
-                Bluefruit.Advertising.stop();
-                Bluefruit.Advertising.clearData();
-                Bluefruit.ScanResponse.clearData();
-                connectionHandle = Bluefruit.connHandle();                
-                connection = Bluefruit.Connection(connectionHandle);        
-                delay(1000);
-                connection->disconnect();
-                delay(2000);
-                // v0.3c
-                */
-                // v0.3g
-                // Hard Reset
-                
-                // Before reseting MCU, Do not disconnect BLE
-                // Change Switch control/Morse mode variables
-                // Write into FS
 
-                // Then Reset MCU
-                
-                // After Reset
-                // Read FS - Update variables
-                // Take MAC & BLE advt. name accordingly
-                // Start Advt.
-                
-                
-                // v0.3g
-                """
                 if not extern.flag_switchControlMode:        
                     extern.flag_switchControlMode = 1
-                    currMode = SW_CTRL_MODE              #// v0.3e  
-                    if SERIAL_DEBUG_EN:
+                    currMode = sw_ctrl_mode              #// v0.3e  
+                    if serial_debug_en:
                         print("Switch Control Mode Enable")
                 else:        
                     extern.flag_switchControlMode = 0
-                    currMode = MORSE_MODE               #// v0.3e
-                    if SERIAL_DEBUG_EN:
+                    currMode = morse_mode               #// v0.3e
+                    if serial_debug_en:
                         print("Switch Control Mode Disable")
                 #// Write updated data into FS
                 extern.writeDataToFS()                        #// v0.3e
 
                 #// v0.3g
-                if SERIAL_DEBUG_EN:
+                if serial_debug_en:
                     print("Reseting MCU")
                     time.sleep(2)        
                 
@@ -323,7 +277,7 @@ def checkForConnectionSwap():
         keyscan = 1    
 
 def bleConnectCallback():       #// v0.3c
-    global ble, lastCentral_name, flag_manualDisconnection, maxSwapConn, currSwapConnIndex, swapConnDeviceNames, flag_blinkNeopixel
+    global ble, lastCentral_name, flag_manualDisconnection, maxSwapConn, flag_blinkNeopixel
     i = 0 #local
     connectionHandle = 0 #local
     connection = None #local
@@ -331,14 +285,14 @@ def bleConnectCallback():       #// v0.3c
     peer_connection = ble.connections[0]
     central_name = getCentralName(peer_connection)
 
-    if SERIAL_DEBUG_EN:
+    if serial_debug_en:
         print("Connection Req from ")
         print(central_name)
 
     if(flag_manualDisconnection):        
         for i in range(maxSwapConn):        
             if central_name == extern.swapConnDeviceNames[i]:            
-                if SERIAL_DEBUG_EN:
+                if serial_debug_en:
                     print("Name matched in last list, Disconnecting...")                
                 
                 setNeopixelColor(0, 0, 0)      #// Off      #// v0.3c
@@ -347,7 +301,7 @@ def bleConnectCallback():       #// v0.3c
                 break
 
     if i == maxSwapConn or (not flag_manualDisconnection):    
-        if SERIAL_DEBUG_EN:
+        if serial_debug_en:
             print("New Connection: ", central_name)
 
         #// v0.3c
@@ -396,47 +350,27 @@ def setNeopixelIndication(index):           #// v0.3c
 
 def changeMacAddress():                           #// v0.3g
     return # temp
-    mac = [] #local
-    gap_addr = None #local
+    global currMode
+    mac = bytearray(_bleio.adapter.address.address_bytes)
+    print("Current mac address: ")
+    for byte in mac:    
+        print(hex(byte))
 
-    Bluefruit.getAddr(mac)
-    """
-    /*Serial.print("Address Type: ");
-    Serial.println(addr_type);
-    for(int i = 0; i < 6; i++)
-    {
-    Serial.print(mac[i], HEX);
-    Serial.print(' ');
-    }
-    Serial.println();*/
-    """
+    new_mac = mac
+    if currMode == sw_ctrl_mode:
+        new_mac[5] = 0xDD
 
-    gap_addr.addr_type = BLE_GAP_ADDR_TYPE_RANDOM_STATIC
-    gap_addr.addr[0] = mac[0]
-    gap_addr.addr[1] = mac[1]
-    gap_addr.addr[2] = mac[2]
-    gap_addr.addr[3] = mac[3]
-    gap_addr.addr[4] = mac[4]
-    if currMode == SW_CTRL_MODE:    
-        gap_addr.addr[5] = 0xDD
-    
-    if Bluefruit.setAddr(gap_addr):
-        if SERIAL_DEBUG_EN:
-            Serial.println("MAC change Done")    
-    else:
-        if SERIAL_DEBUG_EN:
-            Serial.println("MAC change Error")
+    _bleio.adapter.address = _bleio.Address(new_mac, _bleio.Address.RANDOM_STATIC)
 
+    mac =_bleio.adapter.address.address_bytes
 
-    mac = []
-    Bluefruit.getAddr(mac)
-    if SERIAL_DEBUG_EN:
-        print("New MAC: ")
-        print(mac)
+    print("New mac address: ")
+    for byte in mac:    
+        print(hex(byte))
 
 def handleBleConnectionSwap():      #// v0.3
     return #temp
-    global ble, currSwapConnIndex, maxSwapConn, flag_manualDisconnection, manualDisconnTicks, swapConnDeviceNames, flag_blinkNeopixel
+    global ble, maxSwapConn, flag_manualDisconnection, manualDisconnTicks, flag_blinkNeopixel
     
     connection = ble.connections[0]
 
@@ -453,7 +387,7 @@ def handleBleConnectionSwap():      #// v0.3
 
     time.sleep(2)
     connection.disconnect()
-    if SERIAL_DEBUG_EN:
+    if serial_debug_en:
         print("Disconnected")
 
     setNeopixelColor(0, 0, 0)      #// Off      #// v0.3c
@@ -471,7 +405,7 @@ def check_timer_callback():
         last_callback_time = millis()
 
 def softTimer_callback():       #// v0.3c
-    global currSwapConnIndex, flag_blinkNeopixel, flag_blinkNeopixel
+    global flag_blinkNeopixel, flag_blinkNeopixel
     if flag_blinkNeopixel:
 
         if flag_blinkOnOff:    
@@ -483,43 +417,47 @@ def softTimer_callback():       #// v0.3c
 
 
 ### SETUP ###
-if ONE_BUTTON_MODE: 
-    extern.button_one_pin = DigitalInOut(BUTTON_ONE)
-    extern.button_one_pin.direction = Direction.INPUT
-
-if TWO_BUTTON_MODE:        
-    extern.button_one_pin = DigitalInOut(BUTTON_ONE)
-    extern.button_one_pin.direction = Direction.INPUT
+if one_button_mode: 
+    extern.button_one = DigitalInOut(button_one_pin)
+    extern.button_one.direction = Direction.INPUT
+    if not x80_pinout:
+        extern.button_one.pull = Pull.UP  # when x80 board not used
+elif two_button_mode:        
+    extern.button_one = DigitalInOut(button_one_pin)
+    extern.button_one.direction = Direction.INPUT
+    if not x80_pinout:
+        extern.button_one.pull = Pull.UP  # when x80 board not used
     
-    extern.button_two_pin = DigitalInOut(BUTTON_TWO)
-    extern.button_two_pin.direction = Direction.INPUT
-    extern.button_two_pin.pull = Pull.UP
+    extern.button_two = DigitalInOut(button_two_pin)
+    extern.button_two.direction = Direction.INPUT
+    extern.button_two.pull = Pull.UP
+elif three_button_mode:
+    extern.button_one = DigitalInOut(button_one_pin)
+    extern.button_one.direction = Direction.INPUT
+    if not x80_pinout:
+        extern.button_one.pull = Pull.UP  # when x80 board not used
+    
+    extern.button_two = DigitalInOut(button_two_pin)
+    extern.button_two.direction = Direction.INPUT
+    extern.button_two.pull = Pull.UP
 
-if THREE_BUTTON_MODE:
-        extern.button_one_pin = DigitalInOut(BUTTON_ONE)
-        extern.button_one_pin.direction = Direction.INPUT
-        
-        extern.button_two_pin = DigitalInOut(BUTTON_TWO)
-        extern.button_two_pin.direction = Direction.INPUT
-        extern.button_two_pin.pull = Pull.UP
+    extern.button_three = DigitalInOut(button_three_pin)
+    extern.button_three.direction = Direction.INPUT
+    extern.button_three.pull = Pull.UP
 
-        extern.button_three_pin = DigitalInOut(BUTTON_THREE)
-        extern.button_three_pin.direction = Direction.INPUT
-        extern.button_three_pin.pull = Pull.UP
+user_button = DigitalInOut(user_switch)
+user_button.direction = Direction.INPUT
+user_button.pull = Pull.UP
 
-user_button_pin = DigitalInOut(USER_BUTTON)
-user_button_pin.direction = Direction.INPUT
-user_button_pin.pull = Pull.UP
+user_button2 = DigitalInOut(user_switch2)
+user_button2.direction = Direction.INPUT
+user_button2.pull = Pull.UP
 
-user_button2_pin = DigitalInOut(USER_BUTTON2)
-user_button2_pin.direction = Direction.INPUT
-user_button2_pin.pull = Pull.UP
-
-extern.buzzer_pin = DigitalInOut(BUZZER)
-extern.buzzer_pin.direction = Direction.OUTPUT
+extern.buzzer = DigitalInOut(buzzer_pin)
+extern.buzzer.direction = Direction.OUTPUT
 extern.buzzer_set_state(False)                                   #// v0.3f
 
-#reset_pin = DigitalInOut(HARD_RESET_PIN)
+#reset_pin = DigitalInOut(hard_reset_pin)
 #reset_pin.direction = Direction.OUTPUT
 #reset_pin.value = True
 
@@ -537,9 +475,6 @@ device_info = DeviceInfoService(software_revision=adafruit_ble.__version__,
 advertisement = ProvideServicesAdvertisement(hid)
 advertisement.appearance = 961
 scan_response = Advertisement()
-
-#// Set Device MAC Address
-#changeMacAddress()                           
                 
 # setup for mouse
 extern.mouse = Mouse(hid.devices)
@@ -550,7 +485,10 @@ extern.kl = KeyboardLayoutUS(extern.k)
 
 ble = adafruit_ble.BLERadio()
 
-if(extern.currMode == MORSE_MODE):                     #// v0.3g    
+#// Set Device MAC Address
+#changeMacAddress()
+
+if(extern.currMode == morse_mode):                     #// v0.3g    
     ble.name  = deviceBleName
     scan_response.complete_name = deviceBleName
 else:    

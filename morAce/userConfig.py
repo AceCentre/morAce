@@ -1,5 +1,5 @@
 
-from morseCode_h import *
+x80_pinout = True # True if x80 board is used
 
 """
 /*  Device Specific Settings
@@ -11,10 +11,10 @@ from morseCode_h import *
  *  note - Write string between double quotes
  */
 """
-DEVICE_BLE_NAME = "MORSE_HID"
-DEVICE_BLE_NAME2 = "SW_HID"                #// v0.3c
-DEVICE_MANUFACTURER = "ABC"
-DEVICE_MODEL_NAME = "BLE-HID-v1"
+device_ble_name = "MORSE_HID"
+device_ble_name2 = "SW_HID"                #// v0.3c
+device_manufacturer = "ABC"
+device_model_name = "BLE-HID-v1"
 
 """
 /*  Device Mode Setting
@@ -31,13 +31,13 @@ DEVICE_MODEL_NAME = "BLE-HID-v1"
  *  note : Any one of three must be present below (ONE_BUTTON_MODE / TWO_BUTTON_MODE / THREE_BUTTON_MODE)
  */
 """
-ONE_BUTTON_MODE = 0
-TWO_BUTTON_MODE = 1
-THREE_BUTTON_MODE = 1
+one_button_mode = 1
+two_button_mode = 0
+three_button_mode = 0
 
 
-MORSE_MODE = 0
-SW_CTRL_MODE = 1
+morse_mode = 0
+sw_ctrl_mode = 1
 """
 /*  Fast Typing Mode Enable/Disable 
  *  Effective only in Two & Three Button Modes
@@ -46,14 +46,14 @@ SW_CTRL_MODE = 1
  *  1 - Enable / 0 - Disable
  */
 """
-FAST_TYPING_MODE = 0
+fast_typing_mode = 0
 
 """
 /*  MORSE Code Settings 
  *  DOT_LENGTH : Unit length of a dot in tearms of milliseconds
  */
 """
-DOT_LENGTH = 200
+dot_length = 200
 
 """
 /*  MORSE Code for switching between Keyboard mode and Mouse mode
@@ -61,7 +61,7 @@ DOT_LENGTH = 200
  *  note : Write morse code between double quotes
  */
 """
-MORSE_CODE_FOR_KEYB_MOUSE_SWITCH = ".-.--"
+keyMouseSwitchMorseCode = ".-.--"
 
 """
 /*  Default mode for the device : Keyboard Mode / Mouse Mode
@@ -70,7 +70,10 @@ MORSE_CODE_FOR_KEYB_MOUSE_SWITCH = ".-.--"
  *  For Mouse Mode    : MOUSE_MODE
  */
 """
-DEFAULT_MODE_OF_DEVICE = MOUSE_MODE
+keyboard_mode = 0
+mouse_mode = 1
+
+default_mode_of_device = mouse_mode
 
 """
 /*  MORSE Code for Swap Connection
@@ -78,7 +81,7 @@ DEFAULT_MODE_OF_DEVICE = MOUSE_MODE
  *  note : Write morse code between double quotes
  */
 """
-MORSE_CODE_FOR_BLE_SWAP_CONNECTION  = "-.-.--"
+swapBleConnectionMorseCode  = "-.-.--"
 
 """
 /*  Define timeout for BLE connection swapping
@@ -88,7 +91,7 @@ MORSE_CODE_FOR_BLE_SWAP_CONNECTION  = "-.-.--"
  *  note : Define timeout in milliseconds
  */
 """
-LAST_CONNECTION_CHECK_TIMEOUT = 10000
+last_connection_check_timeout = 10000
 
 """
 /*  Mouse HID - Default Step size for Mouse movement
@@ -97,16 +100,7 @@ LAST_CONNECTION_CHECK_TIMEOUT = 10000
  *  note : Step must be integer
  */
 """
-DEFAULT_MOUSE_MOVE_STEP = 5
-
-"""
-/*  Time interval to send mouse movement command in milliseconds
- *  Mouse move command to right/left/up/down will be sent at this interval
- *  
- *  note : Define timeout in milliseconds
- */
-"""
-INTERVAL_SEND_MOUSE_MOVE_CMD = 100
+default_mouse_move_step = 5
 
 """
 /*  Maximum allowable BLE connections swaps
@@ -115,7 +109,7 @@ INTERVAL_SEND_MOUSE_MOVE_CMD = 100
  */ 
 """
 
-MAXIMUM_SWAP_CONNECTIONS = 4
+maxSwapConn = 4
 
 """
 /*  MORSE Code for REPEAT Command
@@ -124,7 +118,7 @@ MAXIMUM_SWAP_CONNECTIONS = 4
  *  note : Write morse code between double quotes
  */
 """
-MORSE_CODE_FOR_REPEAT_CMD = ".---.-"
+repeatCmdMorseCode = ".---.-"
 
 """
 /*  MORSE Code for HOLD Command
@@ -133,7 +127,7 @@ MORSE_CODE_FOR_REPEAT_CMD = ".---.-"
  *  note : Write morse code between double quotes
  */
 """
-MORSE_CODE_FOR_HOLD_CMD = ".---.-."
+holdCmdMorseCode = ".---.-."
 
 """
 /*  MORSE Code for RELEASE Command
@@ -141,7 +135,7 @@ MORSE_CODE_FOR_HOLD_CMD = ".---.-."
  *  note : Write morse code between double quotes
  */
 """
-MORSE_CODE_FOR_RELEASE_CMD = ".---.--"
+releaseCmdMorseCode = ".---.--"
 
 """
 /*  Time interval to send REPEAT command in milliseconds
@@ -150,7 +144,7 @@ MORSE_CODE_FOR_RELEASE_CMD = ".---.--"
  *  note : Define timeout in milliseconds
  */
 """
-INTERVAL_SEND_REPEAT_CMD = 100
+interval_send_repeat_cmd = 100
 
 """
 /*  MORSE Code for Mouse Speed Increase
@@ -159,7 +153,7 @@ INTERVAL_SEND_REPEAT_CMD = 100
  */
 """
 
-MORSE_CODE_FOR_MOUSE_SPEED_INC = ".-..--"
+mouseSpeedIncMorseCode = ".-..--"
 
 """
 /*  MORSE Code for Mouse Speed Decrease
@@ -168,7 +162,7 @@ MORSE_CODE_FOR_MOUSE_SPEED_INC = ".-..--"
  */
 """
 
-MORSE_CODE_FOR_MOUSE_SPEED_DEC = ".-..-."
+mouseSpeedDecMorseCode = ".-..-."
 
 """
 /*  MORSE Code to set Mouse Speed to 1
@@ -176,7 +170,7 @@ MORSE_CODE_FOR_MOUSE_SPEED_DEC = ".-..-."
  *  note : Write morse code between double quotes
  */
 """
-MORSE_CODE_FOR_MOUSE_SPEED_1 = ".--.-."
+mouseSpeedSet1MorseCode = ".--.-."
 
 """
 /*  MORSE Code to set Mouse Speed to 5
@@ -184,28 +178,28 @@ MORSE_CODE_FOR_MOUSE_SPEED_1 = ".--.-."
  *  note : Write morse code between double quotes
  */
 """
-MORSE_CODE_FOR_MOUSE_SPEED_5 = ".--.--"
+mouseSpeedSet5MorseCode = ".--.--"
 
 """
 /*  Lower limit for mouse speed set
  *  
  */
 """
-MOUSE_SPEED_LOWER_LIMIT = 1
+mouse_speed_lower_limit = 1
 
 """
 /*  Upper limit for mouse speed set
  *  
  */
 """
-MOUSE_SPEED_UPPER_LIMIT = 20
+mouse_speed_upper_limit = 20
 
 """
 /*  Mouse speed will be incremented/decremented 
  *  by this unit
  */
 """
-MOUSE_SPEED_CHANGE_UNIT = 1
+mouse_speed_change_unit = 1
 
 """
 /*  Serial Debug Enable/Disable
@@ -214,16 +208,17 @@ MOUSE_SPEED_CHANGE_UNIT = 1
  *  By enabling device will send debug messages on USB port via serial. (Baudrate - 115200)
  */
 """
-SERIAL_DEBUG_EN = 1
+serial_debug_en = 1
 
-if ONE_BUTTON_MODE:    
-    TWO_BUTTON_MODE = 0
-    THREE_BUTTON_MODE = 0
+# Dot and dash constants
+dot = '.'
+dash = '-'
 
-if TWO_BUTTON_MODE:    
-    ONE_BUTTON_MODE = 0
-    THREE_BUTTON_MODE = 0
+# Buzzer type
+active_high = 0
+active_low  = 1
 
-if THREE_BUTTON_MODE:    
-    TWO_BUTTON_MODE = 0
-    ONE_BUTTON_MODE = 0
+buzzer_type = active_high
+
+# Max length of morse buffer
+morse_code_max_length = 13
