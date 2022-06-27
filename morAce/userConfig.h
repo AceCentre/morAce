@@ -16,6 +16,14 @@
 #define DEVICE_MANUFACTURER     "ABC"
 #define DEVICE_MODEL_NAME       "BLE-HID-v1"
 
+// Define board type. If Feather & Uses neopixel - Mark with 1. If dotstar mark with 0
+
+#define USESNEOPIXEL      false
+
+// Are you using a Pot to adjust brightness of Light? If so say so here
+
+#define USES_POT 		  true
+
 /*  Device Mode Setting
  *  ONE_BUTTON_MODE   : Only 1st button will be used. Button 2 and button 3 are unused
  *                      1st button itself accept both dots and dashes. 
@@ -55,7 +63,7 @@
  *  For Keyboard Mode : KEYBOARD_MODE
  *  For Mouse Mode    : MOUSE_MODE
  */
-#define DEFAULT_MODE_OF_DEVICE                MOUSE_MODE     // v0.3e
+#define DEFAULT_MODE_OF_DEVICE                KEYBOARD_MODE     // v0.3e
 
 /*  MORSE Code for Swap Connection
  *  
@@ -162,7 +170,7 @@
  *  
  *  By enabling device will send debug messages on USB port via serial. (Baudrate - 115200)
  */
-#define SERIAL_DEBUG_EN                0
+#define SERIAL_DEBUG_EN                1
 
 
 #endif

@@ -2,27 +2,33 @@
 #define USERPINMAP_H_
 
 // Morse Button - 1
-#define KEY_ONE			A5
+#define KEY_ONE			A1
 
 // Morse Button - 2
-#define KEY_TWO			A4
+#define KEY_TWO			A1
 
 // Morse Button - 3
-#define KEY_THREE		A3
+#define KEY_THREE		A2
 
 // Switch for BLE connection Swapping
-#define USER_SWITCH		A2
+#define USER_SWITCH		A1
 
 // Switch for Morse Mode & Switch Control Mode Swapping
-#define USER_SWITCH2  A1     // v0.3b
+#define USER_SWITCH2  A4     // v0.3b
 
 // Buzzer for Morse code
-#define BUZZER_PIN		A0
+#define BUZZER_PIN		13
+
+// Hard Reset Pin
+#define RESET_PIN     4    // v0.3g // This should be D4 on itsybitsy but doesnt like it 
 
 // NeoPixel LED
 #define NEOPIXEL_PIN  PIN_NEOPIXEL     // v0.2
+// Dotstar LED
+#define DOTSTAR_CLOCK 6
+#define DOTSTAR_DATA 8
 
-// Hard Reset Pin
-#define RESET_PIN     D7     // v0.3g
+//Pot  if - USING
+#define POT_PIN A5
 
 #endif
