@@ -146,14 +146,31 @@ These are the pre-defined keys. You can customise these by editing `morseCode.cp
  - `-------` F10
  - `.------` F11
  - `..-----` F12
- 
+
+#### Shortcuts
+
+We have some predefined shortcuts that you can edit yourself. Edit the morseCode.cpp file to add your own
+E.g.
+
+- `---...-.`      "My name is Morace"
+- `-..--.`        "No problem"
+- `-..---.`       "Thank you"
+- `-.-...--.-..`  "See you later"
+- `..--..---..`   "How are you?"
+
+And keyboard commands Such as :
+- `....----` SHORTCUT_CTRL_C
+- `...-----` SHORTCUT_CTRL_V
+- `..--.`    SHORTCUT_WIN_TAB
+- `..-....`  SHORTCUT_WIN_H
+
 #### Mouse mode
 
 Once a device is connected by default it can send characters. But if you want to control it as a mouse you can enter the mouse mode. This is done with the morse command of `  .-.--` (configurable in userConfig.h) and then the device can send mouse commands
 
 *NB: in iOS you need to make sure Settings -> Accessibility -> AssistiveTouch -> On.*
 
-Then to move the mouse it works in a way of automatic movement until you stop. 
+Then to move the mouse it works choose a direction (see more below). If you want to keep moving the mouse in that direction use the "Repeat command" (`.---.-`)
 
 |             	|   Up<br>-   	|               	|
 |-------------	|:-----------:	|---------------	|
@@ -178,6 +195,12 @@ Mouse buttons are:
  
  - `.-..--` Speed Increase
  - `.-..-.` Speed Decrease
+
+#### Repeat/Hold commands
+
+- `.---.-` Repeat whatever was the last action e.g. a keypress or mouse movement
+- `.---.-.` Hold command. Send this first THEN the next key will be held down. eg for shifting a letter
+- `.---.--` Release command. Send this to release any held down command. 
  
 
 #### Change number of allowed connected devices
