@@ -114,7 +114,7 @@ These are the pre-defined keys. You can customise these by editing `morseCode.cp
  - `-..--` * 
  - `..--` Space
  - `.-.-` Enter           
- - `--"` Backspace
+ - `.-.--.` Backspace
  - `--....` ESC  
  - `--...-` Shift
  - `-.-.` Ctrl
@@ -167,6 +167,18 @@ Mouse buttons are:
 - `..--` Double Right click
 - `..-` Double Left click
 
+ - `.--.`  MOUSE_MOVE_LEFT_UP          
+ - `...-`  MOUSE_MOVE_RIGHT_UP         
+ - `...--` MOUSE_MOVE_LEFT_DOWN        
+ - `...---` MOUSE_MOVE_RIGHT_DOWN      
+ - `.--`   MOUSE_CLICK_RIGHT
+ - `.-`    MOUSE_CLICK_LEFT
+ - `..--`  MOUSE_DB_CLICK_RIGHT
+ - `..-`   MOUSE_DB_CLICK_LEFT
+ 
+ - `.-..--` Speed Increase
+ - `.-..-.` Speed Decrease
+ 
 
 #### Change number of allowed connected devices
 
