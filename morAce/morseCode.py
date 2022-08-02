@@ -36,7 +36,7 @@ morseCodeKeyboard = [
   (".---",  [Keycode.J]),
   ("-.-",   [Keycode.K]),
   (".-..",  [Keycode.L]),
-  ("----",  [Keycode.M]),
+  ("--",  [Keycode.M]),
   ("-.",    [Keycode.N]),
   ("---",   [Keycode.O]),
   (".--.",  [Keycode.P]),
