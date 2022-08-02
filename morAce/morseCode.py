@@ -227,7 +227,7 @@ def convertor():
         extern.buzzer_set_state(False)
         time.sleep(0.1)    
     elif(extern.codeStr == swapBleConnectionMorseCode):      #// v0.3    
-        pass #handleBleConnectionSwap()   # temp   
+        extern.handleBleConnectionSwap()
     elif(extern.codeStr == repeatCmdMorseCode):              #// v0.3e    
         extern.flag_repeatCmdEnable = 1
         if serial_debug_en:
@@ -468,11 +468,10 @@ def checkSpecialKey():                             #// v0.3e
     return 0
 
 
-def handleSwitchControlKeypress(void):                          #// v0.3
-    return # temp
-    global keycheck, ONE_BUTTON_MODE, TWO_BUTTON_MODE, THREE_BUTTON_MODE
-    if ONE_BUTTON_MODE:
-        if extern.button_one_pin.value == False:        
+def handleSwitchControlKeypress():                          #// v0.3
+    global keycheck, one_button_mode, two_button_mode, three_button_mode
+    if one_button_mode:
+        if extern.button_one.value == False:        
             if keycheck:            
                 extern.buzzer_set_state(True)                    #// v0.3f
                 keycheck = 0
@@ -483,8 +482,8 @@ def handleSwitchControlKeypress(void):                          #// v0.3
         else:        
             keycheck = 1
 
-    if TWO_BUTTON_MODE:
-        if extern.button_one_pin.value == False:
+    if two_button_mode:
+        if extern.button_one.value == False:
         
             if keycheck:            
                 extern.buzzer_set_state(True)                    #// v0.3f
@@ -494,7 +493,7 @@ def handleSwitchControlKeypress(void):                          #// v0.3
                 extern.k.release_all()
                 extern.buzzer_set_state(False)                   #// v0.3f            
         
-        elif extern.button_two_pin.value == False:        
+        elif extern.button_two.value == False:        
             if keycheck:            
                 extern.buzzer_set_state(True)                    #// v0.3f
                 keycheck = 0
@@ -505,8 +504,8 @@ def handleSwitchControlKeypress(void):                          #// v0.3
         else:         
             keycheck = 1
 
-    if THREE_BUTTON_MODE:
-        if extern.button_one_pin.value == False:
+    if three_button_mode:
+        if extern.button_one.value == False:
             if keycheck:            
                 extern.buzzer_set_state(True)                    #// v0.3f
                 keycheck = 0
@@ -514,7 +513,7 @@ def handleSwitchControlKeypress(void):                          #// v0.3
                 time.sleep(0.05)
                 extern.k.release_all()
                 extern.buzzer_set_state(False)                   #// v0.3f                    
-        elif extern.button_two_pin.value == False:        
+        elif extern.button_two.value == False:        
             if keycheck:
                 extern.buzzer_set_state(True)                    #// v0.3f
                 keycheck = 0
@@ -522,7 +521,7 @@ def handleSwitchControlKeypress(void):                          #// v0.3
                 time.sleep(0.05)
                 extern.k.release_all()
                 extern.buzzer_set_state(False)                   #// v0.3f
-        elif extern.button_three_pin.value == False:
+        elif extern.button_three.value == False:
             if keycheck:
                 extern.buzzer_set_state(True)                    #// v0.3f
                 keycheck = 0
