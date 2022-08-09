@@ -4,6 +4,9 @@ from digitalio import DigitalInOut, Direction, Pull
 import storage
 import extern
 from userConfig import x80_pinout
+import supervisor
+
+supervisor.disable_ble_workflow()
 
 if x80_pinout:
     from x80PinMap import button_one_pin, button_two_pin, button_three_pin, buzzer_pin
