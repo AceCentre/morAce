@@ -36,8 +36,8 @@ two_button_mode = 0
 three_button_mode = 0
 
 
-morse_mode = 0
-sw_ctrl_mode = 1
+morse_mode = 1
+sw_ctrl_mode = 0
 """
 /*  Fast Typing Mode Enable/Disable 
  *  Effective only in Two & Three Button Modes
@@ -70,10 +70,10 @@ keyMouseSwitchMorseCode = ".-.--"
  *  For Mouse Mode    : MOUSE_MODE
  */
 """
-keyboard_mode = 0
-mouse_mode = 1
+keyboard_mode = 1
+mouse_mode = 0
 
-default_mode_of_device = mouse_mode
+default_mode_of_device = keyboard_mode
 
 """
 /*  MORSE Code for Swap Connection
