@@ -1,16 +1,14 @@
 # Controlling the keyboard
 
-{% hint style="info" %}
-**Good to know:** your product docs aren't just a reference of all your features! use them to encourage folks to perform certain actions and discover the value in your product.
-{% endhint %}
-
 ## The basics
 
-Projects are containers for task lists. Think of them as a library for everything your team needs to get done to complete or ship a project.
+In its default state morace is designed to work with one switch. But it can be used with 1,2 or 3 switches if you configure it that way. So in one switch mode you press for a length of time for a dot and a length of time for a dash and the gap of no sending any characters is what defines the ending of a encoded chunk (a letter or any morse encoded element). You can change these timings in the **userConstants.py** file if you so wish. \
+\
+There is also a **fast typing mode** - where holding down the switch will repeat a character. It best works with at least two switches. By default this is off. You can turn it on by editing userConfig.py and setting the parameter of `fast_typing_mode` to 1
 
 ### **Keyboard keys**
 
-These are the pre-defined keys. You can customise these by editing `morseCode.cpp`
+These are the pre-defined keys. You can customise these by editing `morseCode.py`
 
 * `.-` a
 * `-...` b
@@ -114,3 +112,44 @@ These are the pre-defined keys. You can customise these by editing `morseCode.cp
 * `-------` F10
 * `.------` F11
 * `..-----` F12
+
+(There are also some special keys. For a full listing view them in `morseCode.py` - [here](https://github.com/AceCentre/morAce/blob/2223dcc71ee24f721b552030ea7c027f5cf0a927/morAce/morseCode.py#L97))
+
+### Predefined strings (Macros)
+
+We also have some predefined strings. You can edit these and add your own by entering them in `morseCode.py` (see around line [163](https://github.com/AceCentre/morAce/blob/2223dcc71ee24f721b552030ea7c027f5cf0a927/morAce/morseCode.py#L163))
+
+```
+---...-.      "My name is Morace"
+-..--.        "No problem"
+-..---.       "Thank you"
+-.-...--.-..  "See you later"
+..--..---..   "How are you?"
+```
+
+### Sending key combinations
+
+In a typical keyboard you might need to send multiple keys being held down at once. To do this we need to use the **HOLD** and **RELEASE** codes
+
+`.---.-. HOLD`
+
+Send this command first to hold down any key/mouse click and then after send command for key/mouse clik you want to hold
+
+when you are done holding down keys you can release using this command
+
+`.---.-- RELEASE`
+
+e.g. HOLD Ctrl C RELEASE will hold down the ctrl and C key - and then release it. (NB: You could use sticky keys too if you wish which is a built in feature to most operating systems). \
+\
+We do have another way for common combinations too:
+
+#### Common predefined shortcuts
+
+We have some shortcuts already hardcoded. Eg.&#x20;
+
+```
+....---- Ctrl+C
+...----- Ctrl+V
+..--.    Win+Tab
+..-....  Win+H
+```

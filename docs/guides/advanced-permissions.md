@@ -1,5 +1,10 @@
-# Advanced permissions
+# Controlling devices connected
 
-{% hint style="info" %}
-**Good to know:** your product docs aren't just a reference of all your features! use them to encourage folks to perform certain actions and discover the value in your product.
-{% endhint %}
+The command to change devices is&#x20;
+
+\-.-.--&#x20;
+
+When this is sent morAce will drop connection with the current connected device and try connecting to the next last paired device. Note - if it doesnt connect within a set time frame (`last_connection_check_timeout`). It wil return back to the previous connected device.&#x20;
+
+You can pair a new device once you go into this mode. The max number of devices you could connect to is set by `maxSwapConn`
+
