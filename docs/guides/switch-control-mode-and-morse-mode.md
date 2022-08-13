@@ -46,6 +46,16 @@ Warning. When you do this it will no longer by default load on the desktop and t
 
 To swap between Morse and Switch mode - **Press switch 3. This toggles between the two.**&#x20;
 
-Once you have done this a new BLE device is available known as **SW\_HID**. You should be able to connect to it and then setup switch access. \
+Once you have done this a new BLE device is available known as **SW\_HID**. You should be able to connect to it and then setup switch access. By default the following keys are sent (depending on the button number you are using):\
 \
-It sends the character SPACE for switch 1, SPACE for switch 2. ??
+**Button one mode:**\
+****Button 1 - Space
+
+**Button two mode:**\
+****Button 1 - Space\
+Button 2 - Enter
+
+**Button three mode:**\
+****Button 1 - Space\
+Button 2 - Enter\
+Button 3 - Backspace
