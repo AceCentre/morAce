@@ -38,4 +38,11 @@ You can increase or decrease the **speed of movement** using some different opti
 * `..--` Double Right click
 * `..-` Double Left click
 
-### Drag?
+#### To drag the mouse
+
+`.---.-. (hold command)` \
+`.-       (left click)` \
+`...      (send some move commands)` \
+`.---.--  (release command)`
+
+``
