@@ -17,7 +17,7 @@ You can use switches (1, 2, or 3) to send morse code signals which are then inte
 
 ### Want all the docs
 
-* Read it all here: https://docs.acecentre.org.uk/products/v/morace/ *
+** Read it all here: https://docs.acecentre.org.uk/products/v/morace/ **
 
 
 ### Why? Why not a different project?
