@@ -1,17 +1,21 @@
 # Developer notes
 
+So here by default filesystem is writable for microcontroller and read-only for external computer.\
+When user wants to update files then it's needed to reset nrf board and right after press and hold 1 and 3 buttons until hearing long beep sound. That will mean that filesystem now available for firmware upload.
+
+
+
+Currently in [boot.py](http://boot.py/) switching filesystem for microcontroller is commented so first time user can upload all files and check if buttons are working.
+
+
+
 ### Bill of materials
 
-
-
-1 x Ace Centre x80 or:
-
-* x1 [Adafruit nrf52840](https://www.adafruit.com/product/4062) or Adafruit nrf52840 itsybitsy
+* x1 [Adafruit nrf52840](https://www.adafruit.com/product/4062)
 * x3 [3.5mm Socket](https://www.hobbytronics.co.uk/stereo-audio-jack-socket) (or any [momentary buttons](https://www.hobbytronics.co.uk/push-switch-12mm))
 * x1 [Buzzer](https://www.hobbytronics.co.uk/piezo-transducer-5v)
 * x1 [PNP](https://www.hobbytronics.co.uk/bc212l-pnp-transistor)
 * x1 [10K resistor](https://www.hobbytronics.co.uk/resistor-10k-1-8w)
-* x1 Neopixel
 
 ### Arduino wiring
 
@@ -72,6 +76,3 @@ We needed a BLE HID Switch->Morse system - that allowed swapping between several
 * [K3NG / Arduino CW Keyer](https://blog.radioartisan.com/arduino-cw-keyer/) - this project has EVERYTHING you would ever need for proper morse code. We doff our cap..
 
 ### License
-
-MIT
-
