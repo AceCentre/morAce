@@ -17,7 +17,8 @@ You can use switches (1, 2, or 3) to send morse code signals which are then inte
 
 ### Want all the docs
 
-# Read it all here: https://docs.acecentre.org.uk/products/v/morace/
+* Read it all here: https://docs.acecentre.org.uk/products/v/morace/ *
+
 
 ### Why? Why not a different project?
 
@@ -30,6 +31,7 @@ We needed a BLE HID Switch->Morse system - that allowed swapping between several
 * [Adaptive Design](https://www.adaptivedesign.org) - who have been great recently about pushing along the morse agenda
 * Adafruit. For being amazing.
 * [deeproadrash](https://www.freelancer.co.uk/u/deeproadrash) who helped immensely with a lot of the code on this project. TY!
+* [f1andrew](https://github.com/f1andrew) -Andrii Pavlyshyn who has done a lot of the changes to circuitPy and ironed out a lot of bugs. 
 
 ### Similar projects
 
