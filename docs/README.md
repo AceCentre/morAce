@@ -18,6 +18,6 @@ Or if you are on a PC and want a way of learning how to use the mouse with visua
 
 ### Why is it called morAce? How should I pronounce that?!
 
-More-Ace. or Maurice. Whatever you prefer. Thanks to Michael Ritson for naming this. Little did he know when he came up with that Will, who initally wrote this comes from a family where morse code and radio operating was talked about a lot as his dad - Maurce James Wade (Jim) spent his early years as a radio operator for Cable ships sailing the world.&#x20;
+More-Ace. or Maurice. Whatever you prefer. Thanks to [Michael Ritson](https://acecentre.org.uk/about/staff/michael-ritson) for naming this. Little did he know when he came up with that [Will Wade](https://acecentre.org.uk/about/staff/will-wade), who initally wrote this comes from a family where morse code and radio operating was talked about a lot as his dad - Maurice James Wade (Jim) spent his early years as a radio operator for Cable ships sailing the world.&#x20;
 
 ![Cable ship in Singapore](.gitbook/assets/photoboat.jpg) ![Jim Wade in the radio operators room](.gitbook/assets/photo.jpg)
