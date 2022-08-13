@@ -13,7 +13,7 @@ x80_pinout = True # True if x80 board is used
 """
 device_ble_name = "MORSE_HID"
 device_ble_name2 = "SW_HID"                #// v0.3c
-device_manufacturer = "ABC"
+device_manufacturer = "AceCentre"
 device_model_name = "BLE-HID-v1"
 
 """
