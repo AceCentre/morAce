@@ -1,7 +1,7 @@
 # Controlling devices connected
 
 {% hint style="danger" %}
-Warning: This wont work unless you've enabled your morAce to write the filesyste,. See [here](configuring-morace.md#want-to-pair-to-more-than-one-bluetooth-device-or-use-switch-control-mode) for how to do this.&#x20;
+Warning: This wont work unless you've enabled your morAce to write the filesystem. See [here](configuring-morace.md#want-to-pair-to-more-than-one-bluetooth-device-or-use-switch-control-mode) for how to do this.&#x20;
 {% endhint %}
 
 The command to change devices is&#x20;
