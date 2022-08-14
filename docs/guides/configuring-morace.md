@@ -1,7 +1,7 @@
 # Configuring morAce
 
 {% hint style="info" %}
-You dont have to use our circuitPy code using the Ace Centre's **x80 board**. Its a board that allows simpler way of accessing switches and adds a buzzer to a Adafruit board. But if you do its certainly a lot easier as no soldering required.&#x20;
+You dont have to use our circuitPy code using the Ace Centre's **x80 board** but its easier. x80 a board that allows simpler way of accessing switches and adds a buzzer to a Adafruit board. If you need to configure your adafruit nrf52840 feather express or nrf52840 itsybitsy - read this guide.&#x20;
 {% endhint %}
 
 You have some options depending on your needs. You will find all settings in the `userConfig.py`. Note that text macros and the morse code key set is in `morseCode.py`.\
