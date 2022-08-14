@@ -3,6 +3,7 @@ import time
 import microcontroller
 import board
 from digitalio import DigitalInOut, Direction, Pull
+import pwmio
 
 from adafruit_hid.mouse import Mouse
 from adafruit_hid.keyboard import Keyboard
@@ -127,7 +128,7 @@ def checkButton(button_pin):
                     check_timer_callback()
                     if extern.millis() - lastBeepTicks >= dot_length:                    
                         lastBeepTicks = extern.millis()
-                        extern.buzzer_set_state(True)                            #// v0.3f
+                        extern.buzzer_activate(buzzer_freq)                            #// v0.3f
                         if button_pin == extern.button_one:                            
                             extern.codeStr += dot
                             codeStrIndex+=1
@@ -135,14 +136,14 @@ def checkButton(button_pin):
                             extern.codeStr += dash
                             codeStrIndex+=1
                         time.sleep(0.05)          
-                        extern.buzzer_set_state(False)                            #// v0.3f          
+                        extern.buzzer_deactivate()                            #// v0.3f          
             else:    
                 t1 = extern.millis()
-                extern.buzzer_set_state(True)                                 #// v0.3f                
+                extern.buzzer_activate(buzzer_freq)                                 #// v0.3f                
                 while (button_pin.value == False and (extern.millis() - t1) < 2000):
                     pass
                 t2 = extern.millis()
-                extern.buzzer_set_state(False)                                #// v0.3f
+                extern.buzzer_deactivate()                                #// v0.3f
 
                 extern.signal_len = t2 - t1
                 if(extern.signal_len > 50):            
@@ -198,10 +199,10 @@ def checkButtonThreeForEndChar():
     global codeStrIndex
 
     if codeStrIndex >= 1 and extern.button_three.value == False:
-        extern.buzzer_set_state(True)                            #// v0.3f
+        extern.buzzer_activate(buzzer_freq)                            #// v0.3f
         convertor()
         codeStrIndex = 0
-        extern.buzzer_set_state(False)                           #// v0.3f
+        extern.buzzer_deactivate()                           #// v0.3f
     else:
         pass
 
@@ -383,9 +384,7 @@ user_button2 = DigitalInOut(user_switch2)
 user_button2.direction = Direction.INPUT
 user_button2.pull = Pull.UP
 
-extern.buzzer = DigitalInOut(buzzer_pin)
-extern.buzzer.direction = Direction.OUTPUT
-extern.buzzer_set_state(False)                                   #// v0.3f
+extern.buzzer = pwmio.PWMOut(board.A0, duty_cycle=0, frequency=buzzer_freq, variable_frequency=True)
 
 #// Set Neopixel Colour
 extern.setNeopixelColor(0, 0, 0)   

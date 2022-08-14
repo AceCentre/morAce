@@ -1,5 +1,5 @@
 
-x80_pinout = True # True if x80 board is used
+x80_pinout = True #temp # True if x80 board is used
 
 """
 /*  Device Specific Settings
@@ -214,11 +214,8 @@ serial_debug_en = 1
 dot = '.'
 dash = '-'
 
-# Buzzer type
-active_high = 0
-active_low  = 1
-
-buzzer_type = active_high
+# buzzer frequency
+buzzer_freq = 1000
 
 # Max length of morse buffer
 morse_code_max_length = 13
