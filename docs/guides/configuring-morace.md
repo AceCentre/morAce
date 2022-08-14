@@ -1,8 +1,32 @@
 # Configuring morAce
 
 {% hint style="info" %}
-You dont have to use our circuitPy code using the Ace Centre's **x80 board** but its easier. x80 a board that allows simpler way of accessing switches and adds a buzzer to a Adafruit board. If you need to configure your adafruit nrf52840 feather express or nrf52840 itsybitsy - read this guide.&#x20;
+You dont have to use our circuitPy code using the Ace Centre's **x80**  but its easier. x80 is addon board for adafruit itsybitsy sized boards that allows simpler way of accessing switches and adds a buzzer to a Adafruit board. If you need to configure your adafruit nrf52840 feather express or nrf52840 itsybitsy - [read this guide. ](developer-notes.md)
 {% endhint %}
+
+### Starting off
+
+If you have a brand new itsybitsy/x80 you will need to [read this guide](https://learn.adafruit.com/adafruit-itsybitsy-nrf52840-express/circuitpython) to get it in a state to be used with circuitpython. Once thats ready - you should have a disk drive mounted on your computer called "_CIRCUITPY_". Download[ all the code](https://github.com/AceCentre/morAce/archive/refs/heads/main.zip), unzip it and and then drag and drop the contents of **morAce/** directory to circuitpy.&#x20;
+
+It should look like this (without boot\_out.xt, database.txt -or the lib directory).&#x20;
+
+![If you do not have a lib folder - make that](<../.gitbook/assets/Screenshot 2022-08-14 at 10.00.38.png>)
+
+Next you need to add some libraries to "lib" directory. If you are a developer we recommend using [circup](https://pypi.org/project/circup/). Simply type within the local directory&#x20;
+
+```
+circup install -r requirements.txt
+```
+
+If you are not - you'll need to install them by:
+
+* [Downloading the bundle for 7.x](https://circuitpython.org/libraries)&#x20;
+* Unzip&#x20;
+* Drag the following flles to the "lib" folder on the CIRCUITPY drive: **adafruit\_dotstar,** **adafruit\_hid**, **adafruit\_ble** &#x20;
+
+Once completed it should reboot. We recommend using mu Editor to edit any userConfig.py files as you need to. Just note that bluetooth switching or using switch control mode wont work until you change a key file. More on that [below](configuring-morace.md#want-to-pair-to-more-than-one-bluetooth-device-or-use-switch-control-mode).&#x20;
+
+### Key UserConfig Options
 
 You have some options depending on your needs. You will find all settings in the `userConfig.py`. Note that text macros and the morse code key set is in `morseCode.py`.\
 \
