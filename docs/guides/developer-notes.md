@@ -6,12 +6,14 @@
 
 1 x Ace Centre x80 or:
 
-* x1 [Adafruit nrf52840](https://www.adafruit.com/product/4062) or Adafruit nrf52840 itsybitsy
+* x1 [Adafruit nrf52840](https://www.adafruit.com/product/4062) or [Adafruit nrf52840 itsybitsy](https://www.adafruit.com/product/4481)
 * x3 [3.5mm Socket](https://www.hobbytronics.co.uk/stereo-audio-jack-socket) (or any [momentary buttons](https://www.hobbytronics.co.uk/push-switch-12mm))
 * x1 [Buzzer](https://www.hobbytronics.co.uk/piezo-transducer-5v)
 * x1 [PNP](https://www.hobbytronics.co.uk/bc212l-pnp-transistor)
 * x1 [10K resistor](https://www.hobbytronics.co.uk/resistor-10k-1-8w)
 * x1 Neopixel
+
+Download the firmware here. Note - if you prefer C take a look at the ArduinoC branch. We wont be keeping this up to date but has most of the key features.&#x20;
 
 ### Arduino wiring
 
@@ -28,13 +30,9 @@ See also this [Fritzing diagram](https://github.com/AceCentre/BLEMorseToText/blo
 
 #### Usage
 
-Wire it all up. Set your settings in `userConfig.h`. Pair your device with a compatible device (PC, Mac, Linux, iOS, Android) - and away you go.
-
-**More to follow here**
+Wire it all up. Set your settings in `userConfig.py`. Make sure your board is setup to run CircuitPy ([itsybitsy guide ](https://learn.adafruit.com/adafruit-itsybitsy-nrf52840-express/circuitpython)and [feather guide](https://www.adafruit.com/product/4062)) and drag and drop the files to the _CIRCUITPY_ disk drive. Pair your device with a compatible device (PC, Mac, Linux, iOS, Android) - and away you go.
 
 There **will** be bugs. Please submit them to the [issue queue](https://github.com/AceCentre/BLEMorseToText/issues).
-
-
 
 ### Contributing
 
@@ -42,7 +40,20 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 ### Files
 
-All the Arduino code is in the sub-directory **Morse\_BLE\_HID**
+All the Arduino code is in the sub-directory morace [subdirectory](https://github.com/AceCentre/morAce).&#x20;
+
+For the main branch (CircuitPy):
+
+* boot.py - Code that runs on boot. Note the logic in here to turn on/off filesystem wriing
+* code.py - The main loop
+* extern.py - Helper functions
+* morseCode.py - morse code mapping&#x20;
+* userConfig.py - User configurable data. Should be well documented
+* userPinMap.py - Map your pins here
+* x80PinMap.py - Uses our X80 pin maps\
+
+
+For the [ArduinoC](https://github.com/AceCentre/morAce/tree/ArduinoC) branch:
 
 * Morse\_BLE\_HID.ino - Main source code file
 * morseCode.cpp - Library source code file for Morse Code related functions
@@ -60,7 +71,8 @@ We needed a BLE HID Switch->Morse system - that allowed swapping between several
 * Jim Lubin - and his fab Morse archive [here](https://www.makoa.org/jlubin/morsecode.htm)
 * [Adaptive Design](https://www.adaptivedesign.org) - who have been great recently about pushing along the morse agenda
 * Adafruit. For being amazing.
-* [deeproadrash](https://www.freelancer.co.uk/u/deeproadrash) who helped immensely with a lot of the code on this project. TY!
+* [deeproadrash](https://www.freelancer.co.uk/u/deeproadrash) who helped immensely with a lot of the code on this project.&#x20;
+* [f1andrew](https://github.com/f1andrew) - Andrii Pavlyshyn who has done a lot of the changes to circuitPy and ironed out a lot of bugs. :heart::flag\_ua:
 
 ### Similar projects
 
@@ -73,5 +85,5 @@ We needed a BLE HID Switch->Morse system - that allowed swapping between several
 
 ### License
 
-MIT
+[MIT](../../LICENSE)
 
