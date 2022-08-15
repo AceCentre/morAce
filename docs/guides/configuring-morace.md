@@ -32,16 +32,15 @@ You have some options depending on your needs. You will find all settings in the
 \
 **One, Two or Three switch morse functionality**
 
-By default the board is set to **one switch mode.** By using one switch the user needs to send a dot and dash character by holding down the switch at the correct timings. So if you do use this one switch mode be particularly careful of adjusting the Length of a dot setting which is default set to 200 ms (a dash by convention is three times the length of a dot).
+By default the board is set to **one switch mode.** By using one switch the user needs to send a dot and dash character by holding down the switch at the correct timings. So if you do use this one switch mode be particularly careful of adjusting the length of a dot setting which is default set to 200 ms (a dash by convention is three times the length of a dot).
 
-In **two switch mode** - you need a switch to send the dot and another for the dash. You still need some timing skills to allow the system to distinguish the end of character time. If a user has difficulty with this you may want to use **3 switch mode.** In this mode the third switch is the end of character signal. e.g. \
+In **two switch mode** - you need a switch to send the dot and another for the dash. You still need some timing skills to allow the system to distinguish the end of character time (set as the same time as a dot - so you would need to not press for **200ms**). If a user has difficulty with this you may want to use **3 switch mode.** In this mode the third switch is the end of character signal. e.g. \
 ****\
-****In one switch mode. To send the letter "a" (dot dash) you would press the button for **200 ms**, release then press immediatley again for **600 ms.** You then need to leave for a short period of time before starting another letter.&#x20;
+****In one switch mode. To send the letter "a" (dot dash) you would press **switch 1** for **200 ms**, release then press **switch 1** immediatley again for **600 ms.** You then need to leave for **minimum of 200ms** before starting another letter.&#x20;
 
-In two switch mode you would press switch one for any length of time, release and then press the second switch. Then wait the period of time before starting the next letter.&#x20;
+In two switch mode you would press **switch one** for any length of time, release and then press the **second switch**. Then wait a **minimum of 200ms** before starting the next letter.&#x20;
 
-In three switch mode you would press switch 1, then 2, then 3.\
-****
+In three switch mode you would press switch **1**, then **2**, then **3.**
 
 **To configure** this - edit `userConfig.py` - by editing the following lines. Put a 1 against the option you want. Put a zero against the options you dont want.&#x20;
 
