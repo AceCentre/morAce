@@ -33,7 +33,7 @@ button_three = DigitalInOut(button_three_pin)
 button_three.direction = Direction.INPUT
 button_three.pull = Pull.UP
 
-extern.buzzer = pwmio.PWMOut(board.A0, duty_cycle=0, frequency=buzzer_freq, variable_frequency=True)
+extern.buzzer = pwmio.PWMOut(buzzer_pin, duty_cycle=0, frequency=buzzer_freq, variable_frequency=True)
 
 print("Boot")
 if button_one.value == False and button_two.value == True and button_three.value == False:    

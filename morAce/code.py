@@ -384,7 +384,7 @@ user_button2 = DigitalInOut(user_switch2)
 user_button2.direction = Direction.INPUT
 user_button2.pull = Pull.UP
 
-extern.buzzer = pwmio.PWMOut(board.A0, duty_cycle=0, frequency=buzzer_freq, variable_frequency=True)
+extern.buzzer = pwmio.PWMOut(buzzer_pin, duty_cycle=0, frequency=buzzer_freq, variable_frequency=True)
 
 #// Set Neopixel Colour
 extern.setNeopixelColor(0, 0, 0)   
