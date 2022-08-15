@@ -127,6 +127,10 @@ We also have some predefined strings. You can edit these and add your own by ent
 ..--..---..   "How are you?"
 ```
 
+{% hint style="info" %}
+You might want to consider making use of the operating systems own keyboard shortcuts. For example this is available in MacOS and iOS. On iOS this is found under Settings->General-> Keyboards-> Text Replacement.&#x20;
+{% endhint %}
+
 ### Sending key combinations
 
 In a typical keyboard you might need to send multiple keys being held down at once. To do this we need to use the **HOLD** and **RELEASE** codes
