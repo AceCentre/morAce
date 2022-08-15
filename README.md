@@ -49,5 +49,4 @@ We needed a BLE HID Switch->Morse system - that allowed swapping between several
 <a href = "https://github.com/acecentre/morace/graphs/contributors">
 <img src = "https://contrib.rocks/image?repo=acecentre/morace"/>
 </a>
-Made with [contributors-img](https://contrib.rocks)
 
