@@ -8,7 +8,6 @@ morAce is a Arduino project designed to work with the [Adafruit nrf52840](https:
   <a href="https://www.openaac.org"><img src="https://img.shields.io/badge/OpenAAC-%F0%9F%92%AC-red?style=flat\&link=https://www.openaac.org"></a>
   <img alt="GitHub" src="https://img.shields.io/github/license/acecentre/morace">
   <img alt="GitHub issues" src="https://img.shields.io/github/issues-raw/acecentre/morace">
-  <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/acecentre/morace">
 </p>
 
 ### What does it do exactly?
@@ -45,4 +44,9 @@ We needed a BLE HID Switch->Morse system - that allowed swapping between several
 ### License
 
 [MIT](https://choosealicense.com/licenses/mit/)
+
+<a href = "https://github.com/acecentre/morace/graphs/contributors">
+<img src = "https://contrib.rocks/image?repo=acecentre/morace"/>
+</a>
+Made with [contributors-img](https://contrib.rocks).
 
