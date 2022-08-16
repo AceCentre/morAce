@@ -370,7 +370,7 @@ elif three_button_mode:
     extern.button_three.direction = Direction.INPUT
     extern.button_three.pull = Pull.UP
 
-user_button2 = DigitalInOut(user_switch2)
+user_button2 = DigitalInOut(user_switch)
 user_button2.direction = Direction.INPUT
 user_button2.pull = Pull.UP
 
