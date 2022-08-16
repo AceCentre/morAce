@@ -60,45 +60,42 @@ def writeDataToFS():                                 #// v0.3e
     if userConfig.serial_debug_en:
         print("Data written in DB file:", buff)
 
-def readDataFromFS():                                #// v0.3e    
+def readDataFromFS():                            #// v0.3e    
     global currMode, hidMode, mouseMoveStep, swapConnDeviceNames, currSwapConnIndex, dbFileName, flag_switchControlMode
 
     try:
         with open(dbFileName, "r") as dbFile:    
             if userConfig.serial_debug_en:
                 print("DB file open");        
-            
+
             data_list = dbFile.read().split(",") #local
-            
+
             if userConfig.serial_debug_en:
                 print(data_list)
 
             if len(data_list) == userConfig.maxSwapConn+4:        
-                
-                if(int(data_list[0]) == 0 or int(data_list[0]) == 1):            
-                    currMode = int(data_list[0])            
+
+                if int(data_list[0]) in {0, 1}:            
+                    currMode = int(data_list[0])
                 else:            
                     currMode = userConfig.morse_mode          
 
                 #// v0.3g
-                if currMode == userConfig.morse_mode: 
-                    flag_switchControlMode = 0            
-                else:            
-                    flag_switchControlMode = 1;            
+                flag_switchControlMode = 0 if currMode == userConfig.morse_mode else 1
                 #// v0.3g
 
-                if int(data_list[1]) == 0 or int(data_list[1]) == 1:
+                if int(data_list[1]) in {0, 1}:
                     hidMode = int(data_list[1])
                 else:
                     hidMode = userConfig.default_mode_of_device
-                
+
                 if int(data_list[2]) >= userConfig.mouse_speed_lower_limit and int(data_list[2]) <= userConfig.mouse_speed_upper_limit:                
                     mouseMoveStep = int(data_list[2])
                 else:
                     mouseMoveStep = userConfig.default_mouse_move_step
                 for i in range(userConfig.maxSwapConn):
                     swapConnDeviceNames[i] = data_list[i+3]                    
-                
+
                 if int(data_list[userConfig.maxSwapConn+3]) < userConfig.maxSwapConn:
                     currSwapConnIndex = int(data_list[userConfig.maxSwapConn+3])
                 else:                
