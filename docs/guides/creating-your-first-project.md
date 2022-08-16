@@ -29,7 +29,7 @@ These are the pre-defined keys. You can customise these by editing `morseCode.py
 * `--.-` q
 * `.-.` r
 * `...` s
-* `-"` t
+* `-` t
 * `..-` u
 * `...-` v
 * `.--` w
