@@ -248,6 +248,10 @@ def bleConnectCallback():       #// v0.3c
     connection = None #local
     central_name = "" #local
     peer_connection = extern.ble.connections[0]
+    
+    if not peer_connection.connected:
+        return
+    
     central_name = getCentralName(peer_connection)
 
     if serial_debug_en:
