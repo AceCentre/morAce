@@ -3,8 +3,9 @@ import board
 from digitalio import DigitalInOut, Direction, Pull
 import storage
 import extern
-from userConfig import x80_pinout
+from userConfig import x80_pinout, buzzer_freq
 import supervisor
+import pwmio
 
 supervisor.disable_ble_workflow()
 
@@ -32,17 +33,15 @@ button_three = DigitalInOut(button_three_pin)
 button_three.direction = Direction.INPUT
 button_three.pull = Pull.UP
 
-extern.buzzer = DigitalInOut(buzzer_pin)
-extern.buzzer.direction = Direction.OUTPUT
-extern.buzzer_set_state(False)
+extern.buzzer = pwmio.PWMOut(buzzer_pin, duty_cycle=0, frequency=buzzer_freq, variable_frequency=True)
 
 print("Boot")
 if button_one.value == False and button_two.value == True and button_three.value == False:    
     print("Filesystem ready for update.")
     #storage.remount("/", True)            
-    extern.buzzer_set_state(True)
+    extern.buzzer_activate(buzzer_freq)
     time.sleep(2)
-    extern.buzzer_set_state(False)
+    extern.buzzer_deactivate()
 else:        
     print("Filesystem is readonly.")
     #storage.remount("/", False)    

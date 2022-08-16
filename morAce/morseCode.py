@@ -210,21 +210,21 @@ def convertor():
         #// Write updated data into FS
         extern.writeDataToFS()                               #// v0.3e
 
-        extern.buzzer_set_state(True)
+        extern.buzzer_activate(buzzer_freq)
         time.sleep(0.4)       #// v0.3f
-        extern.buzzer_set_state(False)
+        extern.buzzer_deactivate()
         time.sleep(0.3)
-        extern.buzzer_set_state(True)
+        extern.buzzer_activate(buzzer_freq)
         time.sleep(0.4)
-        extern.buzzer_set_state(False)
+        extern.buzzer_deactivate()
         time.sleep(0.3)
-        extern.buzzer_set_state(True)
+        extern.buzzer_activate(buzzer_freq)
         time.sleep(0.2)
-        extern.buzzer_set_state(False)
+        extern.buzzer_deactivate()
         time.sleep(0.1)
-        extern.buzzer_set_state(True)
+        extern.buzzer_activate(buzzer_freq)
         time.sleep(0.2)
-        extern.buzzer_set_state(False)
+        extern.buzzer_deactivate()
         time.sleep(0.1)    
     elif(extern.codeStr == swapBleConnectionMorseCode):      #// v0.3    
         extern.handleBleConnectionSwap()
@@ -473,12 +473,12 @@ def handleSwitchControlKeypress():                          #// v0.3
     if one_button_mode:
         if extern.button_one.value == False:        
             if keycheck:            
-                extern.buzzer_set_state(True)                    #// v0.3f
+                extern.buzzer_activate(buzzer_freq)                    #// v0.3f
                 keycheck = 0
                 extern.k.send(Keycode.SPACE)
                 time.sleep(0.05)                
                 extern.k.release_all()
-                extern.buzzer_set_state(False)                  #// v0.3f                    
+                extern.buzzer_deactivate()                  #// v0.3f                    
         else:        
             keycheck = 1
 
@@ -486,49 +486,49 @@ def handleSwitchControlKeypress():                          #// v0.3
         if extern.button_one.value == False:
         
             if keycheck:            
-                extern.buzzer_set_state(True)                    #// v0.3f
+                extern.buzzer_activate(buzzer_freq)                    #// v0.3f
                 keycheck = 0
                 extern.k.send(Keycode.SPACE)
                 time.sleep(0.05)
                 extern.k.release_all()
-                extern.buzzer_set_state(False)                   #// v0.3f            
+                extern.buzzer_deactivate()                   #// v0.3f            
         
         elif extern.button_two.value == False:        
             if keycheck:            
-                extern.buzzer_set_state(True)                    #// v0.3f
+                extern.buzzer_activate(buzzer_freq)                    #// v0.3f
                 keycheck = 0
                 extern.k.send(Keycode.ENTER)
                 time.sleep(0.05)
                 extern.k.release_all()
-                extern.buzzer_set_state(False)                   #// v0.3f                    
+                extern.buzzer_deactivate()                   #// v0.3f                    
         else:         
             keycheck = 1
 
     if three_button_mode:
         if extern.button_one.value == False:
             if keycheck:            
-                extern.buzzer_set_state(True)                    #// v0.3f
+                extern.buzzer_activate(buzzer_freq)                    #// v0.3f
                 keycheck = 0
                 extern.k.send(Keycode.SPACE)
                 time.sleep(0.05)
                 extern.k.release_all()
-                extern.buzzer_set_state(False)                   #// v0.3f                    
+                extern.buzzer_deactivate()                   #// v0.3f                    
         elif extern.button_two.value == False:        
             if keycheck:
-                extern.buzzer_set_state(True)                    #// v0.3f
+                extern.buzzer_activate(buzzer_freq)                    #// v0.3f
                 keycheck = 0
                 extern.k.send(Keycode.ENTER)
                 time.sleep(0.05)
                 extern.k.release_all()
-                extern.buzzer_set_state(False)                   #// v0.3f
+                extern.buzzer_deactivate()                   #// v0.3f
         elif extern.button_three.value == False:
             if keycheck:
-                extern.buzzer_set_state(True)                    #// v0.3f
+                extern.buzzer_activate(buzzer_freq)                    #// v0.3f
                 keycheck = 0
                 extern.k.send(Keycode.BACKSPACE)                       
                 time.sleep(0.05)
                 extern.k.release_all()
-                extern.buzzer_set_state(False)                   #// v0.3f
+                extern.buzzer_deactivate()                   #// v0.3f
         else:
             keycheck = 1
 

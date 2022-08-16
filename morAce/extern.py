@@ -30,12 +30,16 @@ button_two = None
 button_three = None
 buzzer = None
 
-def buzzer_set_state(state):
+def buzzer_activate(freq):
     global buzzer
-    if userConfig.buzzer_type == userConfig.active_low:
-        state = not state
-    
-    buzzer.value = state
+
+    buzzer.frequency = freq
+    buzzer.duty_cycle = 65535 // 20
+
+def buzzer_deactivate():
+    global buzzer
+
+    buzzer.duty_cycle = 0    
 
 def writeDataToFS():                                 #// v0.3e
     global currMode, hidMode, mouseMoveStep, swapConnDeviceNames, currSwapConnIndex, dbFileName

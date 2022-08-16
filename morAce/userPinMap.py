@@ -16,14 +16,9 @@ button_two_pin = board.A4
 button_three_pin = board.A3
 
 """
-// Switch for BLE connection Swapping
-"""
-user_switch = board.A2
-
-"""
 // Switch for Morse Mode & Switch Control Mode Swapping
 """
-user_switch2 = board.A1
+user_switch = board.A1
 
 """
 // Buzzer for Morse code
