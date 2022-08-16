@@ -207,18 +207,12 @@ def checkButtonThreeForEndChar():
         pass
 
 def checkForConnectionSwap():
-    global user_button, user_button2, currentMillis, keyscan, lastUserBtnCheckTicks
+    global user_button2, currentMillis, keyscan, lastUserBtnCheckTicks
     
     if currentMillis - lastUserBtnCheckTicks >= 100:
-        lastUserBtnCheckTicks = currentMillis
-        if user_button.value == False:
-            if keyscan:       #// v0.3b      
-                keyscan = 0
-                if serial_debug_en:
-                    print("Connection Swap Switch Pressed");                
-                extern.handleBleConnectionSwap()     #// v0.3        
-        elif user_button2.value == False:       #// v0.3b    
-            if(keyscan):        
+        lastUserBtnCheckTicks = currentMillis       
+        if user_button2.value == False:       #// v0.3b    
+            if keyscan:        
                 #//uint16_t connectionHandle = 0;
                 #//BLEConnection* connection = NULL;
                 
@@ -375,10 +369,6 @@ elif three_button_mode:
     extern.button_three = DigitalInOut(button_three_pin)
     extern.button_three.direction = Direction.INPUT
     extern.button_three.pull = Pull.UP
-
-user_button = DigitalInOut(user_switch)
-user_button.direction = Direction.INPUT
-user_button.pull = Pull.UP
 
 user_button2 = DigitalInOut(user_switch2)
 user_button2.direction = Direction.INPUT
