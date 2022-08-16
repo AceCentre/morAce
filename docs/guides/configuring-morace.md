@@ -111,6 +111,6 @@ else:
 We simply remove the **# (hash) marks**
 
 {% hint style="danger" %}
-Warning. When you do this it will no longer by default load on the desktop and the config files cannot be edited. To fix this - **Press switch 1 and 3 on a reset** of the board (i.e. plugging it into a power source). You can then edit - but resetting after this will put it back into a state where the disk drive does not appear. _In the future we may set this as default. But for now while we still are testing it, its easier to live this as a default._
+Warning. When you do this it will no longer by default load on the desktop and the config files cannot be edited. To fix this - **Press switch 1 and 3 on a reset** of the board (i.e. plugging it into a power source). You can then edit - but resetting after this will put it back into a state where the disk drive does not appear. _In the future we may set this as default. But for now while we still are testing it, its easier to leave this as a default._
 {% endhint %}
 
