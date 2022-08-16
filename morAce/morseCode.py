@@ -117,6 +117,7 @@ morseCodeKeyboard_special = [
   ("-.--..",  [Keycode.DELETE]),           #// Delete
   ("--.--.",  [Keycode.PRINT_SCREEN]),     #// PrtScn
   ("---..-.", [Keycode.TAB]),              #// Tab
+  (".--.--",  [Keycode.LEFT_GUI]),         #// LGUI/Windows/Mac   
   ("--.----", [Keycode.F1 ]),              #// F1
   ("--..---", [Keycode.F2 ]),              #// F2
   ("--...--", [Keycode.F3 ]),              #// F3
