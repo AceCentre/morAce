@@ -52,7 +52,3 @@ or to continually move the mouse&#x20;
 `...      (send some move commands)`\
 `.---.- (Repeat command)`\
 `.---.--  (release command)`
-
-
-
-``
