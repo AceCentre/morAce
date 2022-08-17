@@ -11,8 +11,8 @@ x80_pinout = False #temp # True if x80 board is used
  *  note - Write string between double quotes
  */
 """
-device_ble_name = "MORSE_HID"
-device_ble_name2 = "SW_HID"                #// v0.3c
+device_ble_name = "MorAce-Morse"
+device_ble_name2 = "MorAce-Switch"         
 device_manufacturer = "AceCentre"
 device_model_name = "BLE-HID-v1"
 
