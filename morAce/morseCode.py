@@ -22,6 +22,7 @@ keycodeComboBuff = []     #// v0.3e
 lastKeyboardChar = 0      #// v0.3e
 lastSentCmdType = 0       #// v0.3e 
 flag_hold = 0
+mouse_buttons_state = 0
 
 morseCodeKeyboard = [
   (".-",    [Keycode.A]), 
@@ -132,18 +133,20 @@ morseCodeKeyboard_special = [
   ("..-----", [Keycode.F12]),              #// F12
 ]
 
-mouse_move_right      = 1
-mouse_move_left       = 2
-mouse_move_up         = 3
-mouse_move_down       = 4
-mouse_move_left_up    = 5
-mouse_move_right_up   = 6
-mouse_move_left_down  = 7
-mouse_move_right_down = 8
-mouse_click_right     = 9
-mouse_click_left      = 10
-mouse_db_click_right  = 11
-mouse_db_click_left   = 12
+mouse_move_right       = 1
+mouse_move_left        = 2
+mouse_move_up          = 3
+mouse_move_down        = 4
+mouse_move_left_up     = 5
+mouse_move_right_up    = 6
+mouse_move_left_down   = 7
+mouse_move_right_down  = 8
+mouse_click_right      = 9
+mouse_click_left       = 10
+mouse_db_click_right   = 11
+mouse_db_click_left    = 12
+mouse_press_hold_right = 13
+mouse_press_hold_left  = 14
 
 morseCodeMouse = [
     (None,    0),                           #// v0.3e - Just for logic adjustment
@@ -158,7 +161,9 @@ morseCodeMouse = [
     (".--",    mouse_click_right),
     (".-",     mouse_click_left),
     ("..--",   mouse_db_click_right),
-    ("..-",    mouse_db_click_left)
+    ("..-",    mouse_db_click_left),
+    ("..--.",  mouse_press_hold_right),
+    ("..-.",   mouse_press_hold_left)
 ]
 
 morseCodePredefinedStr = [                  #// v0.3e
@@ -187,7 +192,7 @@ mouse_cmd         = 2
 
 def convertor():
     global keyMouseSwitchMorseCode, swapBleConnectionMorseCode, repeatCmdMorseCode, mouseSpeedIncMorseCode, mouseSpeedDecMorseCode, mouseSpeedSet1MorseCode, mouseSpeedSet5MorseCode, holdCmdMorseCode, releaseCmdMorseCode, lastKeyboardChar, lastSentCmdType, flag_hold
-    global morseCodeKeyboard
+    global morseCodeKeyboard, mouse_buttons_state
     
     i = 0 # local
 
@@ -275,14 +280,12 @@ def convertor():
         if serial_debug_en:
             print("Cmd: Hold")    
     elif extern.codeStr == releaseCmdMorseCode:              #// v0.3e    
-        if flag_hold:
-            extern.mouse.release_all()                    
-            flag_hold = 0
-            if serial_debug_en:
-                print("Cmd: Release")
-        else:        
-            if serial_debug_en:
-                print("Release Cmd Error")    
+        extern.mouse.release_all()
+        mouse_buttons_state = 0
+        flag_hold = 0
+        if serial_debug_en:
+            print("Cmd: Release")
+    
     else:
         if extern.hidMode == keyboard_mode:
             if checkPredefinedStrings():             #// v0.3e
@@ -319,7 +322,7 @@ def hidSpecialKeyPress(buff):           #// v0.3e
     keycodeComboBuff = []
 
 def handleMouseMorseCode():
-    global lastSentCmdType, flag_hold, morseCodeMouse
+    global lastSentCmdType, flag_hold, morseCodeMouse, mouse_buttons_state
  
     if extern.codeStr == morseCodeMouse[mouse_move_right][0]:    
         lastSentCmdType = mouse_cmd              #// v0.3e
@@ -371,16 +374,20 @@ def handleMouseMorseCode():
             print("Mouse: Right-Down")    
     elif extern.codeStr == morseCodeMouse[mouse_click_right][0]:
         extern.mouse.press(Mouse.RIGHT_BUTTON)
-        if(not flag_hold):                                    #// v0.3e        
-            time.sleep(0.02)
-            extern.mouse.release_all()
+        time.sleep(0.02)
+        extern.mouse.release_all()
+        
+        mouse_buttons_state = 0 
+        
         if serial_debug_en:
             print("Mouse: Right Click")    
     elif extern.codeStr == morseCodeMouse[mouse_click_left][0]:
-        extern.mouse.press(Mouse.LEFT_BUTTON)
-        if(not flag_hold):                                    #// v0.3e        
-            time.sleep(0.02)
-            extern.mouse.release_all()
+        extern.mouse.press(Mouse.LEFT_BUTTON)        
+        time.sleep(0.02)
+        extern.mouse.release_all()
+        
+        mouse_buttons_state = 0 
+        
         if serial_debug_en:
             print("Mouse: Left Click")            
     elif extern.codeStr == morseCodeMouse[mouse_db_click_right][0]:
@@ -390,7 +397,9 @@ def handleMouseMorseCode():
 
         extern.mouse.press(Mouse.RIGHT_BUTTON)
         time.sleep(0.05)
-        extern.mouse.release_all()        
+        extern.mouse.release_all()
+        
+        mouse_buttons_state = 0 
         
         if serial_debug_en:
             print("Mouse: Right Double Click")
@@ -402,8 +411,31 @@ def handleMouseMorseCode():
         extern.mouse.press(Mouse.LEFT_BUTTON)
         time.sleep(0.05)
         extern.mouse.release_all()
+        
+        mouse_buttons_state = 0
+        
         if serial_debug_en:
             print("Mouse: Left Double Click")    
+    elif extern.codeStr == morseCodeMouse[mouse_press_hold_right][0]:
+        if mouse_buttons_state != Mouse.RIGHT_BUTTON:
+            extern.mouse.press(Mouse.RIGHT_BUTTON)
+            mouse_buttons_state = Mouse.RIGHT_BUTTON
+        else:        
+            extern.mouse.release_all()
+            mouse_buttons_state = 0
+
+        if serial_debug_en:
+            print("Mouse: Right press & hold")
+    elif extern.codeStr == morseCodeMouse[mouse_press_hold_left][0]:
+        if mouse_buttons_state != Mouse.LEFT_BUTTON:
+            extern.mouse.press(Mouse.LEFT_BUTTON)
+            mouse_buttons_state = Mouse.LEFT_BUTTON
+        else:        
+            extern.mouse.release_all()
+            mouse_buttons_state = 0
+   
+        if serial_debug_en:
+            print("Mouse: Left press & hold")
     else:    
         if serial_debug_en:
             print("<Wrong Input>")    
