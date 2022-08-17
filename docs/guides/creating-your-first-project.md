@@ -60,7 +60,7 @@ These are the pre-defined keys. You can customise these by editing `morseCode.py
 * `-.....` comma
 * `----.-` \_
 * `....-.` |
-* `-.----` ?
+* `-.----`?
 * `.-....` !
 * `-....-` ;
 * `.----.` :
@@ -80,7 +80,7 @@ These are the pre-defined keys. You can customise these by editing `morseCode.py
 * `-..--` \*
 * `..--` Space
 * `.-.-` Enter
-* `--"` Backspace
+* `--` Backspace
 * `--....` ESC
 * `--...-` Shift
 * `-.-.` Ctrl
@@ -143,7 +143,7 @@ when you are done holding down keys you can release using this command
 
 `.---.-- RELEASE`
 
-e.g. HOLD Ctrl C RELEASE will hold down the ctrl and C key - and then release it. (NB: You could use sticky keys too if you wish which is a built in feature to most operating systems). \
+e.g. HOLD Ctrl C RELEASE will hold down the ctrl and C key - and then release it. (NB: You could use sticky keys too if you wish which is a built in feature to most operating systems).\
 \
 We do have another way for common combinations too:
 
@@ -157,3 +157,9 @@ We have some shortcuts already hardcoded. Eg.&#x20;
 ..--.    Win+Tab
 ..-....  Win+H
 ```
+
+**Repeat Command**
+
+An alternative way of holding a key is similar to what we do with mouse. You use this by typing a character, then pressing repeat - and it will repeat pressing that. Cancelling the repeat is with any press.&#x20;
+
+`.---.-`
