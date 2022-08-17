@@ -48,16 +48,9 @@ So to drag the mouse you could use this technique. Or you could use the **REPEAT
 
 #### To drag the mouse
 
-`.---.-. (hold command)` \
-`.-       (left click)` \
-`...      (send some move commands)` \
-`.---.--  (release command)`
-
-or to continually move the mouse&#x20;
-
-`.---.-. (hold command)` \
-`.-       (left click)` \
-`...      (send some move commands)`\
-`.---.- (Repeat command)`\
-`.---.--  (release command)`
+`-. (Click and hold)` \
+`-       (Up)` \
+`.      (Repeat moving up)` \
+`.      (release moving when ready)` \
+`-.      (Release Click and Hold)`
 
