@@ -162,8 +162,8 @@ morseCodeMouse = [
     (".-",     mouse_click_left),
     ("..--",   mouse_db_click_right),
     ("..-",    mouse_db_click_left),
-    ("..--.",  mouse_press_hold_right),
-    ("..-.",   mouse_press_hold_left)
+    ("-..",  mouse_press_hold_right),
+    ("-.",   mouse_press_hold_left)
 ]
 
 morseCodePredefinedStr = [                  #// v0.3e
