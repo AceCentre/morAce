@@ -80,7 +80,7 @@ These are the pre-defined keys. You can customise these by editing `morseCode.py
 * `-..--` \*
 * `..--` Space
 * `.-.-` Enter
-* `--` Backspace
+* `.-.--.` Backspace
 * `--....` ESC
 * `--...-` Shift
 * `-.-.` Ctrl
