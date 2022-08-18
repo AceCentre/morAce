@@ -2,7 +2,7 @@
 
 ## The basics
 
-In its default state morace is designed to work with one switch. But it can be used with 1,2 or 3 switches if you configure it that way. So in one switch mode you press for a length of time for a dot and a length of time for a dash and the gap of no sending any characters is what defines the ending of a encoded chunk (a letter or any morse encoded element). You can change these timings in the **userConstants.py** file if you so wish. \
+In its default state morace is designed to work with one switch. But it can be used with 1,2 or 3 switches if you configure it that way. So in one switch mode you press for a length of time for a dot and a length of time for a dash and the gap of no sending any characters is what defines the ending of a encoded chunk (a letter or any morse encoded element). You can change these timings in the **userConstants.py** file if you so wish.\
 \
 There is also a **fast typing mode** - where holding down the switch will repeat a character. It best works with at least two switches. By default this is off. You can turn it on by editing userConfig.py and setting the parameter of `fast_typing_mode` to 1
 
@@ -128,7 +128,7 @@ We also have some predefined strings. You can edit these and add your own by ent
 ```
 
 {% hint style="info" %}
-You might want to consider making use of the operating systems own keyboard shortcuts. For example this is available in MacOS and iOS. On iOS this is found under Settings->General-> Keyboards-> Text Replacement.&#x20;
+You might want to consider making use of the operating systems own keyboard shortcuts. For example this is available in MacOS and iOS. On iOS this is found under Settings->General-> Keyboards-> Text Replacement.
 {% endhint %}
 
 ### Sending key combinations
@@ -147,19 +147,35 @@ e.g. HOLD Ctrl C RELEASE will hold down the ctrl and C key - and then release it
 \
 We do have another way for common combinations too:
 
-#### Common predefined shortcuts
+#### Macro Mode
 
-We have some shortcuts already hardcoded. Eg.&#x20;
+If a user types `....----` in either mouse or keyboard mode then the standard key set (e.g. A-Z etc) can be used with a macro. A user can define these in `morseCode.py`&#x20;
 
 ```
-....---- Ctrl+C
-...----- Ctrl+V
-..--.    Win+Tab
-..-....  Win+H
+morseCodeMacro = [
+  (".-",    "My name is Morace"),
+  ("-...",  "123-456-789"),
+  ("---.",  "My Common password here"),
+  ("-..",   [Keycode.ALT,Keycode.SHIFT,Keycode.D]),
+ ..
 ```
+
+Once the macro code is sent - it will revert back to the previous mouse or keyboard mode.&#x20;
+
+So for example. \
+\
+In Keyboard mode:
+
+`....----  (Macro Mode)`
+
+`.- (My Name is MorAce is sent)`
+
+`(Back in Keyboard mode)`
+
+``
 
 **Repeat Command**
 
-An alternative way of holding a key is similar to what we do with mouse. You use this by typing a character, then pressing repeat - and it will repeat pressing that. Cancelling the repeat is with any press.&#x20;
+An alternative way of holding a key is similar to what we do with mouse. You use this by typing a character, then pressing repeat - and it will repeat pressing that. Cancelling the repeat is with any press.
 
 `.---.-`
