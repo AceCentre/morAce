@@ -1,5 +1,5 @@
 
-x80_pinout = False #temp # True if x80 board is used
+x80_pinout = True # True if x80 board is used
 
 """
 /*  Device Specific Settings
@@ -12,7 +12,7 @@ x80_pinout = False #temp # True if x80 board is used
  */
 """
 device_ble_name = "MorAce-Morse"
-device_ble_name2 = "MorAce-Switch"         
+device_ble_name2 = "MorAce-Switch"
 device_manufacturer = "AceCentre"
 device_model_name = "BLE-HID-v1"
 
@@ -217,6 +217,9 @@ dash = '-'
 
 # buzzer frequency
 buzzer_freq = 1000
+
+# buzzer sound level(0-10)
+sound_level = 5
 
 # Max length of morse buffer
 morse_code_max_length = 13
