@@ -31,12 +31,12 @@ else:
 #MORSE_KEY_IP_TYPE = IP_NO_PULL #original
 
 # dotstart initialization
-#import adafruit_dotstar
-#extern.pixels = adafruit_dotstar.DotStar(board.APA102_SCK, board.APA102_MOSI, 1, brightness=0.3, auto_write=False)
+import adafruit_dotstar
+extern.pixels = adafruit_dotstar.DotStar(board.APA102_SCK, board.APA102_MOSI, 1, brightness=0.3, auto_write=False)
 
 # neopixel initialization
-import neopixel
-extern.pixels = neopixel.NeoPixel(neopixel_pin, 1, brightness=0.3, auto_write=False)
+#import neopixel
+#extern.pixels = neopixel.NeoPixel(neopixel_pin, 1, brightness=0.3, auto_write=False)
 
 t1 = 0
 t2 = 0
