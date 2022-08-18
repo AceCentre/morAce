@@ -6,6 +6,10 @@ In its default state morace is designed to work with one switch. But it can be u
 \
 There is also a **fast typing mode** - where holding down the switch will repeat a character. It best works with at least two switches. By default this is off. You can turn it on by editing userConfig.py and setting the parameter of `fast_typing_mode` to 1
 
+{% hint style="info" %}
+By default morAce is set to go to keyboard mode first. But you can toggle between keyboard mode and mouse mode with **`.-.--`**&#x20;
+{% endhint %}
+
 ### **Keyboard keys**
 
 These are the pre-defined keys. You can customise these by editing `morseCode.py`
