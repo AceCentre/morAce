@@ -379,10 +379,7 @@ def convertor():
             else:
                 handleMouseMorseCode()
         else:
-            if checkPredefinedStrings():
-                pass
-            elif checkShortcutCommands():
-                pass
+            checkMacroCmds()
 
             extern.hidMode = prev_mode
 
@@ -520,25 +517,19 @@ def handleMouseMorseCode():
         if serial_debug_en:
             print("<Wrong Input>")
 
-def checkPredefinedStrings():
-    global morseCodePredefinedStr
+def checkMacroCmds():
+    global morseCodeShortcutCmd
 
-    for j in range(len(morseCodePredefinedStr)):
-        if extern.codeStr == morseCodePredefinedStr[j][0]:
+    for i in range(len(morseCodeShortcutCmd)):
+        if extern.codeStr == morseCodeShortcutCmd[i][0]:
             if serial_debug_en:
-                print("Predfined Str: ", morseCodePredefinedStr[j][1])
-            extern.kl.write(morseCodePredefinedStr[j][1])
-            return 1
-    return 0
+                print("Macro: ", morseCodeShortcutCmd[i][1])
 
-def checkShortcutCommands():
-    global keycodeComboBuff, morseCodeShortcutCmd
+            if isinstance(morseCodeShortcutCmd[i][1], list):
+                hidSpecialKeyPress(morseCodeShortcutCmd[i][1])
+            elif isinstance(morseCodeShortcutCmd[i][1], str):
+                extern.kl.write(morseCodeShortcutCmd[i][1])
 
-    for j in range(len(morseCodeShortcutCmd)):
-        if extern.codeStr == morseCodeShortcutCmd[j][0]:
-            if serial_debug_en:
-                print("Shortcut: ", morseCodeShortcutCmd[j][1])
-            hidSpecialKeyPress(morseCodeShortcutCmd[j][1])
             return 1
     return 0
 
