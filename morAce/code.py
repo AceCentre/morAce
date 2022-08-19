@@ -67,10 +67,9 @@ if two_button_mode or three_button_mode:  #// v0.3
 else:
     flag_fastTypingMode = 0
 
-if fast_typing_mode:                                     #// v0.3
-    charLength = (dot_length * 3) + 250
-else:
-    charLength = (dot_length * 3) + 100
+charLength = (
+    (dot_length * 3) + 250 if fast_typing_mode else (dot_length * 3) + 100
+)
 
 def loop():
     global currentMillis, lastScKeyCheckTicks, lastCentral_name, lastRepeatCmdSentTicks
@@ -100,18 +99,24 @@ def loop():
                 checkButton(extern.button_two)
                 checkButtonThreeForEndChar()
 
-        if extern.flag_manualDisconnection:
-            if currentMillis - extern.manualDisconnTicks >= last_connection_check_timeout:
-                lastCentral_name = ""
-                extern.flag_manualDisconnection = 0
-                extern.currSwapConnIndex = 0              #// v0.3c
-                #// Write updated data into FS
-                extern.writeDataToFS()                              #// v0.3e
+        if (
+            extern.flag_manualDisconnection
+            and currentMillis - extern.manualDisconnTicks
+            >= last_connection_check_timeout
+        ):
+            lastCentral_name = ""
+            extern.flag_manualDisconnection = 0
+            extern.currSwapConnIndex = 0              #// v0.3c
+            #// Write updated data into FS
+            extern.writeDataToFS()                              #// v0.3e
 
-        if extern.flag_repeatCmdEnable:                #// v0.3e
-            if currentMillis - lastRepeatCmdSentTicks >= interval_send_repeat_cmd:
-                lastRepeatCmdSentTicks = currentMillis
-                handleRepeatCmdAction()
+        if (
+            extern.flag_repeatCmdEnable
+            and currentMillis - lastRepeatCmdSentTicks
+            >= interval_send_repeat_cmd
+        ):
+            lastRepeatCmdSentTicks = currentMillis
+            handleRepeatCmdAction()
 
         checkForConnectionSwap()
 
@@ -129,12 +134,8 @@ def checkButton(button_pin):
                     if extern.millis() - lastBeepTicks >= dot_length:
                         lastBeepTicks = extern.millis()
                         extern.buzzer_activate(buzzer_freq)                            #// v0.3f
-                        if button_pin == extern.button_one:
-                            extern.codeStr += dot
-                            codeStrIndex+=1
-                        else:
-                            extern.codeStr += dash
-                            codeStrIndex+=1
+                        extern.codeStr += dot if button_pin == extern.button_one else dash
+                        codeStrIndex+=1
                         time.sleep(0.05)
                         extern.buzzer_deactivate()                            #// v0.3f
             else:
@@ -146,16 +147,17 @@ def checkButton(button_pin):
                 extern.buzzer_deactivate()                                #// v0.3f
 
                 extern.signal_len = t2 - t1
-                if(extern.signal_len > 50):
+                if (extern.signal_len > 50):
                     if one_button_mode:
                         extern.codeStr += findDotOrDash();               #//function to read dot or dash
                         codeStrIndex+=1
 
-                    if two_button_mode or three_button_mode:
-                        if button_pin == extern.button_one:
+                    if button_pin == extern.button_one:
+                        if two_button_mode or three_button_mode:
                             extern.codeStr += dot     #// v0.2
                             codeStrIndex+=1
-                        elif button_pin == extern.button_two:
+                    elif button_pin == extern.button_two:
+                        if two_button_mode or three_button_mode:
 
                             extern.codeStr += dash    #// v0.2
                             codeStrIndex+=1
@@ -170,27 +172,27 @@ def checkButton(button_pin):
                 continue
         break
 
-    if two_button_mode:        #// v0.3
-        if not flag_fastTypingMode:
-            if (extern.millis() - t2) >= charLength or codeStrIndex >= morse_code_max_length:
-                if codeStrIndex >= 1:
-                    convertor()
-                    codeStrIndex = 0
-        else:
-            if (extern.millis() - lastBeepTicks) >= charLength or codeStrIndex >= morse_code_max_length:
-                if codeStrIndex >= 1:
-                    convertor()
-                    codeStrIndex = 0
+    if two_button_mode:#// v0.3
+        if flag_fastTypingMode:
+            if (
+                (extern.millis() - lastBeepTicks) >= charLength
+                or codeStrIndex >= morse_code_max_length
+            ) and codeStrIndex >= 1:
+                convertor()
+                codeStrIndex = 0
 
+        elif (
+            (extern.millis() - t2) >= charLength
+            or codeStrIndex >= morse_code_max_length
+        ) and codeStrIndex >= 1:
+            convertor()
+            codeStrIndex = 0
     #ifdef THREE_BUTTON_MODE
     #endif
 
-    if one_button_mode:
-        if codeStrIndex >= 1:
-            convertor()
-            codeStrIndex = 0
-        else:
-            pass
+    if one_button_mode and codeStrIndex >= 1:
+        convertor()
+        codeStrIndex = 0
 
     #ifdef TWO_BUTTON_MODE
     #endif
@@ -203,41 +205,37 @@ def checkButtonThreeForEndChar():
         convertor()
         codeStrIndex = 0
         extern.buzzer_deactivate()                           #// v0.3f
-    else:
-        pass
 
 def checkForConnectionSwap():
     global user_button2, currentMillis, keyscan, lastUserBtnCheckTicks
 
     if currentMillis - lastUserBtnCheckTicks >= 100:
         lastUserBtnCheckTicks = currentMillis
-        if user_button2.value == False:       #// v0.3b
-            if keyscan:
-                #//uint16_t connectionHandle = 0;
-                #//BLEConnection* connection = NULL;
+        if user_button2.value == False and keyscan:
+            #//uint16_t connectionHandle = 0;
+            #//BLEConnection* connection = NULL;
 
-                keyscan = 0
+            keyscan = 0
 
-                if not extern.flag_switchControlMode:
-                    extern.flag_switchControlMode = 1
-                    extern.currMode = sw_ctrl_mode              #// v0.3e
-                    if serial_debug_en:
-                        print("Switch Control Mode Enable")
-                else:
-                    extern.flag_switchControlMode = 0
-                    extern.currMode = morse_mode               #// v0.3e
-                    if serial_debug_en:
-                        print("Switch Control Mode Disable")
-                #// Write updated data into FS
-                extern.writeDataToFS()                        #// v0.3e
-
-                #// v0.3g
+            if not extern.flag_switchControlMode:
+                extern.flag_switchControlMode = 1
+                extern.currMode = sw_ctrl_mode              #// v0.3e
                 if serial_debug_en:
-                    print("Reseting MCU")
-                    time.sleep(2)
+                    print("Switch Control Mode Enable")
+            else:
+                extern.flag_switchControlMode = 0
+                extern.currMode = morse_mode               #// v0.3e
+                if serial_debug_en:
+                    print("Switch Control Mode Disable")
+            #// Write updated data into FS
+            extern.writeDataToFS()                        #// v0.3e
 
-                microcontroller.reset()
-                #// v0.3g
+            #// v0.3g
+            if serial_debug_en:
+                print("Reseting MCU")
+                time.sleep(2)
+
+            microcontroller.reset()
     else:      #// v0.3b
         keyscan = 1
 
