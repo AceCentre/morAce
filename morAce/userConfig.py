@@ -70,6 +70,10 @@ keyMouseSwitchMorseCode = ".-.--"
  *  For Mouse Mode    : MOUSE_MODE
  */
 """
+
+macro_mode_morse_code = "....----"
+
+macro_mode = 2
 keyboard_mode = 1
 mouse_mode = 0
 
@@ -219,7 +223,7 @@ dash = '-'
 buzzer_freq = 1000
 
 # buzzer sound level(0-10)
-sound_level = 5
+sound_level = 0
 
 # Max length of morse buffer
 morse_code_max_length = 13
