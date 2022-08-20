@@ -119,9 +119,9 @@ These are the pre-defined keys. You can customise these by editing `morseCode.py
 
 (There are also some special keys. For a full listing view them in `morseCode.py` - [here](https://github.com/AceCentre/morAce/blob/2223dcc71ee24f721b552030ea7c027f5cf0a927/morAce/morseCode.py#L97))
 
-### Predefined strings (Macros)
+### Predefined strings
 
-We also have some predefined strings. You can edit these and add your own by entering them in `morseCode.py` (see around line [163](https://github.com/AceCentre/morAce/blob/2223dcc71ee24f721b552030ea7c027f5cf0a927/morAce/morseCode.py#L163))
+We also have some predefined strings. You can edit these and add your own by entering them in `morseCode.py` (see around line [163](https://github.com/AceCentre/morAce/blob/2223dcc71ee24f721b552030ea7c027f5cf0a927/morAce/morseCode.py#L163)).&#x20;
 
 ```
 ---...-.      "My name is Morace"
@@ -133,6 +133,8 @@ We also have some predefined strings. You can edit these and add your own by ent
 
 {% hint style="info" %}
 You might want to consider making use of the operating systems own keyboard shortcuts. For example this is available in MacOS and iOS. On iOS this is found under Settings->General-> Keyboards-> Text Replacement.
+
+Note too - Macro mode - is the better long term solution to this. Predefined strings is really useful if you dont want to switch modes. **We are likely to drop predefined strings in the future over macro mode.**
 {% endhint %}
 
 ### Sending key combinations
@@ -151,7 +153,7 @@ e.g. HOLD Ctrl C RELEASE will hold down the ctrl and C key - and then release it
 \
 We do have another way for common combinations too:
 
-#### Macro Mode
+### Macro Mode
 
 If a user types `....----` in either mouse or keyboard mode then the standard key set (e.g. A-Z etc) can be used with a macro. A user can define these in `morseCode.py`&#x20;
 
@@ -178,7 +180,7 @@ In Keyboard mode:
 
 ``
 
-**Repeat Command**
+### **Repeat Command**
 
 An alternative way of holding a key is similar to what we do with mouse. You use this by typing a character, then pressing repeat - and it will repeat pressing that. Cancelling the repeat is with any press.
 

@@ -28,8 +28,8 @@ Once completed it should reboot. We recommend using mu Editor to edit any userCo
 
 ### Key UserConfig Options
 
-You have some options depending on your needs. You will find all settings in the `userConfig.py`. Note that text macros and the morse code key set is in `morseCode.py`.\
-\
+You have some options depending on your needs. You will find all settings in the `userConfig.py`. Note that text macros and the morse code key set is in `morseCode.py`.
+
 **One, Two or Three switch morse functionality**
 
 By default the board is set to **one switch mode.** By using one switch the user needs to send a dot and dash character by holding down the switch at the correct timings. So if you do use this one switch mode be particularly careful of adjusting the length of a dot setting which is default set to 200 ms (a dash by convention is three times the length of a dot).
@@ -50,13 +50,13 @@ two_button_mode = 0
 three_button_mode = 0
 ```
 
-**Length of a dot**&#x20;
+#### **Length of a dot**&#x20;
 
 For one switch mode you should be aware its set at 200ms by default. You can make this longer or shorter by editing this setting
 
 `dot_length = 200`
 
-**Fast Typing**
+#### **Fast Typing**
 
 Some users want to hold down there dot or dash characters. This makes text entry far faster but it can be hard to use if you are new to morse. To turn it on&#x20;
 
@@ -67,6 +67,10 @@ There are a plethora of other configuration settings in userConfig.py - which yo
 {% hint style="info" %}
 We recommend reading the rest of this guide before editing them so you understand what they do.&#x20;
 {% endhint %}
+
+#### Sound (Buzzer) volume
+
+See `sound_voiume` setting. Set it to 0-10 depending on how loud you want the buzzer feedback
 
 ### Want to Pair to more than one Bluetooth device or use switch control mode?
 

@@ -16,6 +16,10 @@ Try our [Morse-Learn](https://github.com/AceCentre/morse-learn/) Project.
 
 Or if you are on a PC and want a way of learning how to use the mouse with visual feedback back try [MorseWriter](https://github.com/AceCentre/MorseWriter).
 
+### Why did you make this?
+
+We had 1 then 2 then 3 clients who all needed Morse input solutions for speech. These were typically - adults who were literate and either had a significant visual difficulty and reduced physical skills (but in general at least one switch site or two switches with good timing skills) or had learnt morse earlier in life. See a bit more on this [here](https://acecentre.org.uk/projects/morse-code). As much as other solutions existed we needed to do it over bluetooth - and two clients needed it to work across phone and a windows device.&#x20;
+
 ### Why is it called morAce? How should I pronounce that?!
 
 More-Ace. or Maurice. Whatever you prefer. Thanks to [Michael Ritson](https://acecentre.org.uk/about/staff/michael-ritson) for naming this. Little did he know when he came up with that [Will Wade](https://acecentre.org.uk/about/staff/will-wade), who initally wrote this comes from a family where morse code and radio operating was talked about a lot as his dad - Maurice James Wade (Jim) spent his early years as a radio operator for Cable ships sailing the world.&#x20;
