@@ -24,6 +24,8 @@ lastSentCmdType = 0       #// v0.3e
 flag_hold = 0
 mouse_buttons_state = 0
 
+prev_mode = extern.hidMode
+
 morseCodeKeyboard = [
   (".-",    [Keycode.A]),
   ("-...",  [Keycode.B]),
@@ -37,7 +39,7 @@ morseCodeKeyboard = [
   (".---",  [Keycode.J]),
   ("-.-",   [Keycode.K]),
   (".-..",  [Keycode.L]),
-  ("--",  [Keycode.M]),
+  ("--",    [Keycode.M]),
   ("-.",    [Keycode.N]),
   ("---",   [Keycode.O]),
   (".--.",  [Keycode.P]),
@@ -174,16 +176,75 @@ morseCodePredefinedStr = [                  #// v0.3e
     ("..--..---..",   "How are you?")
 ]
 
-shortcut_ctrl_c  = 0
-shortcut_ctrl_v  = 1
-shortcut_win_tab = 2
-shortcut_win_h   = 3
-
-morseCodeShortcutCmd = [                    #// v0.3e
-    ("....----", shortcut_ctrl_c),
-    ("...-----", shortcut_ctrl_v),
-    ("..--.",    shortcut_win_tab),
-    ("..-....",  shortcut_win_h)
+morseCodeShortcutCmd = [
+  (".-",    "My favourite string here"),
+  ("-...",   "My password here"),
+  ("---.",  [Keycode.LEFT_CONTROL, Keycode.C]),
+  ("-..",   "My Password string here"),
+  (".",     [Keycode.E]),
+  ("..-.",  [Keycode.F]),
+  ("--.",   [Keycode.G]),
+  ("....",  [Keycode.LEFT_GUI, Keycode.H]),
+  ("..",    [Keycode.I]),
+  (".---",  [Keycode.J]),
+  ("-.-",   [Keycode.K]),
+  (".-..",  [Keycode.L]),
+  ("--",    [Keycode.M]),
+  ("-.",    [Keycode.LEFT_GUI, Keycode.TAB]),
+  ("---",   [Keycode.O]),
+  (".--.",  [Keycode.LEFT_CONTROL, Keycode.V]),
+  ("--.-",  [Keycode.Q]),
+  (".-.",   [Keycode.R]),
+  ("...",   [Keycode.S]),
+  ("-",     [Keycode.T]),
+  ("..-",   [Keycode.U]),
+  ("...-",  [Keycode.V]),
+  (".--",   [Keycode.W]),
+  ("-..-",  [Keycode.X]),
+  ("-.--",  [Keycode.Y]),
+  ("--..",  [Keycode.Z]),
+  ("-----", [Keycode.ZERO]),
+  (".----", [Keycode.ONE]),
+  ("..---", [Keycode.TWO]),
+  ("...--", [Keycode.THREE]),
+  ("....-", [Keycode.FOUR]),
+  (".....", [Keycode.FIVE]),
+  ("-....", [Keycode.SIX]),
+  ("--...", [Keycode.SEVEN]),
+  ("---..", [Keycode.EIGHT]),
+  ("----.", [Keycode.NINE]),
+  ("----..", [Keycode.BACKSLASH]),
+  ("....--", [Keycode.FORWARD_SLASH]),
+  (".--...", [Keycode.LEFT_BRACKET]),
+  ("-..---", [Keycode.RIGHT_BRACKET]),
+  ("--..--", [Keycode.SHIFT, Keycode.COMMA]),
+  ("..--..", [Keycode.SHIFT, Keycode.PERIOD]),
+  ("---...", [Keycode.SHIFT, Keycode.NINE]),
+  ("...---", [Keycode.SHIFT, Keycode.ZERO]),
+  ("--..-",  [Keycode.SHIFT, Keycode.LEFT_BRACKET]),
+  ("--..-",  [Keycode.SHIFT, Keycode.RIGHT_BRACKET]),
+  (".-----", [Keycode.PERIOD]),
+  ("-.....", [Keycode.COMMA]),
+  ("----.-", [Keycode.SHIFT, Keycode.MINUS]),
+  ("....-.", [Keycode.SHIFT, Keycode.BACKSLASH]),
+  ("-.----", [Keycode.SHIFT, Keycode.FORWARD_SLASH]),
+  (".-....", [Keycode.SHIFT, Keycode.ONE]),
+  ("-....-", [Keycode.SEMICOLON]),
+  (".----.", [Keycode.SHIFT, Keycode.SEMICOLON]),
+  (".---.",  [Keycode.MINUS]),
+  ("..----", [Keycode.SHIFT, Keycode.FOUR]),
+  ("...-.-", [Keycode.SHIFT, Keycode.FIVE]),
+  ("...--.", [Keycode.SHIFT, Keycode.QUOTE]),
+  ("---..-", [Keycode.SHIFT, Keycode.TWO]),
+  ("..-...", [Keycode.QUOTE]),
+  ("--.---", [Keycode.GRAVE_ACCENT]),
+  ("-...--", [Keycode.SHIFT, Keycode.SIX]),
+  ("---.--", [Keycode.SHIFT, Keycode.GRAVE_ACCENT]),
+  ("..---.", [Keycode.SHIFT, Keycode.THREE]),
+  (".---..", [Keycode.SHIFT, Keycode.SEVEN]),
+  ("-...-",  [Keycode.SHIFT,Keycode.EQUALS]),
+  ("---.-",  [Keycode.EQUALS]),
+  ("-..--",  [Keycode.SHIFT, Keycode.EIGHT])
 ]
 
 reg_keyboard_char = 0
@@ -192,7 +253,7 @@ mouse_cmd         = 2
 
 def convertor():
     global keyMouseSwitchMorseCode, swapBleConnectionMorseCode, repeatCmdMorseCode, mouseSpeedIncMorseCode, mouseSpeedDecMorseCode, mouseSpeedSet1MorseCode, mouseSpeedSet5MorseCode, holdCmdMorseCode, releaseCmdMorseCode, lastKeyboardChar, lastSentCmdType, flag_hold
-    global morseCodeKeyboard, mouse_buttons_state
+    global morseCodeKeyboard, mouse_buttons_state, prev_mode
 
     i = 0 # local
 
@@ -232,11 +293,16 @@ def convertor():
         time.sleep(0.2)
         extern.buzzer_deactivate()
         time.sleep(0.1)
-    elif(extern.codeStr == swapBleConnectionMorseCode):      #// v0.3
+    elif extern.codeStr == macro_mode_morse_code:
+        prev_mode = extern.hidMode
+        extern.hidMode = macro_mode
+        if serial_debug_en:
+            print("MACRO MODE")
+    elif extern.codeStr == swapBleConnectionMorseCode:      #// v0.3
         extern.handleBleConnectionSwap()
-    elif(extern.codeStr == mouseSpeedIncMorseCode):          #// v0.3e
+    elif extern.codeStr == mouseSpeedIncMorseCode:          #// v0.3e
         extern.mouseMoveStep += mouse_speed_change_unit
-        if(extern.mouseMoveStep > mouse_speed_upper_limit):
+        if extern.mouseMoveStep > mouse_speed_upper_limit:
             extern.mouseMoveStep = mouse_speed_upper_limit
 
         #// Write updated data into FS
@@ -288,10 +354,6 @@ def convertor():
                 extern.flag_repeatCmdEnable = 1
                 if serial_debug_en:
                     print("REPEAT KEYBOARD CMD")
-            if checkPredefinedStrings():             #// v0.3e
-                pass
-            elif checkShortcutCommands():         #// v0.3e
-                pass
             elif checkSpecialKey():               #// v0.3e
                 pass
             else:
@@ -309,13 +371,17 @@ def convertor():
                 if i >= len(morseCodeKeyboard):
                     if serial_debug_en:
                         print("<Wrong input>")
-        else:
+        elif extern.hidMode == mouse_mode:
             if extern.codeStr == repeatMouseCmdMorseCode and lastSentCmdType == mouse_cmd:
                 extern.flag_repeatCmdEnable = 1
                 if serial_debug_en:
                     print("REPEAT MOUSE CMD")
             else:
                 handleMouseMorseCode()
+        else:
+            checkMacroCmds()
+
+            extern.hidMode = prev_mode
 
     extern.codeStr = ""           #// v0.3e
 
@@ -451,51 +517,21 @@ def handleMouseMorseCode():
         if serial_debug_en:
             print("<Wrong Input>")
 
-def checkPredefinedStrings():                    #// v0.3e
-    global morseCodePredefinedStr
-    j = 0 #local
-    for j in range(len(morseCodePredefinedStr)):
-        if extern.codeStr == morseCodePredefinedStr[j][0]:
+def checkMacroCmds():
+    global morseCodeShortcutCmd
+
+    for i in range(len(morseCodeShortcutCmd)):
+        if extern.codeStr == morseCodeShortcutCmd[i][0]:
             if serial_debug_en:
-                print("Predfined Str: ", morseCodePredefinedStr[j][1])
-            extern.kl.write(morseCodePredefinedStr[j][1])
+                print("Macro: ", morseCodeShortcutCmd[i][1])
+
+            if isinstance(morseCodeShortcutCmd[i][1], list):
+                hidSpecialKeyPress(morseCodeShortcutCmd[i][1])
+            elif isinstance(morseCodeShortcutCmd[i][1], str):
+                extern.kl.write(morseCodeShortcutCmd[i][1])
+
             return 1
     return 0
-
-def checkShortcutCommands():                       #// v0.3e
-    global keycodeComboBuff, morseCodeShortcutCmd
-    if extern.codeStr == morseCodeShortcutCmd[shortcut_ctrl_c][0]:
-        if serial_debug_en:
-            print("Shortcut Cmd: CTRL+C")
-
-        keycodeComboBuff.append(Keycode.LEFT_CONTROL)
-        keycodeComboBuff.append(Keycode.C)
-        hidSpecialKeyPress(keycodeComboBuff)
-    elif extern.codeStr == morseCodeShortcutCmd[shortcut_ctrl_v][0]:
-        if serial_debug_en:
-            print("Shortcut Cmd: CTRL+V")
-
-        keycodeComboBuff.append(Keycode.LEFT_CONTROL)
-        keycodeComboBuff.append(Keycode.V)
-        hidSpecialKeyPress(keycodeComboBuff)
-    elif extern.codeStr == morseCodeShortcutCmd[shortcut_win_tab][0]:
-        if serial_debug_en:
-            print("Shortcut Cmd: WIN+TAB")
-
-        keycodeComboBuff.append(Keycode.LEFT_GUI)
-        keycodeComboBuff.append(Keycode.TAB)
-        hidSpecialKeyPress(keycodeComboBuff)
-    elif extern.codeStr == morseCodeShortcutCmd[shortcut_win_h][0]:
-        if serial_debug_en:
-            print("Shortcut Cmd: WIN+H")
-
-        keycodeComboBuff.append(Keycode.LEFT_GUI)
-        keycodeComboBuff.append(Keycode.H)
-        hidSpecialKeyPress(keycodeComboBuff)
-    else:
-        return 0
-
-    return 1
 
 def checkSpecialKey():                             #// v0.3e
     global keycodeComboBuff, lastSentCmdType, morseCodeKeyboard_special, lastKeyboardChar
