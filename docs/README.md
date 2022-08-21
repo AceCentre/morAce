@@ -14,11 +14,11 @@ You can use switches (1, 2, or 3) to send morse code signals which are then inte
 
 Try our [Morse-Learn](https://github.com/AceCentre/morse-learn/) Project.
 
-Or if you are on a PC and want a way of learning how to use the mouse with visual feedback back try [MorseWriter](https://github.com/AceCentre/MorseWriter).
+Or if you are on a PC and want a way of learning how to use the morse with visual feedback (and word prediction)  try [MorseWriter](https://github.com/AceCentre/MorseWriter).
 
 ### Why did you make this?
 
-We had 1 then 2 then 3 clients who all needed Morse input solutions for speech. These were typically - adults who were literate and either had a significant visual difficulty and reduced physical skills (but in general at least one switch site or two switches with good timing skills) or had learnt morse earlier in life. See a bit more on this [here](https://acecentre.org.uk/projects/morse-code). As much as other solutions existed we needed to do it over bluetooth - and two clients needed it to work across phone and a windows device.&#x20;
+We had 1 then 2 then 3 clients who all needed Morse input solutions for speech. These were typically adults who were literate and either had a significant visual difficulty and reduced physical skills (but in general at least one switch site or two switches with good timing skills) or had learnt morse earlier in life. See a bit more on this [here](https://acecentre.org.uk/projects/morse-code). As much as other solutions existed we needed to do it over bluetooth - and two clients needed it to work across phone and a windows device.&#x20;
 
 ### Why is it called morAce? How should I pronounce that?!
 

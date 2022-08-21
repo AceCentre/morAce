@@ -12,3 +12,7 @@ When this is sent morAce will drop connection with the current connected device 
 
 You can pair a new device once you go into this mode. The max number of devices you could connect to is set by `maxSwapConn`
 
+{% hint style="info" %}
+If you need morAce to forget all your paired devices you just need to delete the database on the circuitpy drive
+{% endhint %}
+

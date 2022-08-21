@@ -4,7 +4,7 @@
 
 In its default state morace is designed to work with one switch. But it can be used with 1,2 or 3 switches if you configure it that way. So in one switch mode you press for a length of time for a dot and a length of time for a dash and the gap of no sending any characters is what defines the ending of a encoded chunk (a letter or any morse encoded element). You can change these timings in the **userConstants.py** file if you so wish.\
 \
-There is also a **fast typing mode** - where holding down the switch will repeat a character. It best works with at least two switches. By default this is off. You can turn it on by editing userConfig.py and setting the parameter of `fast_typing_mode` to 1
+There is also a **fast typing mode** - where holding down the switch will repeat a character. It best works with at least two switches. Using it with one switch requires _VERY_ good timing skills! By default this is off. You can turn it on by editing userConfig.py and setting the parameter of `fast_typing_mode` to 1
 
 {% hint style="info" %}
 By default morAce is set to go to keyboard mode first. But you can toggle between keyboard mode and mouse mode with **`.-.--`**&#x20;
@@ -134,7 +134,7 @@ We also have some predefined strings. You can edit these and add your own by ent
 {% hint style="info" %}
 You might want to consider making use of the operating systems own keyboard shortcuts. For example this is available in MacOS and iOS. On iOS this is found under Settings->General-> Keyboards-> Text Replacement.
 
-Note too - Macro mode - is the better long term solution to this. Predefined strings is really useful if you dont want to switch modes. **We are likely to drop predefined strings in the future over macro mode.**
+Note too - [Macro mode](controlling-keyboard.md#macro-mode) - is the better long term solution to this. Predefined strings is really useful if you dont want to switch modes. **We are likely to drop predefined strings in the future over macro mode.**
 {% endhint %}
 
 ### Sending key combinations
@@ -153,9 +153,15 @@ e.g. HOLD Ctrl C RELEASE will hold down the ctrl and C key - and then release it
 \
 We do have another way for common combinations too:
 
+### **Repeat Command**
+
+An alternative way of holding a key is similar to what we do with mouse. You use this by typing a character, then pressing repeat - and it will repeat pressing that. Cancelling the repeat is with any press.
+
+`.---.-`
+
 ### Macro Mode
 
-If a user types `....----` in either mouse or keyboard mode then the standard key set (e.g. A-Z etc) can be used with a macro. A user can define these in `morseCode.py`&#x20;
+If a user types `....----` in either mouse or keyboard mode then the standard key set (e.g. A-Z etc) can be used with a macro. A user can define these in `morseCode.py` This way you just remember which letter or number is the macro.&#x20;
 
 ```
 morseCodeMacro = [
@@ -174,14 +180,8 @@ In Keyboard mode:
 
 `....----  (Macro Mode)`
 
-`.- (My Name is MorAce is sent)`
+`.- ("My Name is MorAce" is sent)`
 
-`(Back in Keyboard mode)`
+`(Back to Keyboard mode)`
 
 ``
-
-### **Repeat Command**
-
-An alternative way of holding a key is similar to what we do with mouse. You use this by typing a character, then pressing repeat - and it will repeat pressing that. Cancelling the repeat is with any press.
-
-`.---.-`
