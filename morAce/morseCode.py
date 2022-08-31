@@ -71,7 +71,7 @@ morseCodeKeyboard = [
   ("..--..", [Keycode.SHIFT, Keycode.PERIOD]),
   ("---...", [Keycode.SHIFT, Keycode.NINE]),
   ("...---", [Keycode.SHIFT, Keycode.ZERO]),
-  ("--..-",  [Keycode.SHIFT, Keycode.LEFT_BRACKET]),
+  ("..--.",  [Keycode.SHIFT, Keycode.LEFT_BRACKET]),
   ("--..-",  [Keycode.SHIFT, Keycode.RIGHT_BRACKET]),
   (".-----", [Keycode.PERIOD]),
   ("-.....", [Keycode.COMMA]),
