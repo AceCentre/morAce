@@ -6,7 +6,7 @@ Some users may need to control their device with a built in switch scanning opti
 Warning: This wont work unless you've enabled your morAce to write the filesystem. See [here](configuring-morace.md#want-to-pair-to-more-than-one-bluetooth-device-or-use-switch-control-mode) for how to do this.&#x20;
 {% endhint %}
 
-To swap between Morse and Switch mode - **Press switch 3. This toggles between the two.**&#x20;
+To swap between Morse and Switch mode - **Press switch 4. This toggles between the two.**&#x20;
 
 Once you have done this a new BLE device is available known as **SW\_HID**. You should be able to connect to it and then setup switch access. By default the following keys are sent (depending on the button number you are using):\
 \

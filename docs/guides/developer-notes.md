@@ -24,9 +24,11 @@ Download the firmware here. Note - if you prefer C take a look at the ArduinoC b
 * **USER Switch** - Switch for Connection Swapping **State**: Active Low (On board - Feather User SW)
 * **CONN LED(Blue)** - LED indication for BLE Connection status **State**:Active High ("On board - Feather CONN LED - Blinking : Advertising, Not connected, Steady ON : Connected, Not advertising")
 
-See also this [Fritzing diagram](https://github.com/AceCentre/BLEMorseToText/blob/master/ConnectionDiagram.fzz) :
+See also this [Fritzing diagram](https://github.com/AceCentre/BLEMorseToText/blob/master/ConnectionDiagram.fzz)&#x20;
 
-![](https://raw.githubusercontent.com/AceCentre/BLEMorseToText/master/ConnectionDiagram.png)
+<figure><img src="../.gitbook/assets/ConnectionDiagram.png" alt=""><figcaption></figcaption></figure>
+
+
 
 #### Usage
 
