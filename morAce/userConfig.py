@@ -55,6 +55,9 @@ fast_typing_mode = 0
 """
 dot_length = 200
 
+# morse code for resetting mcu
+resetMcuMorseCode = "..-..-.."
+
 """
 /*  MORSE Code for switching between Keyboard mode and Mouse mode
  *
