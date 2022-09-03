@@ -227,3 +227,7 @@ sound_level = 0
 
 # Max length of morse buffer
 morse_code_max_length = 13
+
+# Enabling/Disabling saving of parameters to file
+# when saving settings set to True - circuitpy drive will be readonly by default
+saving_parameters = False
