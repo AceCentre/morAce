@@ -8,8 +8,10 @@ if x80_pinout:
 else:
     from userPinMap import *
 
+import microcontroller
 from adafruit_hid.keycode import Keycode
 from adafruit_hid.mouse import Mouse
+
 
 def key_seq_press(kb_obj, key_seq):
     for keycode in key_seq:
@@ -259,11 +261,13 @@ def convertor():
 
     if serial_debug_en:
         print()
-        print("Morse Buffer: ", extern.codeStr)
-
-    if(extern.flag_repeatCmdEnable):           #// v0.3e
+        print("Morse Buffer: ", extern.codeStr)    
+        
+    if extern.flag_repeatCmdEnable:           #// v0.3e
         extern.flag_repeatCmdEnable = 0
-    elif(extern.codeStr == keyMouseSwitchMorseCode):
+    elif extern.codeStr == resetMcuMorseCode:        
+        microcontroller.reset()
+    elif extern.codeStr == keyMouseSwitchMorseCode:
 
         if(extern.hidMode == keyboard_mode):
             extern.hidMode = mouse_mode

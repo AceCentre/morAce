@@ -3,7 +3,7 @@ import board
 from digitalio import DigitalInOut, Direction, Pull
 import storage
 import extern
-from userConfig import x80_pinout, buzzer_freq, sound_level
+from userConfig import x80_pinout, buzzer_freq, sound_level, saving_parameters
 import supervisor
 import pwmio
 
@@ -46,15 +46,16 @@ elif sound_level < 0:
 extern.buzzer_duty_cycle = int(sound_level * (max_buzzer_pwm/sound_levels_n))
 
 print("Boot")
-if button_one.value == False and button_two.value == True and button_three.value == False:
-    print("Filesystem ready for update.")
-    #storage.remount("/", True)
-    extern.buzzer_activate(buzzer_freq)
-    time.sleep(2)
-    extern.buzzer_deactivate()
-else:
-    print("Filesystem is readonly.")
-    #storage.remount("/", False)
-    #print("data from file")
-    #extern.readDataFromFS()
-
+if saving_parameters:
+    if button_one.value == False:
+        print("Filesystem ready for update.")
+        storage.remount("/", True)
+        extern.buzzer_activate(buzzer_freq)
+        time.sleep(2)
+        extern.buzzer_deactivate()
+    else:
+        print("Filesystem is readonly.")
+        storage.remount("/", False)
+        print("data from file")
+        extern.readDataFromFS()
+        

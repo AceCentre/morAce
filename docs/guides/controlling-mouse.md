@@ -42,7 +42,7 @@ You can increase or decrease the **speed of movement** using some different opti
 
 `-.` Left click and hold (enter again to toggle off)
 
-`-.` Right click and hold (enter again to toggle this off)
+`-..` Right click and hold (enter again to toggle this off)
 
 So to drag the mouse you could use this technique. Or you could use the **REPEAT MOUSE** command (`.`)
 
