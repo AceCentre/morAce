@@ -74,47 +74,11 @@ See `sound_voiume` setting. Set it to 0-10 depending on how loud you want the bu
 
 ### Want to Pair to more than one Bluetooth device or use switch control mode?
 
-By default  the code WILL NOT WORK to use these features. You will need to edit a file to allow this. This is because these modes need to write to the file system by itself - so if you want this we have to disable the neat USB disk drive feature of circuitPy. But dont worry - we've made it easy to switch it back on with a switch press. \
+By default  the code **WILL NOT WORK** to use these two features. You will need to set the **saving\_parameters** **= True** in the userConfig.py file to allow this. This is because these modes need to write to the file system by itself - so if you want this we have to disable the neat USB disk drive feature of circuitPy. But dont worry - we've made it easy to switch it back on with a switch press so you can get back to editing the configuration. \
 \
-So once you are happy with how its all configured this is how you can set it up to allow these features
+Once this parameter is set to True then restarting the morAce board will by default put it into a read only mode. You cannot edit config files. To allow editing config files **PRESS AND HOLD SWITCH ONE on reboot.** If you have no way of pulling the power on your own you can use this morse command to reset the power:&#x20;
 
-Uncomment some lines in `boot.py` notably lines **42, 48,49,50**. I.e. this:
+`..-..-..` (Reset the power/MCU - set in UserConfig.py)
 
-```
-if button_one.value == False and button_two.value == True and button_three.value == False:    
-    print("Filesystem ready for update.")
-    #storage.remount("/", True)            
-    extern.buzzer_set_state(True)
-    time.sleep(2)
-    extern.buzzer_set_state(False)
-else:        
-    print("Filesystem is readonly.")
-    #storage.remount("/", False)    
-    #print("data from file")
-    #extern.readDataFromFS()
-
-```
-
-becomes:
-
-```
-if button_one.value == False and button_two.value == True and button_three.value == False:    
-    print("Filesystem ready for update.")
-    storage.remount("/", True)            
-    extern.buzzer_set_state(True)
-    time.sleep(2)
-    extern.buzzer_set_state(False)
-else:        
-    print("Filesystem is readonly.")
-    storage.remount("/", False)    
-    print("data from file")
-    extern.readDataFromFS()
-
-```
-
-We simply remove the **# (hash) marks**
-
-{% hint style="danger" %}
-Warning. When you do this it will no longer by default load on the desktop and the config files cannot be edited. To fix this - **Press switch 1 and 3 on a reset** of the board (i.e. plugging it into a power source). You can then edit - but resetting after this will put it back into a state where the disk drive does not appear. _In the future we may set this as default. But for now while we still are testing it, its easier to leave this as a default._
-{% endhint %}
+It will now allow you to edit files on the CIRCUITPY usb drive. But be aware - that if it restarts again it will go back to not allowing you to save to that directory.&#x20;
 
