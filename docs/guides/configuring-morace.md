@@ -24,7 +24,7 @@ If you are not - you'll need to install them by:
 * Unzip&#x20;
 * Drag the following flles to the "lib" folder on the CIRCUITPY drive: **adafruit\_dotstar,** **adafruit\_hid**, **adafruit\_ble** &#x20;
 
-Once completed it should reboot. We recommend using mu Editor to edit any userConfig.py files as you need to. Just note that bluetooth switching or using switch control mode wont work until you change a key file. More on that [below](configuring-morace.md#want-to-pair-to-more-than-one-bluetooth-device-or-use-switch-control-mode).&#x20;
+Once completed it should reboot. We recommend using [mu Editor](https://codewith.mu) to edit any userConfig.py files as you need to. Just note that bluetooth switching or using switch control mode wont work until you change a key file. More on that [below](configuring-morace.md#want-to-pair-to-more-than-one-bluetooth-device-or-use-switch-control-mode).&#x20;
 
 ### Key UserConfig Options
 
