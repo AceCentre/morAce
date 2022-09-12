@@ -3,7 +3,7 @@ import board
 from digitalio import DigitalInOut, Direction, Pull
 import storage
 import extern
-from userConfig import x80_pinout, buzzer_freq, sound_level, saving_parameters
+from user.config import x80_pinout, buzzer_freq, sound_level, saving_parameters
 import supervisor
 import pwmio
 
@@ -12,7 +12,7 @@ supervisor.disable_ble_workflow()
 if x80_pinout:
     from x80PinMap import button_one_pin, button_two_pin, button_three_pin, buzzer_pin
 else:
-    from userPinMap import button_one_pin, button_two_pin, button_three_pin, buzzer_pin
+    from user.userPinMap import button_one_pin, button_two_pin, button_three_pin, buzzer_pin
 
 
 #IP_NO_PULL = 0

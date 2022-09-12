@@ -16,14 +16,14 @@ from adafruit_ble.advertising.standard import ProvideServicesAdvertisement
 from adafruit_ble.services.standard.hid import HIDService
 from adafruit_ble.services.standard.device_info import DeviceInfoService
 
-from userConfig import *
-from morseCode import *
+from user.config import *
+from morse_logic import *
 import extern
 
 if x80_pinout:
     from x80PinMap import *
 else:
-    from userPinMap import *
+    from user.userPinMap import *
 
 #IP_NO_PULL = 0
 #IP_PULLUP = 1

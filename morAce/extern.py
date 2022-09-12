@@ -1,6 +1,6 @@
 import time
 import supervisor
-import userConfig
+import user.config as userConfig
 
 ble = None      # BLE radio object
 k = None        # BLE keyboard object
