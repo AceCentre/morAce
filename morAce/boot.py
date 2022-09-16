@@ -12,7 +12,7 @@ supervisor.disable_ble_workflow()
 if x80_pinout:
     from x80PinMap import button_one_pin, button_two_pin, button_three_pin, buzzer_pin
 else:
-    from user.userPinMap import button_one_pin, button_two_pin, button_three_pin, buzzer_pin
+    from userPinMap import button_one_pin, button_two_pin, button_three_pin, buzzer_pin
 
 
 #IP_NO_PULL = 0

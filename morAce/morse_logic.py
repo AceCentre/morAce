@@ -6,7 +6,7 @@ import extern
 if x80_pinout:
     from x80PinMap import *
 else:
-    from user.userPinMap import *
+    from userPinMap import *
 
 from user.morse_code import *
 from user.morse_code_shortcuts import *

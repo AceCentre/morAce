@@ -23,7 +23,7 @@ import extern
 if x80_pinout:
     from x80PinMap import *
 else:
-    from user.userPinMap import *
+    from userPinMap import *
 
 #IP_NO_PULL = 0
 #IP_PULLUP = 1
