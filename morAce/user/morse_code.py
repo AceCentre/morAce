@@ -131,15 +131,15 @@ mouse_press_hold_left  = 14
 
 # mouse commands
 morseCodeMouse = [
-    (None,    0),                           #// v0.3e - Just for logic adjustment
+    (None,    0),                           # Just for logic adjustment
     ("...",    mouse_move_right),
     ("..",     mouse_move_left),
     ("-",      mouse_move_up),
     ("--",     mouse_move_down),
-    (".--.",   mouse_move_left_up),          #// v0.3e
-    ("...-",   mouse_move_right_up),         #// v0.3e
-    ("...--",  mouse_move_left_down),        #// v0.3e
-    ("...---", mouse_move_right_down),      #// v0.3e
+    (".--.",   mouse_move_left_up),
+    ("...-",   mouse_move_right_up),
+    ("...--",  mouse_move_left_down),
+    ("...---", mouse_move_right_down),
     (".--",    mouse_click_right),
     (".-",     mouse_click_left),
     ("..--",   mouse_db_click_right),
