@@ -5,7 +5,7 @@ morseCodeShortcutCmd = [
   ("-...",   "My password here"),
   ("---.",  [Keycode.LEFT_CONTROL, Keycode.C]),
   ("-..",   "My Password string here"),
-  (".",     [Keycode.E]),
+  (".",     "First row\nSecond row"),
   ("..-.",  [Keycode.F]),
   ("--.",   [Keycode.G]),
   ("....",  [Keycode.LEFT_GUI, Keycode.H]),

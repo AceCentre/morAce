@@ -15,13 +15,6 @@ import microcontroller
 from adafruit_hid.keycode import Keycode
 from adafruit_hid.mouse import Mouse
 
-
-def key_seq_press(kb_obj, key_seq):
-    for keycode in key_seq:
-        kb_obj._add_keycode_to_report(keycode)
-        kb_obj._keyboard_device.send_report(kb_obj.report)
-    kb_obj.release_all()
-
 keycheck = 0
 keycodeComboBuff = []     #// v0.3e
 lastKeyboardChar = 0      #// v0.3e
@@ -34,6 +27,14 @@ prev_mode = extern.hidMode
 reg_keyboard_char = 0
 spl_keyboard_char = 1
 mouse_cmd         = 2
+
+def key_seq_press(buff):
+    for keycode in buff:
+        extern.k._add_keycode_to_report(keycode)
+        extern.k._keyboard_device.send_report(extern.k.report)
+
+    extern.k.release_all()
+    time.sleep(0.02)
 
 def convertor():
     global keyMouseSwitchMorseCode, swapBleConnectionMorseCode, repeatCmdMorseCode, mouseSpeedIncMorseCode, mouseSpeedDecMorseCode, mouseSpeedSet1MorseCode, mouseSpeedSet5MorseCode, holdCmdMorseCode, releaseCmdMorseCode, lastKeyboardChar, lastSentCmdType, flag_hold
@@ -147,7 +148,7 @@ def convertor():
                     if extern.codeStr == morseCodeKeyboard[i][0]:
                         if serial_debug_en:
                             print("Char: ", morseCodeKeyboard[i][1])
-                        key_seq_press(extern.k, morseCodeKeyboard[i][1])
+                        key_seq_press(morseCodeKeyboard[i][1])
                         time.sleep(0.02)
                         lastSentCmdType = reg_keyboard_char                                #// v0.3e
                         lastKeyboardChar = morseCodeKeyboard[i][1]                   #// v0.3e
@@ -170,13 +171,6 @@ def convertor():
             extern.hidMode = prev_mode
 
     extern.codeStr = ""           #// v0.3e
-
-def hidSpecialKeyPress(buff):           #// v0.3e
-    global keycodeComboBuff
-    key_seq_press(extern.k, buff)
-    time.sleep(0.02)
-
-    keycodeComboBuff = []
 
 def handleMouseMorseCode():
     global lastSentCmdType, flag_hold, morseCodeMouse, mouse_buttons_state
@@ -312,9 +306,12 @@ def checkMacroCmds():
                 print("Macro: ", morseCodeShortcutCmd[i][1])
 
             if isinstance(morseCodeShortcutCmd[i][1], list):
-                hidSpecialKeyPress(morseCodeShortcutCmd[i][1])
+                key_seq_press(morseCodeShortcutCmd[i][1])
             elif isinstance(morseCodeShortcutCmd[i][1], str):
-                extern.kl.write(morseCodeShortcutCmd[i][1])
+                for char in morseCodeShortcutCmd[i][1]:
+                    key_seq = keyboard_keymap.get(char)
+                    if key_seq != None:
+                        key_seq_press(key_seq)
 
             return 1
     return 0
@@ -327,7 +324,7 @@ def checkSpecialKey():                             #// v0.3e
             keycodeComboBuff = morseCodeKeyboard_special[i][1]
             lastSentCmdType = spl_keyboard_char
             lastKeyboardChar = keycodeComboBuff
-            hidSpecialKeyPress(keycodeComboBuff)
+            key_seq_press(keycodeComboBuff)
 
             return 1
 
@@ -447,11 +444,11 @@ def handleConMouseMovement():    #// v0.3
 def handleRepeatCmdAction():     #// v0.3e
     global keycodeComboBuff, lastSentCmdType, lastKeyboardChar
     if lastSentCmdType == reg_keyboard_char:
-        key_seq_press(extern.k, lastKeyboardChar)
+        key_seq_press(lastKeyboardChar)
         time.sleep(0.02)
         extern.k.release_all()
     elif lastSentCmdType == spl_keyboard_char:
         keycodeComboBuff = lastKeyboardChar
-        hidSpecialKeyPress(keycodeComboBuff)
+        key_seq_press(keycodeComboBuff)
     elif lastSentCmdType == mouse_cmd:
         handleConMouseMovement()

@@ -4,7 +4,6 @@ import user.config as userConfig
 
 ble = None      # BLE radio object
 k = None        # BLE keyboard object
-kl = None
 mouse = None    # BLE mouse object
 pixels = None   # addressable led object
 signal_len = 0

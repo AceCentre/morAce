@@ -1,5 +1,9 @@
 from adafruit_hid.keycode import Keycode
 
+# keymap that translates predefined string characters into keycodes
+from user.keymaps.us_keymap import keyboard_keymap
+
+# printable keyboard characters
 morseCodeKeyboard = [
   (".-",    [Keycode.A]),
   ("-...",  [Keycode.B]),
@@ -71,6 +75,7 @@ morseCodeKeyboard = [
   ("-..--",  [Keycode.SHIFT, Keycode.EIGHT])
 ]
 
+# non-rintable keyboard characters
 morseCodeKeyboard_special = [
   ("..--",    [Keycode.SPACEBAR]),         #// Space
   (".-.-",    [Keycode.ENTER]),            #// Enter
@@ -124,6 +129,7 @@ mouse_db_click_left    = 12
 mouse_press_hold_right = 13
 mouse_press_hold_left  = 14
 
+# mouse commands
 morseCodeMouse = [
     (None,    0),                           #// v0.3e - Just for logic adjustment
     ("...",    mouse_move_right),

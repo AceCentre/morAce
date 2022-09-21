@@ -410,7 +410,6 @@ extern.mouse = Mouse(hid.devices)
 
 # keyboard
 extern.k = Keyboard(hid.devices)
-extern.kl = KeyboardLayoutUS(extern.k)
 
 extern.ble = adafruit_ble.BLERadio()
 
