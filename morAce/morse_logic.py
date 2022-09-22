@@ -142,20 +142,18 @@ def convertor():
             elif checkSpecialKey():
                 pass
             else:
-                for i in range(len(morseCodeKeyboard)):
-                    if extern.codeStr == morseCodeKeyboard[i][0]:
-                        if serial_debug_en:
-                            print("Char: ", morseCodeKeyboard[i][1])
+                key = morseCodeKeyboard.get(extern.codeStr)
+                if key != None:
+                    if serial_debug_en:
+                        print("Char: ", key)
                                                
                         lastSentCmdType = keyboard_cmd
-                        keyboard_buffer = morseCodeKeyboard[i][1]
+                        keyboard_buffer = key
                         key_seq_press(keyboard_buffer)
-
-                        break
-
-                if i >= len(morseCodeKeyboard):
+                else:
                     if serial_debug_en:
                         print("<Wrong input>")
+                    
         elif extern.hidMode == mouse_mode:
             if extern.codeStr == repeatMouseCmdMorseCode and lastSentCmdType == mouse_cmd:
                 extern.flag_repeatCmdEnable = 1
@@ -173,55 +171,55 @@ def convertor():
 def handleMouseMorseCode():
     global lastSentCmdType, flag_hold, morseCodeMouse, mouse_buttons_state
 
-    if extern.codeStr == morseCodeMouse[mouse_move_right][0]:
+    if extern.codeStr == mouse_move_right:
         lastSentCmdType = mouse_cmd
         extern.flag_mouseConMovement = mouse_move_right
         extern.mouse.move(extern.mouseMoveStep, 0)
         if serial_debug_en:
             print("Mouse: Right")
-    elif extern.codeStr == morseCodeMouse[mouse_move_left][0]:
+    elif extern.codeStr == mouse_move_left:
         lastSentCmdType = mouse_cmd
         extern.flag_mouseConMovement = mouse_move_left
         extern.mouse.move(-extern.mouseMoveStep, 0)
         if serial_debug_en:
             print("Mouse: Left")
-    elif extern.codeStr == morseCodeMouse[mouse_move_up][0]:
+    elif extern.codeStr == mouse_move_up:
         lastSentCmdType = mouse_cmd
         extern.flag_mouseConMovement = mouse_move_up
         extern.mouse.move(0, -extern.mouseMoveStep)
         if serial_debug_en:
             print("Mouse: Up")
-    elif extern.codeStr == morseCodeMouse[mouse_move_down][0]:
+    elif extern.codeStr == mouse_move_down:
         lastSentCmdType = mouse_cmd
         extern.flag_mouseConMovement = mouse_move_down
         extern.mouse.move(0, extern.mouseMoveStep)
         if serial_debug_en:
             print("Mouse: Down")
-    elif extern.codeStr == morseCodeMouse[mouse_move_left_up][0]:
+    elif extern.codeStr == mouse_move_left_up:
         lastSentCmdType = mouse_cmd
         extern.flag_mouseConMovement = mouse_move_left_up
         extern.mouse.move(-extern.mouseMoveStep, -extern.mouseMoveStep)
         if serial_debug_en:
             print("Mouse: Left-Up")
-    elif extern.codeStr == morseCodeMouse[mouse_move_right_up][0]:
+    elif extern.codeStr == mouse_move_right_up:
         lastSentCmdType = mouse_cmd
         extern.flag_mouseConMovement = mouse_move_right_up
         extern.mouse.move(extern.mouseMoveStep, -extern.mouseMoveStep)
         if serial_debug_en:
             print("Mouse: Right-Up")
-    elif extern.codeStr == morseCodeMouse[mouse_move_left_down][0]:
+    elif extern.codeStr == mouse_move_left_down:
         lastSentCmdType = mouse_cmd
         extern.flag_mouseConMovement = mouse_move_left_down
         extern.mouse.move(-extern.mouseMoveStep, extern.mouseMoveStep)
         if serial_debug_en:
             print("Mouse: Left-Down")
-    elif extern.codeStr == morseCodeMouse[mouse_move_right_down][0]:
+    elif extern.codeStr == mouse_move_right_down:
         lastSentCmdType = mouse_cmd
         extern.flag_mouseConMovement = mouse_move_right_down
         extern.mouse.move(extern.mouseMoveStep, extern.mouseMoveStep)
         if serial_debug_en:
             print("Mouse: Right-Down")
-    elif extern.codeStr == morseCodeMouse[mouse_click_right][0]:
+    elif extern.codeStr == mouse_click_right:
         lastSentCmdType = mouse_cmd
         extern.mouse.press(Mouse.RIGHT_BUTTON)
         time.sleep(0.02)
@@ -231,7 +229,7 @@ def handleMouseMorseCode():
 
         if serial_debug_en:
             print("Mouse: Right Click")
-    elif extern.codeStr == morseCodeMouse[mouse_click_left][0]:
+    elif extern.codeStr == mouse_click_left:
         lastSentCmdType = mouse_cmd
         extern.mouse.press(Mouse.LEFT_BUTTON)
         time.sleep(0.02)
@@ -241,7 +239,7 @@ def handleMouseMorseCode():
 
         if serial_debug_en:
             print("Mouse: Left Click")
-    elif extern.codeStr == morseCodeMouse[mouse_db_click_right][0]:
+    elif extern.codeStr == mouse_db_click_right:
         lastSentCmdType = mouse_cmd
         extern.mouse.press(Mouse.RIGHT_BUTTON)
         time.sleep(0.05)
@@ -255,7 +253,7 @@ def handleMouseMorseCode():
 
         if serial_debug_en:
             print("Mouse: Right Double Click")
-    elif extern.codeStr == morseCodeMouse[mouse_db_click_left][0]:
+    elif extern.codeStr == mouse_db_click_left:
         lastSentCmdType = mouse_cmd
         extern.mouse.press(Mouse.LEFT_BUTTON)
         time.sleep(0.05)
@@ -269,7 +267,7 @@ def handleMouseMorseCode():
 
         if serial_debug_en:
             print("Mouse: Left Double Click")
-    elif extern.codeStr == morseCodeMouse[mouse_press_hold_right][0]:
+    elif extern.codeStr == mouse_press_hold_right:
         lastSentCmdType = mouse_cmd
         if mouse_buttons_state != Mouse.RIGHT_BUTTON:
             extern.mouse.press(Mouse.RIGHT_BUTTON)
@@ -280,7 +278,7 @@ def handleMouseMorseCode():
 
         if serial_debug_en:
             print("Mouse: Right press & hold")
-    elif extern.codeStr == morseCodeMouse[mouse_press_hold_left][0]:
+    elif extern.codeStr == mouse_press_hold_left:
         lastSentCmdType = mouse_cmd
         if mouse_buttons_state != Mouse.LEFT_BUTTON:
             extern.mouse.press(Mouse.LEFT_BUTTON)
@@ -298,32 +296,34 @@ def handleMouseMorseCode():
 def checkMacroCmds():
     global morseCodeShortcutCmd
 
-    for i in range(len(morseCodeShortcutCmd)):
-        if extern.codeStr == morseCodeShortcutCmd[i][0]:
-            if serial_debug_en:
-                print("Macro: ", morseCodeShortcutCmd[i][1])
+    macro_cmd = morseCodeShortcutCmd.get(extern.codeStr)
 
-            if isinstance(morseCodeShortcutCmd[i][1], list):
-                key_seq_press(morseCodeShortcutCmd[i][1])
-            elif isinstance(morseCodeShortcutCmd[i][1], str):
-                for char in morseCodeShortcutCmd[i][1]:
-                    key_seq = keyboard_keymap.get(char)
-                    if key_seq != None:
-                        key_seq_press(key_seq)
+    if macro_cmd != None:
+        if serial_debug_en:
+            print("Macro: ", macro_cmd)
 
-            return 1
+        if isinstance(macro_cmd, list):
+            key_seq_press(macro_cmd)
+        elif isinstance(macro_cmd, str):
+            for char in macro_cmd:
+                key_seq = keyboard_keymap.get(char)
+                if key_seq != None:
+                    key_seq_press(key_seq)
+        
+        return 1
+            
     return 0
 
 def checkSpecialKey():
     global lastSentCmdType, morseCodeKeyboard_special, keyboard_buffer
 
-    for i in range(len(morseCodeKeyboard_special)):
-        if extern.codeStr == morseCodeKeyboard_special[i][0]:
-            lastSentCmdType = keyboard_cmd
-            keyboard_buffer = morseCodeKeyboard_special[i][1]            
-            key_seq_press(keyboard_buffer)
+    special_key = morseCodeKeyboard_special.get(extern.codeStr)
+    if special_key != None:        
+        lastSentCmdType = keyboard_cmd
+        keyboard_buffer = special_key
+        key_seq_press(keyboard_buffer)
 
-            return 1
+        return 1   
 
     return 0
 
