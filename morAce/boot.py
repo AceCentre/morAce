@@ -3,7 +3,7 @@ import board
 from digitalio import DigitalInOut, Direction, Pull
 import storage
 import extern
-from userConfig import x80_pinout, buzzer_freq, sound_level, saving_parameters
+from user.config import x80_pinout, buzzer_freq, sound_level, saving_parameters
 import supervisor
 import pwmio
 

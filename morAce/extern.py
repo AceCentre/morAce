@@ -1,10 +1,9 @@
 import time
 import supervisor
-import userConfig
+import user.config as userConfig
 
 ble = None      # BLE radio object
 k = None        # BLE keyboard object
-kl = None
 mouse = None    # BLE mouse object
 pixels = None   # addressable led object
 signal_len = 0
@@ -42,9 +41,9 @@ def buzzer_deactivate():
 
     buzzer.duty_cycle = 0
 
-def writeDataToFS():                                 #// v0.3e
+def writeDataToFS():
     global currMode, hidMode, mouseMoveStep, swapConnDeviceNames, currSwapConnIndex, dbFileName
-    buff = "" # local
+    buff = ""
     buff = buff + str(currMode) + ","
     buff = buff + str(hidMode) + ","
     buff = buff + str(mouseMoveStep) + ","
@@ -61,7 +60,7 @@ def writeDataToFS():                                 #// v0.3e
     if userConfig.serial_debug_en:
         print("Data written in DB file:", buff)
 
-def readDataFromFS():                                #// v0.3e
+def readDataFromFS():
     global currMode, hidMode, mouseMoveStep, swapConnDeviceNames, currSwapConnIndex, dbFileName, flag_switchControlMode
 
     try:
@@ -69,7 +68,7 @@ def readDataFromFS():                                #// v0.3e
             if userConfig.serial_debug_en:
                 print("DB file open");
 
-            data_list = dbFile.read().split(",") #local
+            data_list = dbFile.read().split(",")
 
             if userConfig.serial_debug_en:
                 print(data_list)
@@ -81,12 +80,10 @@ def readDataFromFS():                                #// v0.3e
                 else:
                     currMode = userConfig.morse_mode
 
-                #// v0.3g
                 if currMode == userConfig.morse_mode:
                     flag_switchControlMode = 0
                 else:
-                    flag_switchControlMode = 1;
-                #// v0.3g
+                    flag_switchControlMode = 1
 
                 if int(data_list[1]) == 0 or int(data_list[1]) == 1:
                     hidMode = int(data_list[1])
@@ -121,29 +118,27 @@ def readDataFromFS():                                #// v0.3e
         print("Error during read. Probably file doesn't exist")
         writeDataToFS()
 
-def handleBleConnectionSwap():      #// v0.3
+def handleBleConnectionSwap():
     global ble, flag_manualDisconnection, manualDisconnTicks, flag_blinkNeopixel, currSwapConnIndex, swapConnDeviceNames
 
     connection = ble.connections[0]
 
-    #// v0.3c
     currSwapConnIndex+=1
     if currSwapConnIndex >= userConfig.maxSwapConn:
         currSwapConnIndex = 0
 
     swapConnDeviceNames[currSwapConnIndex] = ""
-    #// v0.3c
 
-    #// Write updated data into FS
-    writeDataToFS()                              #// v0.3e
+    # Write updated data into FS
+    writeDataToFS()
 
     time.sleep(2)
     connection.disconnect()
     if userConfig.serial_debug_en:
         print("Disconnected")
 
-    setNeopixelColor(0, 0, 0)      #// Off      #// v0.3c
-    flag_blinkNeopixel = 1                   #// v0.3c
+    setNeopixelColor(0, 0, 0)      # Off
+    flag_blinkNeopixel = 1
 
     flag_manualDisconnection = 1
     manualDisconnTicks = millis()
