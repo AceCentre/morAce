@@ -12,7 +12,7 @@ By default morAce is set to go to keyboard mode first. But you can toggle betwee
 
 ### **Keyboard keys**
 
-These are the pre-defined keys. You can customise these by editing `morseCode.py`
+These are the pre-defined keys. You can customise these by editing [`user/morse_code.py`](../../morAce/user/morse\_code.py)``
 
 * `.-` a
 * `-...` b
@@ -117,7 +117,7 @@ These are the pre-defined keys. You can customise these by editing `morseCode.py
 * `.------` F11
 * `..-----` F12
 
-(There are also some special keys. For a full listing view them in `morseCode.py` - [here](https://github.com/AceCentre/morAce/blob/2223dcc71ee24f721b552030ea7c027f5cf0a927/morAce/morseCode.py#L97))
+(There are also some special keys. For a full listing view them in [`user/morse_code.py`](../../morAce/user/morse\_code.py))
 
 ### Predefined strings
 
@@ -161,15 +161,15 @@ An alternative way of holding a key is similar to what we do with mouse. You use
 
 ### Macro Mode
 
-If a user types `....----` in either mouse or keyboard mode then the standard key set (e.g. A-Z etc) can be used with a macro. A user can define these in `morseCode.py` This way you just remember which letter or number is the macro.&#x20;
+If a user types `....----` in either mouse or keyboard mode then the standard key set (e.g. A-Z etc) can be used with a macro. A user can define these in `user/morse_code_shortcuts.py` This way you just remember which letter or number is the macro.&#x20;
 
 ```
-morseCodeMacro = [
-  (".-",    "My name is Morace"),
-  ("-...",  "123-456-789"),
-  ("---.",  "My Common password here"),
-  ("-..",   [Keycode.ALT,Keycode.SHIFT,Keycode.D]),
- ..
+morseCodeShortcutCmd = {
+  ".-"     : "My favourite string here",
+  "-..."   : "My password here",
+  "---."   : [Keycode.LEFT_CONTROL, Keycode.C],
+  "-.."    : "My Password string here",
+  "."      : "First row\nSecond row",
 ```
 
 Once the macro code is sent - it will revert back to the previous mouse or keyboard mode.&#x20;
@@ -180,8 +180,10 @@ In Keyboard mode:
 
 `....----  (Macro Mode)`
 
-`.- ("My Name is MorAce" is sent)`
+`.- ("`My favourite string here`" is sent)`
 
 `(Back to Keyboard mode)`
 
-``
+{% hint style="info" %}
+Note you can use keycodes e.g. `[Keycode.LEFT_CONTROL, Keycode.C]` or strings with special characters e.g.`"First row\nSecond row"`. Just be aware of the language of the device you are typing into. You may need to set the keycode correctly for this to work reliably
+{% endhint %}
