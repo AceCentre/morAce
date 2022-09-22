@@ -119,6 +119,18 @@ These are the pre-defined keys. You can customise these by editing [`user/morse_
 
 (There are also some special keys. For a full listing view them in [`user/morse_code.py`](../../morAce/user/morse\_code.py))
 
+### Keymaps
+
+Be aware that the way morAce works is its just a keyboard. It has no idea of language. What your recieving computers keyboard language is set to - it will send the key it thinks you are sending. You can define what a standard keymap it should be by setting the language in the top of morse_code.py and morse\_code\_shortcuts.py_&#x20;
+
+```
+# keymap that translates predefined string characters into keycodes
+from user.keymaps.us_keymap import keyboard_keymap
+
+```
+
+You can find already defined **keymaps** in `user/keymaps`
+
 ### Predefined strings
 
 We also have some predefined strings. You can edit these and add your own by entering them in `morseCode.py` (see around line [163](https://github.com/AceCentre/morAce/blob/2223dcc71ee24f721b552030ea7c027f5cf0a927/morAce/morseCode.py#L163)).&#x20;
