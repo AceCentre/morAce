@@ -36,13 +36,13 @@ By default the board is set to **one switch mode.** By using one switch the user
 
 In **two switch mode** - you need a switch to send the dot and another for the dash. You still need some timing skills to allow the system to distinguish the end of character time (set as the same time as a dot - so you would need to not press for **200ms**). If a user has difficulty with this you may want to use **3 switch mode.** In this mode the third switch is the end of character signal. e.g.\
 \*\*\*\*\
-\*\*\*\*In one switch mode. To send the letter "a" (dot dash) you would press **switch 1** for **200 ms**, release then press **switch 1** immediatley again for **600 ms.** You then need to leave for **minimum of 200ms** before starting another letter.
+\*\*\*\*In one switch mode. To send the letter "a" (dot dash) you would press **switch 1** for **200 ms**, release then press **switch 1** immediately again for **600 ms.** You then need to leave for **minimum of 200ms** before starting another letter.
 
 In two switch mode you would press **switch one** for any length of time, release and then press the **second switch**. Then wait a **minimum of 200ms** before starting the next letter.
 
 In three switch mode you would press switch **1**, then **2**, then **3.**
 
-**To configure** this - edit `userConfig.py` - by editing the following lines. Put a 1 against the option you want. Put a zero against the options you dont want.
+**To configure** this - edit `user/config.py` - by editing the following lines. Put a 1 against the option you want. Put a zero against the options you don't want.
 
 ```
 one_button_mode = 1
@@ -58,11 +58,11 @@ For one switch mode you should be aware its set at 200ms by default. You can mak
 
 #### **Fast Typing**
 
-Some users want to hold down there dot or dash characters. This makes text entry far faster but it can be hard to use if you are new to morse. To turn it on
+Some users want to hold down their dot or dash characters. This makes text entry far faster but it can be hard to use if you are new to morse. To turn it on
 
 `fast_typing_mode = 0`
 
-There are a plethora of other configuration settings in userConfig.py - which you are welcome to edit. Just [note the details](switch-control-mode-and-morse-mode.md) about saving to the board particularly if you want to use the switch control mode or access more than one Bluetooth device. You will need to press switch 1 & 3 to reset the saving function.
+There are a plethora of other configuration settings in `user/config.py` - which you are welcome to edit. Just [note the details](switch-control-mode-and-morse-mode.md) about saving to the board particularly if you want to use the switch control mode or access more than one Bluetooth device. You will need to press switch 1 & 3 to reset the saving function.
 
 {% hint style="info" %}
 We recommend reading the rest of this guide before editing them so you understand what they do.

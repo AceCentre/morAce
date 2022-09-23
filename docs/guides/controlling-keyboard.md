@@ -119,36 +119,6 @@ These are the pre-defined keys. You can customise these by editing [`user/morse_
 
 (There are also some special keys. For a full listing view them in [`user/morse_code.py`](../../morAce/user/morse\_code.py))
 
-### Keymaps
-
-Be aware that the way morAce works is its just a keyboard. It has no idea of language. What your recieving computers keyboard language is set to - it will send the key it thinks you are sending. You can define what a standard keymap it should be by setting the language in the top of morse_code.py and morse\_code\_shortcuts.py_&#x20;
-
-```
-# keymap that translates predefined string characters into keycodes
-from user.keymaps.us_keymap import keyboard_keymap
-
-```
-
-You can find already defined **keymaps** in `user/keymaps`
-
-### Predefined strings
-
-We also have some predefined strings. You can edit these and add your own by entering them in `morseCode.py` (see around line [163](https://github.com/AceCentre/morAce/blob/2223dcc71ee24f721b552030ea7c027f5cf0a927/morAce/morseCode.py#L163)).&#x20;
-
-```
----...-.      "My name is Morace"
--..--.        "No problem"
--..---.       "Thank you"
--.-...--.-..  "See you later"
-..--..---..   "How are you?"
-```
-
-{% hint style="info" %}
-You might want to consider making use of the operating systems own keyboard shortcuts. For example this is available in MacOS and iOS. On iOS this is found under Settings->General-> Keyboards-> Text Replacement.
-
-Note too - [Macro mode](controlling-keyboard.md#macro-mode) - is the better long term solution to this. Predefined strings is really useful if you dont want to switch modes. **We are likely to drop predefined strings in the future over macro mode.**
-{% endhint %}
-
 ### Sending key combinations
 
 In a typical keyboard you might need to send multiple keys being held down at once. To do this we need to use the **HOLD** and **RELEASE** codes
@@ -197,5 +167,27 @@ In Keyboard mode:
 `(Back to Keyboard mode)`
 
 {% hint style="info" %}
-Note you can use keycodes e.g. `[Keycode.LEFT_CONTROL, Keycode.C]` or strings with special characters e.g.`"First row\nSecond row"`. Just be aware of the language of the device you are typing into. You may need to set the keycode correctly for this to work reliably
+Note you can use keycodes e.g. `[Keycode.LEFT_CONTROL, Keycode.C]` or strings with special characters e.g.`"First row\nSecond row"`. Just be aware of the language of the device you are typing into. You may need to set the keycode correctly for this to work reliably. See below for more information
 {% endhint %}
+
+{% hint style="info" %}
+You might want to consider making use of the operating systems own keyboard shortcuts. For example this is available in MacOS and iOS. On iOS this is found under Settings->General-> Keyboards-> Text Replacement.
+{% endhint %}
+
+### Keymaps
+
+Be aware that the way morAce works is its just a keyboard. It has no idea of language. What your recieving computers keyboard language is set to - it will send the key it thinks you are sending. You can either send real key presses e.g. `[Keycode.SHIFT, Keycode.FIVE]` will send the Shift key and the 5 key. On a computer which thinks it has a UK keyboard - that will emit a % but it maybe something else on a different language. Or you can send predefined key mappings - e.g. if you have "%" in either `user/morse_code.py` or _`user/morse_code_shortcuts.py the morAce code looks up the correct key mapping from`_`user/keymaps`  which defines this like&#x20;
+
+```
+"%" :  [Keycode.SHIFT, Keycode.FIVE],
+```
+
+You can define what a standard keymap it should be by setting the language in the top of morse_code.py and morse\_code\_shortcuts.py_&#x20;
+
+```
+# keymap that translates predefined string characters into keycodes
+from user.keymaps.us_keymap import keyboard_keymap
+
+```
+
+You can find already defined **keymaps** in `user/keymaps`

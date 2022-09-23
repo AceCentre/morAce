@@ -1,7 +1,5 @@
 # Controlling the mouse
 
-
-
 **Mouse mode**
 
 Once a device is connected by default it can send characters. But if you want to control it as a mouse you can enter the mouse mode. This is done with the morse command of `.-.--` (configurable in `userConfig.py`) and then the device can send mouse commands
@@ -15,13 +13,13 @@ Then to move the mouse use these commands
 | <p>Left<br>..</p>          |                   | <p>Right<br>...</p>         |
 | <p>Left Down<br>...--</p>  | <p>Down<br>--</p> | <p>Right Down<br>...---</p> |
 
-By default it will only move 5 pixels (default is changeable - see `default_mouse_move_step` in `userConfig.p)`. If you wish the mouse to start moving in one direction and stop when you next send any switch press try using the **REPEAT** mode
+By default it will only move 5 pixels (default is changeable - see `default_mouse_move_step` in `user/config.py)`. If you wish the mouse to start moving in one direction and stop when you next send any switch press try using the **REPEAT** mode
 
 . `Repeat Mode`
 
-You would send the mouse movement you wish to do - THEN send the repeat command. Eg. Down - Repeat ( `--  .)` - will repeat moving down and stop on the first press.&#x20;
+You would send the mouse movement you wish to do - THEN send the repeat command. Eg. Down - Repeat ( `-- .)` - will repeat moving down and stop on the first press.
 
-You can increase or decrease the **speed of movement** using some different options:&#x20;
+You can increase or decrease the **speed of movement** using some different options:
 
 `.-..--` Increase speed
 
@@ -48,9 +46,8 @@ So to drag the mouse you could use this technique. Or you could use the **REPEAT
 
 #### To drag the mouse
 
-`-. (Click and hold)` \
-`-       (Up)` \
-`.      (Repeat moving up)` \
-`.      (release moving when ready)` \
-`-.      (Release Click and Hold)`
-
+`-. (Click and hold)`\
+`- (Up)`\
+`. (Repeat moving up)`\
+`. (release moving when ready)`\
+`-. (Release Click and Hold)`
